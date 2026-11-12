@@ -47,14 +47,67 @@
   <div id="tray"></div>
 
 <script>
-  // 替換為你的遊戲概念圖路徑
-  const TYPES = [
-    'assets/turtle.png',   // 發光青苔陸龜
-    'assets/squirrel.png', // 機甲松鼠
-    'assets/bird.png',     // 曙光神鳥
-    'assets/owl.png',      // 黑羽暗夜貓頭鷹
-    'assets/lizard.png'    // 雙足烈焰蜥蜴
+  // 預設圖片清單（當直接雙擊開啟 HTML 且無網路時的備用清單）
+  const FALLBACK_TYPES = [
+    'assets/IMG_6065.jpg',
+    'assets/IMG_6066.jpg',
+    'assets/IMG_6067.jpg',
+    'assets/IMG_6068.jpg',
+    'assets/IMG_6070.jpg',
+    'assets/IMG_6071.jpg',
+    'assets/IMG_6072.jpg',
+    'assets/IMG_6073.jpg'
   ];
+
+  let TYPES = [];
+  const IMAGE_EXT_REGEX = /\.(jpe?g|png|gif|webp|svg|bmp|avif)$/i;
+
+  // 自動讀取 assets 資料夾中的圖片
+  async function loadImagesFromFolder() {
+    // 1. 嘗試透過本地伺服器目錄清單讀取 (例如 VS Code Live Server / python http.server)
+    if (location.protocol !== 'file:') {
+      try {
+        const res = await fetch('assets/');
+        if (res.ok) {
+          const text = await res.text();
+          const doc = new DOMParser().parseFromString(text, 'text/html');
+          const links = Array.from(doc.querySelectorAll('a'))
+            .map(a => a.getAttribute('href'))
+            .filter(href => href && IMAGE_EXT_REGEX.test(href))
+            .map(href => {
+              const fileName = decodeURIComponent(href.split('/').filter(Boolean).pop());
+              return `assets/${fileName}`;
+            });
+          if (links.length > 0) {
+            return [...new Set(links)];
+          }
+        }
+      } catch (e) {
+        // 忽略錯誤，繼續嘗試下一種方式
+      }
+    }
+
+    // 2. 嘗試透過 GitHub API 自動讀取儲存庫 assets 資料夾內容 (適用於 GitHub Pages 或連網環境)
+    try {
+      const ghRes = await fetch('https://api.github.com/repos/Chiao228/Game/contents/assets');
+      if (ghRes.ok) {
+        const files = await ghRes.json();
+        if (Array.isArray(files)) {
+          const images = files
+            .filter(file => file.type === 'file' && IMAGE_EXT_REGEX.test(file.name))
+            .map(file => `assets/${file.name}`);
+          if (images.length > 0) {
+            return images;
+          }
+        }
+      }
+    } catch (e) {
+      // 忽略錯誤，使用備用清單
+    }
+
+    // 3. 備用清單 (assets 目前現有的圖片)
+    return FALLBACK_TYPES;
+  }
   
   const CARD_SIZE = 50; 
   const TRAY_MAX = 7;
@@ -193,7 +246,10 @@
     }
   }
 
-  initGame();
+  loadImagesFromFolder().then(types => {
+    TYPES = types;
+    initGame();
+  });
 </script>
 </body>
 </html>
