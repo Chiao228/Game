@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>拼圖消消樂原型</title>
+<title>拼圖消消樂</title>
 <style>
   body {
     display: flex; flex-direction: column; align-items: center;
@@ -16,36 +16,46 @@
   }
   .card {
     width: 50px; height: 50px; position: absolute;
-    background: #fff; border: 2px solid #9fb3c8; border-radius: 8px;
-    display: flex; justify-content: center; align-items: center;
-    font-size: 28px; cursor: pointer; box-shadow: 0 4px 4px rgba(0,0,0,0.15);
+    background-color: #fff; /* 圖片若沒載入時的底色 */
+    border: 2px solid #9fb3c8; border-radius: 8px;
+    cursor: pointer; box-shadow: 0 4px 4px rgba(0,0,0,0.15);
     user-select: none; transition: transform 0.1s ease;
   }
   .card:active { transform: scale(0.95); }
+  
   /* 被遮擋時變暗且無法點擊 */
   .card.covered {
-    filter: brightness(0.65); cursor: not-allowed;
+    filter: brightness(0.5); cursor: not-allowed;
   }
+  
   #tray {
     width: 360px; height: 60px; background: #bcccdc;
     margin-top: 30px; border: 4px solid #829ab1; border-radius: 12px;
     display: flex; padding: 5px; gap: 5px; box-sizing: border-box;
   }
   .tray-card {
-    width: 44px; height: 44px; background: #fff; border-radius: 6px;
-    display: flex; justify-content: center; align-items: center;
-    font-size: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 44px; height: 44px; 
+    background-color: #fff; border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 </style>
 </head>
 <body>
 
-  <h2>拼圖消消樂</h2>
+  <h2>寵物消消樂</h2>
   <div id="game-board"></div>
   <div id="tray"></div>
 
 <script>
-  const TYPES = ['🍎', '🍌', '🍇', '🍉', '🍓'];
+  // 替換為你的遊戲概念圖路徑
+  const TYPES = [
+    'assets/turtle.png',   // 發光青苔陸龜
+    'assets/squirrel.png', // 機甲松鼠
+    'assets/bird.png',     // 曙光神鳥
+    'assets/owl.png',      // 黑羽暗夜貓頭鷹
+    'assets/lizard.png'    // 雙足烈焰蜥蜴
+  ];
+  
   const CARD_SIZE = 50; 
   const TRAY_MAX = 7;
   let cards = [];
@@ -56,7 +66,7 @@
     tray = [];
     document.getElementById('tray').innerHTML = '';
     
-    // 1. 生成牌組 (確保每種圖案都是 3 的倍數，保證有解)
+    // 生成牌組 (確保每種圖案都是 3 的倍數)
     let deck = [];
     for(let layer = 0; layer < 4; layer++) { 
       TYPES.forEach(type => {
@@ -67,15 +77,15 @@
     // 洗牌
     deck.sort(() => Math.random() - 0.5);
 
-    // 2. 隨機撒牌並賦予空間座標
+    // 隨機撒牌並賦予空間座標
     deck.forEach((type, index) => {
       cards.push({
         id: index,
         type: type,
         x: Math.random() * 290 + 10, // 限制在 360x360 範圍內
         y: Math.random() * 290 + 10,
-        z: Math.floor(index / 15),   // 簡單分層，數字越大越在上層
-        active: true                 // active 表示還在上方牌堆中
+        z: Math.floor(index / 15),   // 分層，數字越大越在上層
+        active: true                 
       });
     });
     renderBoard();
@@ -105,12 +115,16 @@
       el.style.left = c.x + 'px';
       el.style.top = c.y + 'px';
       el.style.zIndex = c.z;
-      el.innerText = c.type;
+      
+      // 設置背景圖片
+      el.style.backgroundImage = `url('${c.type}')`;
+      el.style.backgroundSize = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.style.backgroundRepeat = 'no-repeat';
       
       if (isCovered(c)) {
         el.classList.add('covered');
       } else {
-        // 只有沒被遮擋的卡牌才能點擊
         el.onclick = () => handleCardClick(c);
       }
       board.appendChild(el);
@@ -120,18 +134,17 @@
   function handleCardClick(card) {
     if (tray.length >= TRAY_MAX) return;
     
-    card.active = false; // 從牌堆拔除
-    tray.push(card);     // 進入下方收集槽
+    card.active = false; 
+    tray.push(card);     
     
-    // 將收集槽的卡牌依照圖案排序，讓相同的靠在一起
+    // 將收集槽的卡牌依照圖片路徑字串排序，讓相同的靠在一起
     tray.sort((a, b) => a.type > b.type ? 1 : -1);
     
     checkMatch();
     
-    renderBoard(); // 重新渲染上方牌堆 (更新其他卡牌的遮擋狀態)
-    renderTray();  // 渲染下方收集槽
+    renderBoard(); 
+    renderTray();  
     
-    // 延遲一點點檢查勝負，讓 UI 有時間渲染卡牌掉下來的瞬間
     setTimeout(checkGameOver, 100);
   }
 
@@ -139,7 +152,6 @@
     let typeCounts = {};
     tray.forEach(c => typeCounts[c.type] = (typeCounts[c.type] || 0) + 1);
     
-    // 掃描是否有圖案達到 3 個
     for (let type in typeCounts) {
       if (typeCounts[type] >= 3) {
         let removed = 0;
@@ -160,7 +172,13 @@
     tray.forEach(c => {
       const el = document.createElement('div');
       el.className = 'tray-card';
-      el.innerText = c.type;
+      
+      // 設置下方收集槽的背景圖片
+      el.style.backgroundImage = `url('${c.type}')`;
+      el.style.backgroundSize = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.style.backgroundRepeat = 'no-repeat';
+      
       trayEl.appendChild(el);
     });
   }
@@ -175,7 +193,6 @@
     }
   }
 
-  // 遊戲啟動
   initGame();
 </script>
 </body>
