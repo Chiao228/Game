@@ -335,7 +335,7 @@
       </div>
     </div>
     <div class="status-bar">
-      <span id="level-label" class="level-badge">第 1 關・梅花陣</span>
+      <span id="level-label" class="level-badge">第 1 關</span>
       <span id="type-count-label">圖案：3 種</span>
       <span id="remain-label">剩餘：21 張</span>
     </div>
@@ -929,7 +929,7 @@
 
   function updateStatusUI(config) {
     if (config) {
-      document.getElementById('level-label').textContent = `第 ${currentLevel} 關・${config.shape.name}`;
+      document.getElementById('level-label').textContent = `第 ${currentLevel} 關`;
       document.getElementById('type-count-label').textContent = `圖案：${config.numTypes} 種`;
     }
     const activeCount = cards.filter(c => c.active).length;
@@ -1151,7 +1151,7 @@
       const nextConfig = getLevelConfig(nextLevel);
       showModal(
         `🎉 恭喜通過第 ${currentLevel} 關！`,
-        `下一關：第 ${nextLevel} 關「${nextConfig.shape.name}」\n共有 ${nextConfig.numTypes} 種圖案、${nextConfig.totalCards} 張卡牌！`,
+        `下一關（第 ${nextLevel} 關）共有 ${nextConfig.numTypes} 種圖案、${nextConfig.totalCards} 張卡牌！`,
         [
           {
             label: `挑戰第 ${nextLevel} 關`,
