@@ -5,21 +5,55 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>拼圖消消樂</title>
 <style>
+  :root {
+    --board-size: 360px;
+    --card-size: 54px;
+    --tray-height: 60px;
+    --tray-card-size: 44px;
+    --tray-gap: 5px;
+    --tray-padding: 5px;
+  }
+  * {
+    box-sizing: border-box;
+  }
   body {
-    display: flex; flex-direction: column; align-items: center;
-    background: #f0f4f8; font-family: sans-serif; padding-top: 20px;
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f0f4f8;
+    font-family: sans-serif;
+    padding: 12px;
+    overflow-x: hidden;
+  }
+  h2 {
+    margin: 0 0 12px 0;
+    font-size: clamp(1.2rem, 4vw, 1.75rem);
+    color: #243b53;
   }
   #game-board {
-    width: 360px; height: 360px; position: relative;
-    background: #d9e2ec; border-radius: 12px;
+    width: var(--board-size);
+    height: var(--board-size);
+    position: relative;
+    background: #d9e2ec;
+    border-radius: 12px;
     box-shadow: inset 0 4px 6px rgba(0,0,0,0.05);
   }
   .card {
-    width: 50px; height: 50px; position: absolute;
+    width: var(--card-size);
+    height: var(--card-size);
+    position: absolute;
     background-color: #fff; /* 圖片若沒載入時的底色 */
-    border: 2px solid #9fb3c8; border-radius: 8px;
-    cursor: pointer; box-shadow: 0 4px 4px rgba(0,0,0,0.15);
-    user-select: none; transition: transform 0.1s ease;
+    border: 2px solid #9fb3c8;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.15);
+    user-select: none;
+    transition: transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
   }
   .card:active { transform: scale(0.95); }
   
@@ -29,13 +63,23 @@
   }
   
   #tray {
-    width: 360px; height: 60px; background: #bcccdc;
-    margin-top: 30px; border: 4px solid #829ab1; border-radius: 12px;
-    display: flex; padding: 5px; gap: 5px; box-sizing: border-box;
+    width: var(--board-size);
+    height: var(--tray-height);
+    background: #bcccdc;
+    margin-top: clamp(12px, 3vh, 28px);
+    border: 4px solid #829ab1;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: var(--tray-padding);
+    gap: var(--tray-gap);
   }
   .tray-card {
-    width: 44px; height: 44px; 
-    background-color: #fff; border-radius: 6px;
+    width: var(--tray-card-size);
+    height: var(--tray-card-size);
+    flex-shrink: 0;
+    background-color: #fff;
+    border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 </style>
@@ -109,10 +153,43 @@
     return FALLBACK_TYPES;
   }
   
-  const CARD_SIZE = 50; 
   const TRAY_MAX = 7;
+  let boardSize = 360;
+  let cardSize = 54;
   let cards = [];
   let tray = [];
+
+  // 根據螢幕寬高動態計算遊戲版面與卡牌大小
+  function updateDimensions() {
+    const availW = window.innerWidth - 24;
+    const availH = window.innerHeight - 150;
+    boardSize = Math.max(240, Math.min(availW, availH, 600));
+    cardSize = Math.round(boardSize * 0.145);
+
+    const trayBorder = 4;
+    const trayPadding = Math.max(4, Math.round(boardSize * 0.014));
+    const trayGap = Math.max(4, Math.round(boardSize * 0.014));
+    const trayCardSize = Math.floor(
+      (boardSize - 2 * (trayBorder + trayPadding) - (TRAY_MAX - 1) * trayGap) / TRAY_MAX
+    );
+    const trayHeight = trayCardSize + 2 * (trayBorder + trayPadding);
+
+    const root = document.documentElement;
+    root.style.setProperty('--board-size', `${boardSize}px`);
+    root.style.setProperty('--card-size', `${cardSize}px`);
+    root.style.setProperty('--tray-height', `${trayHeight}px`);
+    root.style.setProperty('--tray-card-size', `${trayCardSize}px`);
+    root.style.setProperty('--tray-gap', `${trayGap}px`);
+    root.style.setProperty('--tray-padding', `${trayPadding}px`);
+
+    // 依據新的版面大小同步更新每張牌的實際像素座標
+    const padding = Math.round(boardSize * 0.028);
+    const maxOffset = boardSize - cardSize - padding * 2;
+    cards.forEach(c => {
+      c.x = padding + c.rx * maxOffset;
+      c.y = padding + c.ry * maxOffset;
+    });
+  }
 
   function initGame() {
     cards = [];
@@ -130,17 +207,21 @@
     // 洗牌
     deck.sort(() => Math.random() - 0.5);
 
-    // 隨機撒牌並賦予空間座標
+    // 隨機撒牌並賦予 0~1 的相對比例座標，讓縮放螢幕時維持相對位置
     deck.forEach((type, index) => {
       cards.push({
         id: index,
         type: type,
-        x: Math.random() * 290 + 10, // 限制在 360x360 範圍內
-        y: Math.random() * 290 + 10,
+        rx: Math.random(),
+        ry: Math.random(),
+        x: 0,
+        y: 0,
         z: Math.floor(index / 15),   // 分層，數字越大越在上層
         active: true                 
       });
     });
+
+    updateDimensions();
     renderBoard();
   }
 
@@ -148,7 +229,7 @@
   function isCovered(targetCard) {
     for (let c of cards) {
       if (c.active && c.z > targetCard.z) {
-        if (Math.abs(c.x - targetCard.x) < CARD_SIZE && Math.abs(c.y - targetCard.y) < CARD_SIZE) {
+        if (Math.abs(c.x - targetCard.x) < cardSize && Math.abs(c.y - targetCard.y) < cardSize) {
           return true;
         }
       }
@@ -245,6 +326,14 @@
       initGame();
     }
   }
+
+  // 當視窗縮放或手機旋轉時，即時重新調整版面與卡牌位置（不重洗牌）
+  window.addEventListener('resize', () => {
+    if (cards.length > 0) {
+      updateDimensions();
+      renderBoard();
+    }
+  });
 
   loadImagesFromFolder().then(types => {
     TYPES = types;
