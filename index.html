@@ -49,19 +49,118 @@
     color: #102a43;
     letter-spacing: 1px;
   }
+  .header-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .btn-player {
+    background: #fff;
+    color: #243b53;
+    border: 1.5px solid #9fb3c8;
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .btn-player:hover { background: #f0f4f8; }
+  .btn-player:active { transform: scale(0.96); }
+
   .btn-restart {
     background: #486581;
     color: #fff;
     border: none;
     border-radius: 8px;
-    padding: 5px 12px;
-    font-size: 0.84rem;
+    padding: 5px 10px;
+    font-size: 0.82rem;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.15s ease, transform 0.1s ease;
   }
   .btn-restart:hover { background: #334e68; }
   .btn-restart:active { transform: scale(0.96); }
+
+  .player-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 160px;
+    overflow-y: auto;
+    margin-bottom: 14px;
+    text-align: left;
+  }
+  .player-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #f0f4f8;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #102a43;
+    transition: background 0.12s ease;
+  }
+  .player-item:hover { background: #d9e2ec; }
+  .player-item.active {
+    border-color: #2b6cb0;
+    background: #ebf8ff;
+    font-weight: 700;
+  }
+  .player-meta {
+    font-size: 0.78rem;
+    color: #486581;
+    font-weight: 500;
+  }
+  .player-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-del-player {
+    background: #ffe3e3;
+    color: #c92a2a;
+    border: none;
+    border-radius: 6px;
+    padding: 3px 7px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+  .btn-del-player:hover {
+    background: #ffc9c9;
+  }
+  .btn-danger {
+    background: #fff5f5;
+    color: #c92a2a;
+    border: 1.5px solid #ffc9c9;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-danger:hover {
+    background: #ffe3e3;
+  }
+  .player-input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .player-input-row input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1.5px solid #bcccdc;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+  }
+  .player-input-row input:focus { border-color: #2b6cb0; }
 
   .status-bar {
     display: flex;
@@ -230,7 +329,10 @@
   <div class="header">
     <div class="title-row">
       <h2>🐾 寵物消消樂</h2>
-      <button class="btn-restart" onclick="restartCurrentLevel()">重新本關</button>
+      <div class="header-actions">
+        <button id="player-btn" class="btn-player" onclick="openPlayerModal()">👤 設定玩家</button>
+        <button class="btn-restart" onclick="restartCurrentLevel()">重新本關</button>
+      </div>
     </div>
     <div class="status-bar">
       <span id="level-label" class="level-badge">第 1 關・梅花陣</span>
@@ -248,6 +350,23 @@
       <h3 id="modal-title">恭喜過關！</h3>
       <p id="modal-desc">準備好挑戰下一關了嗎？</p>
       <div class="modal-actions" id="modal-actions"></div>
+    </div>
+  </div>
+
+  <!-- 切換玩家彈窗 -->
+  <div id="player-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h3 id="player-modal-title">👤 請輸入玩家名稱</h3>
+      <p style="margin-bottom: 10px;">輸入你的名稱開始遊戲（或選擇現有玩家接續進度）：</p>
+      <div id="player-list" class="player-list"></div>
+      <div class="player-input-row">
+        <input id="new-player-input" type="text" placeholder="請輸入玩家名稱..." maxlength="12" onkeydown="if(event.key==='Enter') addOrSwitchPlayer()">
+        <button class="btn-primary" style="padding: 8px 14px; font-size: 0.88rem;" onclick="addOrSwitchPlayer()">開始</button>
+      </div>
+      <div class="modal-actions" id="player-modal-actions">
+        <button id="clear-all-btn" class="btn-danger" onclick="clearAllProfiles()">清除全部紀錄</button>
+        <button id="close-player-modal-btn" class="btn-secondary" onclick="closePlayerModal()">關閉</button>
+      </div>
     </div>
   </div>
 
@@ -312,8 +431,10 @@
 
   const TRAY_MAX = 7;
   const LOGICAL_UNITS = 6.0; // 盤面 6x6 邏輯座標空間 (gx, gy 範圍 0 ~ 5)
-  const STORAGE_KEY = 'pet_match_save_v1';
+  const STORAGE_PROFILES_KEY = 'pet_match_profiles_v1';
+  const STORAGE_CURRENT_PLAYER_KEY = 'pet_match_active_player_v2';
 
+  let currentPlayer = localStorage.getItem(STORAGE_CURRENT_PLAYER_KEY) || '';
   let currentLevel = 1;
   let boardSize = 380;
   let unitPx = 56;
@@ -321,10 +442,33 @@
   let cards = [];
   let tray = [];
 
-  // 儲存目前遊戲進度至 localStorage
-  function saveProgress() {
+  // 取得所有玩家的存檔字典
+  function getAllProfiles() {
     try {
-      const state = {
+      const raw = localStorage.getItem(STORAGE_PROFILES_KEY);
+      const profiles = raw ? JSON.parse(raw) : {};
+      // 移除舊版自動產生的預設「玩家1」名稱，讓使用者自行命名
+      if (profiles['玩家1']) {
+        delete profiles['玩家1'];
+        localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
+      }
+      return profiles;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function updatePlayerBtnUI() {
+    const btn = document.getElementById('player-btn');
+    if (btn) btn.textContent = currentPlayer ? `👤 ${currentPlayer}` : '👤 設定玩家';
+  }
+
+  // 儲存目前玩家的遊戲進度至 localStorage
+  function saveProgress() {
+    if (!currentPlayer) return;
+    try {
+      const profiles = getAllProfiles();
+      profiles[currentPlayer] = {
         currentLevel,
         cards: cards.map(c => ({
           id: c.id,
@@ -340,16 +484,19 @@
           type: c.type
         }))
       };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
+      localStorage.setItem(STORAGE_CURRENT_PLAYER_KEY, currentPlayer);
+      updatePlayerBtnUI();
     } catch (e) {}
   }
 
-  // 從 localStorage 讀取上次未完成的遊戲進度
+  // 從 localStorage 讀取目前玩家上次未完成的遊戲進度
   function loadProgress() {
+    if (!currentPlayer) return false;
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return false;
-      const state = JSON.parse(raw);
+      updatePlayerBtnUI();
+      const profiles = getAllProfiles();
+      const state = profiles[currentPlayer];
       if (
         !state ||
         typeof state.currentLevel !== 'number' ||
@@ -384,6 +531,130 @@
     } catch (e) {
       return false;
     }
+  }
+
+  // 切換玩家彈窗相關功能
+  function openPlayerModal() {
+    const profiles = getAllProfiles();
+    const listEl = document.getElementById('player-list');
+    listEl.innerHTML = '';
+
+    const names = Object.keys(profiles);
+    if (currentPlayer && !names.includes(currentPlayer)) {
+      names.unshift(currentPlayer);
+    }
+
+    names.forEach(name => {
+      const item = document.createElement('div');
+      item.className = 'player-item' + (name === currentPlayer ? ' active' : '');
+      const pData = profiles[name];
+      const lvl = pData ? pData.currentLevel : 1;
+      const remain = pData && Array.isArray(pData.cards) ? pData.cards.filter(c => c.active).length : '-';
+
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = `👤 ${name}`;
+
+      const rightBox = document.createElement('div');
+      rightBox.className = 'player-right';
+
+      const metaSpan = document.createElement('span');
+      metaSpan.className = 'player-meta';
+      metaSpan.textContent = `第 ${lvl} 關 (剩 ${remain} 張)`;
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn-del-player';
+      delBtn.textContent = '移除';
+      delBtn.title = `移除 ${name} 的紀錄`;
+      delBtn.onclick = e => {
+        e.stopPropagation();
+        deletePlayerProfile(name);
+      };
+
+      rightBox.appendChild(metaSpan);
+      rightBox.appendChild(delBtn);
+
+      item.appendChild(nameSpan);
+      item.appendChild(rightBox);
+      item.onclick = () => switchPlayer(name);
+      listEl.appendChild(item);
+    });
+
+    // 控制「清除全部紀錄」與「關閉」按鈕顯示
+    const titleEl = document.getElementById('player-modal-title');
+    const closeBtn = document.getElementById('close-player-modal-btn');
+    const clearAllBtn = document.getElementById('clear-all-btn');
+    const actionsEl = document.getElementById('player-modal-actions');
+
+    if (titleEl) {
+      titleEl.textContent = currentPlayer ? '👤 切換／管理玩家' : '👤 請輸入玩家名稱';
+    }
+    if (closeBtn) {
+      closeBtn.style.display = currentPlayer ? 'inline-block' : 'none';
+    }
+    if (clearAllBtn) {
+      clearAllBtn.style.display = names.length > 0 ? 'inline-block' : 'none';
+    }
+    if (actionsEl) {
+      actionsEl.style.display = (currentPlayer || names.length > 0) ? 'flex' : 'none';
+    }
+
+    const inputEl = document.getElementById('new-player-input');
+    inputEl.value = '';
+    document.getElementById('player-modal').classList.add('show');
+    setTimeout(() => inputEl.focus(), 50);
+  }
+
+  function deletePlayerProfile(name) {
+    const profiles = getAllProfiles();
+    delete profiles[name];
+    localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
+
+    if (currentPlayer === name) {
+      currentPlayer = '';
+      localStorage.removeItem(STORAGE_CURRENT_PLAYER_KEY);
+      currentLevel = 1;
+      updatePlayerBtnUI();
+      initGame();
+    }
+    openPlayerModal();
+  }
+
+  function clearAllProfiles() {
+    localStorage.removeItem(STORAGE_PROFILES_KEY);
+    localStorage.removeItem(STORAGE_CURRENT_PLAYER_KEY);
+    currentPlayer = '';
+    currentLevel = 1;
+    updatePlayerBtnUI();
+    initGame();
+    openPlayerModal();
+  }
+
+  function closePlayerModal() {
+    if (!currentPlayer) return; // 尚未設定名稱前不可直接關閉
+    document.getElementById('player-modal').classList.remove('show');
+  }
+
+  function switchPlayer(name) {
+    const trimmed = (name || '').trim();
+    if (!trimmed) return;
+    currentPlayer = trimmed;
+    localStorage.setItem(STORAGE_CURRENT_PLAYER_KEY, currentPlayer);
+    document.getElementById('player-modal').classList.remove('show');
+    updatePlayerBtnUI();
+    if (!loadProgress()) {
+      currentLevel = 1;
+      initGame();
+    }
+  }
+
+  function addOrSwitchPlayer() {
+    const input = document.getElementById('new-player-input');
+    const name = input.value.trim();
+    if (!name) {
+      input.focus();
+      return;
+    }
+    switchPlayer(name);
   }
 
   /**
@@ -925,7 +1196,10 @@
 
   loadImagesFromFolder().then(types => {
     ALL_TYPES = types;
-    if (!loadProgress()) {
+    if (!currentPlayer) {
+      initGame();
+      openPlayerModal();
+    } else if (!loadProgress()) {
       initGame();
     }
   });
