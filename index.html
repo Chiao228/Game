@@ -373,7 +373,6 @@
 <script>
   // 預設圖片清單（當直接雙擊開啟 HTML 且無網路時的備用清單）
   const FALLBACK_TYPES = [
-    'assets/IMG_6065.jpg',
     'assets/IMG_6066.jpg',
     'assets/IMG_6067.jpg',
     'assets/IMG_6068.jpg',
@@ -386,8 +385,26 @@
   let ALL_TYPES = [];
   const IMAGE_EXT_REGEX = /\.(jpe?g|png|gif|webp|svg|bmp|avif)$/i;
 
-  // 自動讀取 assets 資料夾中的圖片
+  // 實際測試圖片是否存在且可載入（連直接雙擊 file:// 開啟也能準確排除已刪除的圖片）
+  function probeImage(src) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve(src);
+      img.onerror = () => resolve(null);
+      img.src = src;
+    });
+  }
+
+  async function filterExistingImages(candidates) {
+    const unique = [...new Set(candidates)];
+    const results = await Promise.all(unique.map(probeImage));
+    return results.filter(Boolean);
+  }
+
+  // 自動讀取 assets 資料夾中的圖片，並過濾掉已被刪除的圖片
   async function loadImagesFromFolder() {
+    let candidates = [...FALLBACK_TYPES];
+
     // 1. 嘗試透過本地伺服器目錄清單讀取
     if (location.protocol !== 'file:') {
       try {
@@ -403,7 +420,7 @@
               return `assets/${fileName}`;
             });
           if (links.length > 0) {
-            return [...new Set(links)];
+            candidates.push(...links);
           }
         }
       } catch (e) {}
@@ -419,14 +436,23 @@
             .filter(file => file.type === 'file' && IMAGE_EXT_REGEX.test(file.name))
             .map(file => `assets/${file.name}`);
           if (images.length > 0) {
-            return images;
+            candidates.push(...images);
           }
         }
       }
     } catch (e) {}
 
-    // 3. 備用清單
-    return FALLBACK_TYPES;
+    // 3. 針對本機常見連號圖片一併自動探測（如 IMG_6055~IMG_6095 或 1~20）
+    for (let n = 6055; n <= 6095; n++) {
+      candidates.push(`assets/IMG_${n}.jpg`);
+    }
+    for (let n = 1; n <= 20; n++) {
+      candidates.push(`assets/${n}.jpg`, `assets/${n}.png`);
+    }
+
+    // 4. 實際透過瀏覽器 Image 載入測試，只保留真正存在的圖片（已刪除的圖片會自動被剔除）
+    const verified = await filterExistingImages(candidates);
+    return verified.length > 0 ? verified : FALLBACK_TYPES;
   }
 
   const TRAY_MAX = 7;
@@ -507,6 +533,13 @@
       }
 
       currentLevel = state.currentLevel;
+
+      // 若圖片有被刪除或改名，保留玩家目前關卡數並重新發牌以套用最新圖片
+      const hasMissingImage = state.cards.some(c => !ALL_TYPES.includes(c.type));
+      if (hasMissingImage) {
+        return false;
+      }
+
       cards = state.cards.map(c => ({
         id: c.id,
         type: c.type,
