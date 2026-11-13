@@ -361,26 +361,6 @@
       box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);
     }
 
-    /* 💡 提示高亮閃爍動畫 */
-    @keyframes hintPulse {
-      0%, 100% {
-        transform: translateY(-3px) scale(1.08);
-        border-color: #f59f00;
-        box-shadow: 0 0 0 3px rgba(245, 159, 0, 0.45), 0 6px 16px rgba(245, 159, 0, 0.65);
-      }
-      50% {
-        transform: translateY(-7px) scale(1.14);
-        border-color: #ffd43b;
-        box-shadow: 0 0 0 6px rgba(255, 212, 59, 0.65), 0 10px 22px rgba(245, 159, 0, 0.85);
-      }
-    }
-
-    .card.hint-highlight,
-    .holding-card.hint-highlight {
-      animation: hintPulse 0.65s infinite ease-in-out !important;
-      z-index: 9000 !important;
-    }
-
     /* 救援道具列 */
     .tools-bar {
       width: var(--board-size);
@@ -1022,7 +1002,7 @@
     <div id="holding-slots" class="holding-slots"></div>
   </div>
 
-  <!-- 四大救援道具列（每關各限用 1 次） -->
+  <!-- 三大救援道具列（每關各限用 1 次） -->
   <div class="tools-bar">
     <button id="btn-undo" class="btn-tool" onclick="useUndoTool()" title="將最後點進收集槽的一張牌退回原位">
       <span>↩️ 悔棋</span>
@@ -1035,10 +1015,6 @@
     <button id="btn-pop" class="btn-tool" onclick="usePopOutTool()" title="將收集槽前 3 張牌移到獨立暫存區">
       <span>📤 移出</span>
       <span id="badge-pop" class="tool-badge">1</span>
-    </button>
-    <button id="btn-hint" class="btn-tool" onclick="useHintTool()" title="高亮提示目前最佳可點擊卡牌">
-      <span>💡 提示</span>
-      <span id="badge-hint" class="tool-badge">1</span>
     </button>
   </div>
 
@@ -1149,8 +1125,8 @@
         <div class="rule-item">
           <span class="rule-icon">🪄</span>
           <div class="rule-text">
-            <strong>四大救援道具（每關各 1 次）</strong>
-            可使用「↩️ 悔棋」、「🔀 洗牌」、「📤 移出（移至獨立暫存區）」與「💡 提示（標出最佳牌）」。
+            <strong>三大救援道具（每關各 1 次）</strong>
+            可使用「↩️ 悔棋」、「🔀 洗牌」與「📤 移出（移至獨立暫存區）」。
           </div>
         </div>
         <div class="rule-item">
@@ -1266,11 +1242,9 @@
     let cardSize = 52;
     let cards = [];
     let tray = [];
-    let toolsRemaining = { undo: 1, shuffle: 1, pop: 1, hint: 1 };
+    let toolsRemaining = { undo: 1, shuffle: 1, pop: 1 };
     let lastPickedCardId = null;
     let isShuffling = false;
-    let hintedCardId = null;
-    let hintTimeout = null;
 
     // 計分、連擊、計時與圖鑑／排行榜狀態
     let score = 0;
@@ -1492,10 +1466,9 @@
           ? {
               undo: Number(state.toolsRemaining.undo ?? 1),
               shuffle: Number(state.toolsRemaining.shuffle ?? 1),
-              pop: Number(state.toolsRemaining.pop ?? 1),
-              hint: Number(state.toolsRemaining.hint ?? 1)
+              pop: Number(state.toolsRemaining.pop ?? 1)
             }
-          : { undo: 1, shuffle: 1, pop: 1, hint: 1 };
+          : { undo: 1, shuffle: 1, pop: 1 };
         lastPickedCardId = state.lastPickedCardId ?? null;
 
         // 自動檢查並消除收集槽內可能已經湊滿 3 張的卡牌
@@ -1945,17 +1918,14 @@
           const btnUndo = document.getElementById('btn-undo');
           const btnShuffle = document.getElementById('btn-shuffle');
           const btnPop = document.getElementById('btn-pop');
-          const btnHint = document.getElementById('btn-hint');
 
           const badgeUndo = document.getElementById('badge-undo');
           const badgeShuffle = document.getElementById('badge-shuffle');
           const badgePop = document.getElementById('badge-pop');
-          const badgeHint = document.getElementById('badge-hint');
 
           if (badgeUndo) badgeUndo.textContent = toolsRemaining.undo;
           if (badgeShuffle) badgeShuffle.textContent = toolsRemaining.shuffle;
           if (badgePop) badgePop.textContent = toolsRemaining.pop;
-          if (badgeHint) badgeHint.textContent = toolsRemaining.hint;
 
           const canUndo =
             toolsRemaining.undo > 0 &&
@@ -1967,25 +1937,19 @@
           const canPop =
             toolsRemaining.pop > 0 &&
             tray.length > 0;
-          const canHint =
-            toolsRemaining.hint > 0 &&
-            cards.some(c => c.active);
 
           if (btnUndo) btnUndo.disabled = !canUndo;
           if (btnShuffle) btnShuffle.disabled = !canShuffle;
           if (btnPop) btnPop.disabled = !canPop;
-          if (btnHint) btnHint.disabled = !canHint;
         }
 
         function initGame() {
           closeModal();
           cards = [];
           tray = [];
-          toolsRemaining = { undo: 1, shuffle: 1, pop: 1, hint: 1 };
+          toolsRemaining = { undo: 1, shuffle: 1, pop: 1 };
           lastPickedCardId = null;
           isShuffling = false;
-          hintedCardId = null;
-          if (hintTimeout) clearTimeout(hintTimeout);
           comboCount = 0;
           maxComboInLevel = 1;
           lastMatchTime = 0;
@@ -2247,7 +2211,6 @@
             const el = document.createElement('div');
             el.className = 'card';
             if (isShuffling) el.classList.add('shuffling');
-            if (!covered && c.id === hintedCardId) el.classList.add('hint-highlight');
 
             el.style.left = (c.baseX + offsetX) + 'px';
             el.style.top = (c.baseY + offsetY) + 'px';
@@ -2296,7 +2259,6 @@
             if (cardObj) {
               const el = document.createElement('div');
               el.className = 'holding-card';
-              if (cardObj.id === hintedCardId) el.classList.add('hint-highlight');
               el.style.backgroundImage = `url('${cardObj.type}')`;
               el.onclick = () => handleCardClick(cardObj, el);
               slot.appendChild(el);
@@ -2651,9 +2613,6 @@
           playCardClickSound();
 
           card.active = false;
-          if (hintedCardId === card.id) {
-            hintedCardId = null;
-          }
           lastPickedCardId = card.id;
           tray.push({ id: card.id, type: card.type });
 
@@ -2896,7 +2855,6 @@
 
           toolsRemaining.shuffle--;
           isShuffling = true;
-          hintedCardId = null;
           playToolSound();
           renderBoard();
           updateToolsUI();
@@ -2933,58 +2891,6 @@
           renderTray();
           updateToolsUI();
           saveProgress();
-        }
-
-        // 救援道具 4：💡 智慧提示（自動高亮標記場上最優先推薦點擊的卡牌）
-        function useHintTool() {
-          if (toolsRemaining.hint <= 0) return;
-
-          const clickableCards = cards.filter(c => c.active && !isCovered(c));
-          if (clickableCards.length === 0) return;
-
-          // 統計收集槽與可點擊卡牌中每種圖案的數量
-          const trayCounts = {};
-          tray.forEach(t => {
-            trayCounts[t.type] = (trayCounts[t.type] || 0) + 1;
-          });
-
-          const clickableCounts = {};
-          clickableCards.forEach(c => {
-            clickableCounts[c.type] = (clickableCounts[c.type] || 0) + 1;
-          });
-
-          // 評分排序：
-          // 1. 收集槽已有 2 張（點了立刻湊滿 3 張消除）
-          // 2. 收集槽 + 可點牌總數 >= 3（可以直接湊成一套消除）
-          // 3. 收集槽已有 1 張
-          // 4. 在可點擊牌中數量最多、或壓在較高層 (z 較大) 的非盲牌
-          const scored = clickableCards.map(c => {
-            const inTray = trayCounts[c.type] || 0;
-            const onSurface = clickableCounts[c.type] || 0;
-            let priority = 0;
-            if (inTray >= 2) priority += 1000;
-            else if (inTray + onSurface >= 3) priority += 500 + inTray * 150;
-            else if (inTray === 1) priority += 200;
-            priority += onSurface * 30 + (c.isBottomBlind ? -10 : 15) + c.z;
-            return { card: c, priority };
-          });
-
-          scored.sort((a, b) => b.priority - a.priority);
-          hintedCardId = scored[0].card.id;
-
-          toolsRemaining.hint--;
-          playToolSound();
-          renderBoard();
-          updateToolsUI();
-          saveProgress();
-
-          if (hintTimeout) clearTimeout(hintTimeout);
-          hintTimeout = setTimeout(() => {
-            if (hintedCardId !== null) {
-              hintedCardId = null;
-              renderBoard();
-            }
-          }, 3500);
         }
 
         // ==================== 60 張角色收集圖鑑 ====================
@@ -3254,8 +3160,7 @@
             const usedToolsCount =
               1 - toolsRemaining.undo +
               (1 - toolsRemaining.shuffle) +
-              (1 - toolsRemaining.pop) +
-              (1 - toolsRemaining.hint);
+              (1 - toolsRemaining.pop);
 
             let stars = 1;
             if (levelSeconds <= target3StarSec && usedToolsCount <= 2) {
