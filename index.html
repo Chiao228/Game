@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>寵物消消樂 - 闖關模式</title>
+  <title>卡牌消消樂</title>
   <style>
     :root {
       --board-size: 380px;
@@ -27,7 +27,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(160deg, #e6eff8 0%, #d5e2ef 100%);
+      background: radial-gradient(circle at 50% 20%, #fffdf7 0%, #eef6e8 55%, #dcebd2 100%);
       font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
       padding: 8px;
       overflow-x: hidden;
@@ -51,9 +51,10 @@
     h2 {
       margin: 0;
       font-size: clamp(1.05rem, 3.4vw, 1.35rem);
-      color: #102a43;
+      color: #4a3520;
       letter-spacing: 0.5px;
       white-space: nowrap;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
     }
 
     .header-actions {
@@ -63,45 +64,47 @@
     }
 
     .btn-player {
-      background: #fff;
-      color: #243b53;
-      border: 1.5px solid #9fb3c8;
+      background: #fffdf9;
+      color: #5c4028;
+      border: 1.5px solid #cbb396;
       border-radius: 8px;
       padding: 4px 8px;
       font-size: 0.78rem;
-      font-weight: 600;
+      font-weight: 700;
       white-space: nowrap;
       cursor: pointer;
+      box-shadow: 0 2px 0 #d8c3a8;
       transition: background 0.15s ease, transform 0.1s ease;
     }
 
     .btn-player:hover {
-      background: #f0f4f8;
+      background: #f9f2e7;
     }
 
     .btn-player:active {
-      transform: scale(0.96);
+      transform: translateY(1px) scale(0.97);
     }
 
     .btn-restart {
-      background: #486581;
+      background: #7c5836;
       color: #fff;
       border: none;
       border-radius: 8px;
       padding: 5px 9px;
       font-size: 0.78rem;
-      font-weight: 600;
+      font-weight: 700;
       white-space: nowrap;
       cursor: pointer;
+      box-shadow: 0 2px 0 #593d22;
       transition: background 0.15s ease, transform 0.1s ease;
     }
 
     .btn-restart:hover {
-      background: #334e68;
+      background: #66472a;
     }
 
     .btn-restart:active {
-      transform: scale(0.96);
+      transform: translateY(1px) scale(0.97);
     }
 
     .player-list {
@@ -120,27 +123,27 @@
       justify-content: space-between;
       padding: 8px 12px;
       border-radius: 10px;
-      background: #f0f4f8;
+      background: #f7f2eb;
       border: 2px solid transparent;
       cursor: pointer;
       font-size: 0.9rem;
-      color: #102a43;
+      color: #4a3520;
       transition: background 0.12s ease;
     }
 
     .player-item:hover {
-      background: #d9e2ec;
+      background: #ede3d5;
     }
 
     .player-item.active {
-      border-color: #2b6cb0;
-      background: #ebf8ff;
+      border-color: #529447;
+      background: #eef8eb;
       font-weight: 700;
     }
 
     .player-meta {
       font-size: 0.78rem;
-      color: #486581;
+      color: #7c6248;
       font-weight: 500;
     }
 
@@ -190,96 +193,36 @@
     .player-input-row input {
       flex: 1;
       padding: 8px 10px;
-      border: 1.5px solid #bcccdc;
+      border: 1.5px solid #cbb396;
       border-radius: 8px;
       font-size: 0.9rem;
       outline: none;
     }
 
     .player-input-row input:focus {
-      border-color: #2b6cb0;
-    }
-
-    .theme-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 240px;
-      overflow-y: auto;
-      margin-bottom: 16px;
-      text-align: left;
-    }
-
-    .theme-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: #f0f4f8;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: background 0.12s ease, border-color 0.12s ease;
-    }
-
-    .theme-item:hover {
-      background: #d9e2ec;
-    }
-
-    .theme-item.active {
-      border-color: #2b6cb0;
-      background: #ebf8ff;
-    }
-
-    .theme-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .theme-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #102a43;
-    }
-
-    .theme-sub {
-      font-size: 0.76rem;
-      color: #486581;
-    }
-
-    .theme-previews {
-      display: flex;
-      gap: 4px;
-      align-items: center;
-    }
-
-    .theme-thumb {
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      background: #fff center / 88% no-repeat;
-      border: 1px solid #cbd5e0;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+      border-color: #529447;
     }
 
     .rules-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 9px;
       text-align: left;
-      margin: 12px 0 20px 0;
+      margin: 10px 0 18px 0;
+      max-height: 60vh;
+      overflow-y: auto;
     }
 
     .rule-item {
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      background: #f0f4f8;
-      padding: 10px 12px;
+      background: #f9f5ee;
+      border: 1px solid #eadcc9;
+      padding: 9px 11px;
       border-radius: 10px;
-      font-size: 0.88rem;
-      color: #243b53;
+      font-size: 0.86rem;
+      color: #5c4028;
       line-height: 1.45;
     }
 
@@ -290,7 +233,7 @@
     }
 
     .rule-text strong {
-      color: #102a43;
+      color: #3d2916;
       display: block;
       margin-bottom: 2px;
     }
@@ -299,24 +242,26 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(255, 255, 255, 0.78);
+      background: rgba(255, 253, 248, 0.9);
+      border: 1.5px solid #decbb3;
       padding: 6px 12px;
       border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(16, 42, 67, 0.06);
+      box-shadow: 0 2px 6px rgba(92, 64, 35, 0.06);
       font-size: clamp(0.8rem, 2.7vw, 0.92rem);
-      color: #334e68;
-      font-weight: 600;
+      color: #5c4028;
+      font-weight: 700;
     }
 
     .level-badge {
-      background: #2b6cb0;
+      background: linear-gradient(135deg, #5da64e 0%, #448537 100%);
       color: #fff;
       padding: 2px 10px;
       border-radius: 999px;
       font-size: 0.88em;
+      box-shadow: 0 1px 3px rgba(68, 133, 55, 0.35);
     }
 
-    /* 遊戲主盤面 */
+    /* 遊戲主盤面：療癒草地與溫暖木框 */
     #game-board {
       width: var(--board-size);
       height: var(--board-size);
@@ -324,89 +269,348 @@
       z-index: 1;
       isolation: isolate;
       /* 限制所有卡牌圖層在盤面內，確保絕不會穿出彈窗布幕 */
-      background: #c8d6e5;
-      border: 3px solid #9fb3c8;
-      border-radius: 16px;
-      box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.08), 0 6px 16px rgba(16, 42, 67, 0.08);
+      background:
+        radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.28) 0%, transparent 45%),
+        radial-gradient(circle at 80% 75%, rgba(255, 255, 255, 0.22) 0%, transparent 45%),
+        linear-gradient(180deg, #d7ecc6 0%, #c1e0ad 100%);
+      border: 4px solid #9c7248;
+      border-radius: 18px;
+      box-shadow:
+        inset 0 4px 12px rgba(56, 92, 38, 0.16),
+        0 8px 20px rgba(92, 64, 35, 0.14);
       overflow: hidden;
     }
 
-    /* 卡牌樣式 */
+    /* 卡牌樣式：立體奶油白厚牌 */
     .card {
       width: var(--card-size);
       height: var(--card-size);
       position: absolute;
-      background-color: #fff;
-      border: 2px solid #52667a;
-      border-bottom: 5px solid #3e5063;
-      border-radius: 10px;
+      background-color: #fffdf9;
+      border: 2px solid #7d6043;
+      border-bottom: 5px solid #59412b;
+      border-radius: 11px;
       cursor: pointer;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 3px 6px rgba(60, 40, 20, 0.24);
       user-select: none;
-      transition: transform 0.12s ease, filter 0.15s ease, box-shadow 0.12s ease;
+      transition: transform 0.14s ease, filter 0.15s ease, box-shadow 0.14s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
     .card:hover:not(.covered) {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.26);
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 14px rgba(60, 40, 20, 0.3);
     }
 
     .card:active:not(.covered) {
-      transform: scale(0.94);
+      transform: scale(0.93);
+    }
+
+    /* 移出道具暫存區的卡牌標示 */
+    .card.popped-card {
+      border-color: #d9822b;
+      border-bottom-color: #a65b12;
+      box-shadow: 0 3px 10px rgba(217, 130, 43, 0.38);
+    }
+
+    /* 洗牌動畫 */
+    @keyframes cardShuffleSpin {
+      0% { transform: scale(1) rotate(0deg); }
+      45% { transform: scale(0.82) rotate(-10deg); }
+      75% { transform: scale(1.06) rotate(6deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .card.shuffling {
+      animation: cardShuffleSpin 0.36s ease;
     }
 
     /* 被遮擋時變暗且無法點擊 */
     .card.covered {
-      filter: brightness(0.5) contrast(1.05);
-      border-color: #334e68;
-      border-bottom-color: #102a43;
+      filter: brightness(0.5) contrast(1.04);
+      border-color: #4f3b27;
+      border-bottom-color: #332417;
       cursor: not-allowed;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
     }
 
     /* 下方左右橫向密集牌疊：被壓在底下的牌只露出側邊窄條，不顯示圖案 */
     .card.blind-covered {
       background-image: none !important;
-      background-color: #829ab1;
-      border-color: #334e68;
-      border-bottom-color: #102a43;
+      background-color: #c8b299;
+      border-color: #6b5035;
+      border-bottom-color: #473320;
       filter: none;
       cursor: not-allowed;
-      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);
     }
 
-    /* 下方收集槽 */
+    /* 救援道具列 */
+    .tools-bar {
+      width: var(--board-size);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .btn-tool {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      background: linear-gradient(180deg, #fffdf9 0%, #f5ead9 100%);
+      color: #4a3520;
+      border: 2px solid #b5926b;
+      border-bottom: 4px solid #8c6a46;
+      border-radius: 11px;
+      padding: 6px 8px;
+      font-size: clamp(0.76rem, 2.5vw, 0.86rem);
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s ease, filter 0.15s ease, background 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-tool:hover:not(:disabled) {
+      background: linear-gradient(180deg, #ffffff 0%, #faefe0 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn-tool:active:not(:disabled) {
+      transform: translateY(1px) scale(0.97);
+    }
+
+    .btn-tool:disabled {
+      opacity: 0.48;
+      filter: grayscale(0.5);
+      cursor: not-allowed;
+    }
+
+    .tool-badge {
+      background: #7c5836;
+      color: #fff;
+      font-size: 0.72rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    /* 獨立的「移出3張」專用暫存區（完全獨立於主盤面外，絕不與下方左右兩疊盲牌重疊） */
+    #holding-zone {
+      width: var(--board-size);
+      min-height: calc(var(--tray-card-size) + 12px);
+      margin-top: 7px;
+      padding: 5px 10px;
+      background: rgba(255, 252, 244, 0.88);
+      border: 2px dashed #c69f73;
+      border-radius: 13px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(92, 64, 35, 0.08);
+    }
+
+    #holding-zone.active {
+      display: flex;
+    }
+
+    .holding-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #7c5836;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .holding-slots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .holding-slot {
+      width: var(--tray-card-size);
+      height: var(--tray-card-size);
+      border-radius: 9px;
+      background: rgba(181, 146, 107, 0.16);
+      border: 1.5px dashed rgba(140, 106, 70, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .holding-card {
+      width: 100%;
+      height: 100%;
+      background-color: #fffdf9;
+      border: 2px solid #d9822b;
+      border-bottom: 4px solid #a65b12;
+      border-radius: 8px;
+      cursor: pointer;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 3px 8px rgba(217, 130, 43, 0.32);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      animation: trayCardLand 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    }
+
+    .holding-card:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 5px 12px rgba(217, 130, 43, 0.45);
+    }
+
+    .holding-card:active {
+      transform: scale(0.93);
+    }
+
+    .btn-player.bgm-on {
+      background: #eef8eb;
+      border-color: #6eb563;
+      color: #2f6926;
+      box-shadow: 0 2px 0 #8ec985;
+    }
+
+    /* 下方木質收集槽與 7 格凹槽底框 */
     #tray {
       width: var(--board-size);
       height: var(--tray-height);
-      background: #9fb3c8;
-      margin-top: clamp(8px, 1.8vh, 16px);
-      border: 4px solid #627d98;
-      border-radius: 14px;
+      background: linear-gradient(180deg, #d5b088 0%, #be9468 100%);
+      margin-top: 8px;
+      border: 4px solid #875e36;
+      border-radius: 15px;
       display: flex;
       align-items: center;
       padding: var(--tray-padding);
       gap: var(--tray-gap);
-      box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.12);
+      box-shadow:
+        inset 0 3px 7px rgba(66, 40, 16, 0.28),
+        0 4px 12px rgba(92, 64, 35, 0.14);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .tray-card {
+    /* 收集槽快滿時（>= 5 張）紅橘色呼吸警示框 */
+    @keyframes trayDangerPulse {
+      0%, 100% {
+        border-color: #e03131;
+        box-shadow: inset 0 3px 7px rgba(66, 40, 16, 0.28), 0 0 0 2px rgba(224, 49, 49, 0.25), 0 0 14px rgba(224, 49, 49, 0.55);
+      }
+      50% {
+        border-color: #f76707;
+        box-shadow: inset 0 3px 7px rgba(66, 40, 16, 0.28), 0 0 0 4px rgba(247, 103, 7, 0.35), 0 0 20px rgba(247, 103, 7, 0.75);
+      }
+    }
+
+    #tray.tray-warning {
+      animation: trayDangerPulse 1.1s infinite ease-in-out;
+    }
+
+    .tray-slot {
       width: var(--tray-card-size);
       height: var(--tray-card-size);
       flex-shrink: 0;
-      background-color: #fff;
-      border: 2px solid #52667a;
-      border-bottom: 4px solid #3e5063;
+      border-radius: 9px;
+      background: rgba(82, 50, 22, 0.22);
+      border: 1.5px dashed rgba(82, 50, 22, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .tray-card {
+      width: 100%;
+      height: 100%;
+      background-color: #fffdf9;
+      border: 2px solid #7d6043;
+      border-bottom: 4px solid #59412b;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+      animation: trayCardLand 0.16s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    }
+
+    @keyframes trayCardLand {
+      0% { transform: scale(0.75); }
+      100% { transform: scale(1); }
+    }
+
+    /* 飛入收集槽的動態分身卡牌 */
+    .flying-card {
+      position: fixed;
+      z-index: 9500;
+      pointer-events: none;
+      background-color: #fffdf9;
+      border: 2px solid #7d6043;
+      border-bottom: 4px solid #59412b;
+      border-radius: 10px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 8px 18px rgba(60, 40, 20, 0.32);
+      transition:
+        left 0.19s cubic-bezier(0.22, 0.9, 0.32, 1),
+        top 0.19s cubic-bezier(0.22, 0.9, 0.32, 1),
+        width 0.19s ease,
+        height 0.19s ease,
+        transform 0.19s ease;
+    }
+
+    /* 消除星星與粒子特效 */
+    .match-particle {
+      position: fixed;
+      z-index: 9600;
+      pointer-events: none;
+      font-size: 1rem;
+      user-select: none;
+      animation: particleBurst 0.58s cubic-bezier(0.16, 0.84, 0.44, 1) forwards;
+    }
+
+    @keyframes particleBurst {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0.6) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(1.25) rotate(var(--rot));
+      }
+    }
+
+    /* 過關慶祝彩帶雨 */
+    .confetti-piece {
+      position: fixed;
+      top: -18px;
+      z-index: 10001;
+      pointer-events: none;
+      width: 10px;
+      height: 16px;
+      border-radius: 3px;
+      animation: confettiFall var(--dur) linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        opacity: 1;
+        transform: translate3d(0, -10px, 0) rotate(0deg);
+      }
+      100% {
+        opacity: 0.9;
+        transform: translate3d(var(--drift), 105vh, 0) rotate(var(--spin));
+      }
     }
 
     /* 過關 / 失敗彈窗 */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(16, 42, 67, 0.55);
+      background: rgba(42, 28, 14, 0.55);
       display: none;
       align-items: center;
       justify-content: center;
@@ -419,9 +623,10 @@
     }
 
     .modal-box {
-      background: #fff;
+      background: #fffdf9;
+      border: 3px solid #cbb396;
       padding: 24px 28px;
-      border-radius: 16px;
+      border-radius: 18px;
       width: min(88vw, 320px);
       text-align: center;
       box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
@@ -430,12 +635,12 @@
     .modal-box h3 {
       margin: 0 0 8px 0;
       font-size: 1.35rem;
-      color: #102a43;
+      color: #3d2916;
     }
 
     .modal-box p {
       margin: 0 0 20px 0;
-      color: #486581;
+      color: #6b5035;
       font-size: 0.95rem;
       line-height: 1.5;
     }
@@ -458,13 +663,14 @@
     }
 
     .btn-primary {
-      background: #2b6cb0;
+      background: linear-gradient(135deg, #5da64e 0%, #448537 100%);
       color: #fff;
+      box-shadow: 0 3px 0 #316327;
     }
 
     .btn-secondary {
-      background: #d9e2ec;
-      color: #243b53;
+      background: #ede3d5;
+      color: #4a3520;
     }
 
     .btn-primary:active,
@@ -478,8 +684,9 @@
 
   <div class="header">
     <div class="title-row">
-      <h2>🐾 寵物消消樂</h2>
+      <h2>🃏 卡牌消消樂</h2>
       <div class="header-actions">
+        <button id="bgm-btn" class="btn-player bgm-on" onclick="toggleBGM()" title="開關背景音樂">🎵 音樂</button>
         <button class="btn-player" onclick="openRulesModal()">📖 規則</button>
         <button id="player-btn" class="btn-player" onclick="openPlayerModal()">👤 設定玩家</button>
         <button class="btn-restart" onclick="restartCurrentLevel()">重新本關</button>
@@ -493,6 +700,29 @@
   </div>
 
   <div id="game-board"></div>
+
+  <!-- 獨立的「移出3張」專用暫存區（不與盤面下方兩疊盲牌重疊） -->
+  <div id="holding-zone">
+    <span class="holding-label">📤 暫存區（點擊取回）：</span>
+    <div id="holding-slots" class="holding-slots"></div>
+  </div>
+
+  <!-- 三大救援道具列 -->
+  <div class="tools-bar">
+    <button id="btn-undo" class="btn-tool" onclick="useUndoTool()" title="將最後點進收集槽的一張牌退回場上">
+      <span>↩️ 悔棋</span>
+      <span id="badge-undo" class="tool-badge">1</span>
+    </button>
+    <button id="btn-shuffle" class="btn-tool" onclick="useShuffleTool()" title="將場上剩餘卡牌的圖案重新隨機洗牌">
+      <span>🔀 洗牌</span>
+      <span id="badge-shuffle" class="tool-badge">1</span>
+    </button>
+    <button id="btn-pop" class="btn-tool" onclick="usePopOutTool()" title="將收集槽前 3 張牌移到場上暫存區">
+      <span>📤 移出3張</span>
+      <span id="badge-pop" class="tool-badge">1</span>
+    </button>
+  </div>
+
   <div id="tray"></div>
 
   <!-- 過關 / 失敗彈窗 -->
@@ -525,7 +755,7 @@
 
   <!-- 遊戲規則彈窗 -->
   <div id="rules-modal" class="modal-overlay">
-    <div class="modal-box" style="width: min(90vw, 350px);">
+    <div class="modal-box" style="width: min(90vw, 355px);">
       <h3>📖 遊戲規則</h3>
       <div class="rules-list">
         <div class="rule-item">
@@ -539,14 +769,21 @@
           <span class="rule-icon">✨</span>
           <div class="rule-text">
             <strong>湊齊 3 張相同圖案消除</strong>
-            點選的卡牌會進入下方收集槽，集滿 3 張相同圖案即可自動消除。
+            點選的卡牌會飛入下方收集槽，集滿 3 張相同圖案即可自動消除。
           </div>
         </div>
         <div class="rule-item">
           <span class="rule-icon">⚠️</span>
           <div class="rule-text">
-            <strong>注意收集槽上限（最多 7 張）</strong>
-            下方收集槽最多只能放 7 張卡牌，若滿 7 張仍未湊出 3 張相同圖案即挑戰失敗。
+            <strong>注意收集槽上限（最多 7 格）</strong>
+            下方收集槽共有 7 個凹槽，快滿時會閃爍紅框警示；若滿 7 張仍未湊出 3 張相同圖案即挑戰失敗。
+          </div>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">🪄</span>
+          <div class="rule-text">
+            <strong>善用三大救援道具（每關各 1 次）</strong>
+            遇到卡關時可使用「↩️ 悔棋（退回上一張）」、「🔀 洗牌（重洗場上圖案）」或「📤 移出3張（騰出收集槽空間）」。
           </div>
         </div>
         <div class="rule-item">
@@ -622,6 +859,9 @@
     let cardSize = 52;
     let cards = [];
     let tray = [];
+    let toolsRemaining = { undo: 1, shuffle: 1, pop: 1 };
+    let lastPickedCardId = null;
+    let isShuffling = false;
 
     // 取得所有玩家的存檔字典
     function getAllProfiles() {
@@ -656,112 +896,125 @@
       document.getElementById('rules-modal').classList.remove('show');
     }
 
-        // 儲存目前玩家的遊戲進度至 localStorage
-        function saveProgress() {
-          if (!currentPlayer) return;
-          try {
-            const profiles = getAllProfiles();
-            profiles[currentPlayer] = {
-              currentLevel,
-              cards: cards.map(c => ({
-                id: c.id,
-                type: c.type,
-                gx: c.gx,
-                gy: c.gy,
-                z: c.z,
-                isBottomBlind: c.isBottomBlind,
-                active: c.active
-              })),
-              tray: tray.map(c => ({
-                id: c.id,
-                type: c.type
-              }))
-            };
-            localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
-            localStorage.setItem(STORAGE_CURRENT_PLAYER_KEY, currentPlayer);
-            updatePlayerBtnUI();
-          } catch (e) { }
+    // 儲存目前玩家的遊戲進度至 localStorage
+    function saveProgress() {
+      if (!currentPlayer) return;
+      try {
+        const profiles = getAllProfiles();
+        profiles[currentPlayer] = {
+          currentLevel,
+          toolsRemaining: { ...toolsRemaining },
+          lastPickedCardId,
+          cards: cards.map(c => ({
+            id: c.id,
+            type: c.type,
+            gx: c.gx,
+            gy: c.gy,
+            z: c.z,
+            isBottomBlind: Boolean(c.isBottomBlind),
+            isPoppedOut: Boolean(c.isPoppedOut),
+            active: Boolean(c.active)
+          })),
+          tray: tray.map(c => ({
+            id: c.id,
+            type: c.type
+          }))
+        };
+        localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
+        localStorage.setItem(STORAGE_CURRENT_PLAYER_KEY, currentPlayer);
+        updatePlayerBtnUI();
+      } catch (e) { }
+    }
+
+    // 從 localStorage 讀取目前玩家上次未完成的遊戲進度
+    function loadProgress() {
+      if (!currentPlayer) return false;
+      try {
+        updatePlayerBtnUI();
+        const profiles = getAllProfiles();
+        const state = profiles[currentPlayer];
+        if (
+          !state ||
+          typeof state.currentLevel !== 'number' ||
+          !Array.isArray(state.cards) ||
+          state.cards.length === 0
+        ) {
+          return false;
         }
 
-        // 從 localStorage 讀取目前玩家上次未完成的遊戲進度
-        function loadProgress() {
-          if (!currentPlayer) return false;
-          try {
-            updatePlayerBtnUI();
-            const profiles = getAllProfiles();
-            const state = profiles[currentPlayer];
-            if (
-              !state ||
-              typeof state.currentLevel !== 'number' ||
-              !Array.isArray(state.cards) ||
-              state.cards.length === 0
-            ) {
-              return false;
-            }
+        currentLevel = state.currentLevel;
 
-            currentLevel = state.currentLevel;
+        // 若存檔中有空白圖案紀錄，直接重新發牌
+        if (state.cards.some(c => !c.type || typeof c.type !== 'string')) {
+          return false;
+        }
 
-            // 若存檔中有空白圖案紀錄，直接重新發牌
-            if (state.cards.some(c => !c.type || typeof c.type !== 'string')) {
-              return false;
-            }
-
-            // 若存檔卡牌屬於不同主題或圖片有變更，自動將存檔中的圖案一對一對應到目前主題的圖片
-            const hasMissingImage = state.cards.some(c => !ALL_TYPES.includes(c.type));
-            if (hasMissingImage) {
-              const savedDistinctTypes = [
-                ...new Set([
-                  ...state.cards.map(c => c.type),
-                  ...(Array.isArray(state.tray) ? state.tray.map(t => t.type) : [])
-                ])
-              ];
-              if (savedDistinctTypes.length > ALL_TYPES.length) {
-                return false;
-              }
-              const shuffled = [...ALL_TYPES];
-              for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-              }
-              const typeMap = {};
-              savedDistinctTypes.forEach((oldType, idx) => {
-                typeMap[oldType] = shuffled[idx];
-              });
-              state.cards.forEach(c => {
-                if (typeMap[c.type]) c.type = typeMap[c.type];
-              });
-              if (Array.isArray(state.tray)) {
-                state.tray.forEach(t => {
-                  if (typeMap[t.type]) t.type = typeMap[t.type];
-                });
-              }
-            }
-
-            cards = state.cards.map(c => ({
-              id: c.id,
-              type: c.type,
-              gx: c.gx,
-              gy: c.gy,
-              baseX: 0,
-              baseY: 0,
-              z: c.z,
-              isBottomBlind: Boolean(c.isBottomBlind),
-              active: Boolean(c.active)
-            }));
-            tray = Array.isArray(state.tray) ? state.tray : [];
-
-            closeModal();
-            const config = getLevelConfig(currentLevel);
-            updateDimensions();
-            updateStatusUI(config);
-            renderBoard();
-            renderTray();
-            setTimeout(checkGameOver, 80);
-            return true;
-          } catch (e) {
+        // 若存檔卡牌屬於不同主題或圖片有變更，自動將存檔中的圖案一對一對應到目前主題的圖片
+        const hasMissingImage = state.cards.some(c => !ALL_TYPES.includes(c.type));
+        if (hasMissingImage) {
+          const savedDistinctTypes = [
+            ...new Set([
+              ...state.cards.map(c => c.type),
+              ...(Array.isArray(state.tray) ? state.tray.map(t => t.type) : [])
+            ])
+          ];
+          if (savedDistinctTypes.length > ALL_TYPES.length) {
             return false;
           }
+          const shuffled = [...ALL_TYPES];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
+          const typeMap = {};
+          savedDistinctTypes.forEach((oldType, idx) => {
+            typeMap[oldType] = shuffled[idx];
+          });
+          state.cards.forEach(c => {
+            if (typeMap[c.type]) c.type = typeMap[c.type];
+          });
+          if (Array.isArray(state.tray)) {
+            state.tray.forEach(t => {
+              if (typeMap[t.type]) t.type = typeMap[t.type];
+            });
+          }
         }
+
+        cards = state.cards.map(c => ({
+          id: c.id,
+          type: c.type,
+          gx: c.gx,
+          gy: c.gy,
+          baseX: 0,
+          baseY: 0,
+          z: c.z,
+          isBottomBlind: Boolean(c.isBottomBlind),
+          isPoppedOut: Boolean(c.isPoppedOut),
+          active: Boolean(c.active)
+        }));
+        tray = Array.isArray(state.tray) ? state.tray : [];
+        toolsRemaining = state.toolsRemaining && typeof state.toolsRemaining === 'object'
+          ? {
+              undo: Number(state.toolsRemaining.undo ?? 1),
+              shuffle: Number(state.toolsRemaining.shuffle ?? 1),
+              pop: Number(state.toolsRemaining.pop ?? 1)
+            }
+          : { undo: 1, shuffle: 1, pop: 1 };
+        lastPickedCardId = state.lastPickedCardId ?? null;
+
+        closeModal();
+        const config = getLevelConfig(currentLevel);
+        updateDimensions();
+        updateStatusUI(config);
+        renderBoard();
+        renderTray();
+        updateToolsUI();
+        setTimeout(checkGameOver, 80);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
 
         // 切換玩家彈窗相關功能
         function openPlayerModal() {
@@ -1024,7 +1277,7 @@
           }
         ];
 
-        // 根據關卡決定難度設定
+        // 根據關卡決定難度設定（隨關卡推進，圖案種類、總牌數、盲牌數與交錯深度皆逐步遞增）
         function getLevelConfig(level) {
           const maxTypes = ALL_TYPES.length;
           const shapeObj = SHAPE_PATTERNS[(level - 1) % SHAPE_PATTERNS.length];
@@ -1032,35 +1285,35 @@
           if (level === 1) {
             return {
               numTypes: Math.min(3, maxTypes),
-              totalCards: 21,       // 7 組 × 3 張
-              bottomStackCards: 4,  // 下方直接疊成一疊
+              totalCards: 21,       // 7 組 × 3 張（新手熱身）
+              bottomStackCards: 4,
               shape: shapeObj
             };
           } else if (level === 2) {
             return {
-              numTypes: Math.min(4, maxTypes),
-              totalCards: 36,       // 12 組 × 3 張
-              bottomStackCards: 7,
+              numTypes: Math.min(5, maxTypes),
+              totalCards: 36,       // 12 組 × 3 張（初階挑戰）
+              bottomStackCards: 8,
               shape: shapeObj
             };
           } else if (level === 3) {
             return {
-              numTypes: Math.min(6, maxTypes),
-              totalCards: 54,       // 18 組 × 3 張
-              bottomStackCards: 10,
+              numTypes: Math.min(8, maxTypes),
+              totalCards: 54,       // 18 組 × 3 張（中階進階）
+              bottomStackCards: 12,
               shape: shapeObj
             };
           } else if (level === 4) {
             return {
-              numTypes: Math.min(7, maxTypes),
-              totalCards: 72,       // 24 組 × 3 張
-              bottomStackCards: 14,
+              numTypes: Math.min(12, maxTypes),
+              totalCards: 72,       // 24 組 × 3 張（高階燒腦）
+              bottomStackCards: 16,
               shape: shapeObj
             };
           } else {
             const totalCards = 72 + (level - 4) * 18;
-            const bottomStackCards = Math.min(28, 14 + (level - 4) * 4);
-            const targetTypes = Math.min(maxTypes, 9 + (level - 4) * 2, Math.floor(totalCards / 6));
+            const bottomStackCards = Math.min(28, 16 + (level - 4) * 4);
+            const targetTypes = Math.min(maxTypes, 12 + (level - 4) * 3, Math.floor(totalCards / 3));
             return {
               numTypes: Math.max(1, targetTypes),
               totalCards,
@@ -1134,7 +1387,7 @@
         // 根據螢幕寬高動態計算遊戲版面與卡牌大小
         function updateDimensions() {
           const availW = window.innerWidth - 16;
-          const availH = window.innerHeight - 165;
+          const availH = window.innerHeight - 245;
           boardSize = Math.round(Math.max(260, Math.min(availW, availH, 520)));
 
           const pad = Math.round(boardSize * 0.045);
@@ -1172,14 +1425,44 @@
           document.getElementById('remain-label').textContent = `剩餘：${activeCount} 張`;
         }
 
+        function updateToolsUI() {
+          const btnUndo = document.getElementById('btn-undo');
+          const btnShuffle = document.getElementById('btn-shuffle');
+          const btnPop = document.getElementById('btn-pop');
+          const badgeUndo = document.getElementById('badge-undo');
+          const badgeShuffle = document.getElementById('badge-shuffle');
+          const badgePop = document.getElementById('badge-pop');
+
+          if (badgeUndo) badgeUndo.textContent = toolsRemaining.undo;
+          if (badgeShuffle) badgeShuffle.textContent = toolsRemaining.shuffle;
+          if (badgePop) badgePop.textContent = toolsRemaining.pop;
+
+          const canUndo =
+            toolsRemaining.undo > 0 &&
+            lastPickedCardId !== null &&
+            tray.some(c => c.id === lastPickedCardId);
+          const canShuffle =
+            toolsRemaining.shuffle > 0 &&
+            cards.filter(c => c.active && !c.isPoppedOut).length > 1;
+          const canPop =
+            toolsRemaining.pop > 0 &&
+            tray.length > 0;
+
+          if (btnUndo) btnUndo.disabled = !canUndo;
+          if (btnShuffle) btnShuffle.disabled = !canShuffle;
+          if (btnPop) btnPop.disabled = !canPop;
+        }
+
         function initGame() {
           closeModal();
           cards = [];
           tray = [];
-          document.getElementById('tray').innerHTML = '';
+          toolsRemaining = { undo: 1, shuffle: 1, pop: 1 };
+          lastPickedCardId = null;
+          isShuffling = false;
 
           const config = getLevelConfig(currentLevel);
-          // 隨機從所有圖片中挑選本關要出場的圖案，讓每局都能看到不同貓咪
+          // 隨機從所有 60 張圖片中挑選本關要出場的圖案
           const shuffledTypes = [...ALL_TYPES];
           for (let i = shuffledTypes.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -1188,20 +1471,15 @@
           const levelTypes = shuffledTypes.slice(0, config.numTypes);
           const totalTriplets = config.totalCards / 3;
 
-          // 生成牌組 (確保每種圖案都是 3 的倍數)
-          let deck = [];
+          // 生成每組 3 張的圖案清單
+          const tripletTypes = [];
           for (let i = 0; i < totalTriplets; i++) {
-            const type = levelTypes[i % levelTypes.length];
-            deck.push(type, type, type);
-          }
-
-          // Fisher-Yates 洗牌
-          for (let i = deck.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [deck[i], deck[j]] = [deck[j], deck[i]];
+            tripletTypes.push(levelTypes[i % levelTypes.length]);
           }
 
           const positions = generateLevelPositions(config);
+          // 使用「100% 保證可解」且「難度隨關卡遞增」的拓撲模擬演算法分配卡牌圖案
+          const deck = generateSolvableDeck(positions, tripletTypes, currentLevel);
 
           deck.forEach((type, index) => {
             const pos = positions[index];
@@ -1214,6 +1492,7 @@
               baseY: 0,
               z: pos.z,
               isBottomBlind: pos.isBottomBlind,
+              isPoppedOut: false,
               active: true
             });
           });
@@ -1221,14 +1500,154 @@
           updateDimensions();
           updateStatusUI(config);
           renderBoard();
+          renderTray();
+          updateToolsUI();
           saveProgress();
+        }
+
+        /**
+         * 100% 保證可解 + 隨關卡遞增難度的發牌演算法（Progressive Solvable Deal）：
+         * - 第 1 關：主要以單組（3 張）直接相鄰分配，輕鬆好上手（收集槽只需 3~4 格）。
+         * - 第 2 關：主要以 2 組（6 張）交錯分配（收集槽周轉峰值 <= 5 格）。
+         * - 第 3 關以上：逐步拉高 3 組（9 張）深層交錯比例（收集槽周轉峰值達 6 格，緊貼 7 格上限），
+         *   越後面越需要仔細觀察下層卡牌，但數學上 100% 保證一定存在不靠道具也能完全消除的通關路徑！
+         */
+        function generateSolvableDeck(positions, tripletTypes, level = 1) {
+          const shuffledTriplets = [...tripletTypes];
+          for (let i = shuffledTriplets.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledTriplets[i], shuffledTriplets[j]] = [shuffledTriplets[j], shuffledTriplets[i]];
+          }
+
+          const overlapThreshold = 0.88;
+          const remaining = new Set(positions.map((_, idx) => idx));
+          const assignedTypes = new Array(positions.length);
+
+          function isPosExposed(targetIdx) {
+            const target = positions[targetIdx];
+            if (target.isPoppedOut) return true;
+            for (const otherIdx of remaining) {
+              if (otherIdx === targetIdx) continue;
+              const other = positions[otherIdx];
+              if (!other.isPoppedOut && other.z > target.z) {
+                if (
+                  Math.abs(other.gx - target.gx) < overlapThreshold &&
+                  Math.abs(other.gy - target.gy) < overlapThreshold
+                ) {
+                  return false;
+                }
+              }
+            }
+            return true;
+          }
+
+          function pickExposedPosition() {
+            const exposed = [];
+            for (const idx of remaining) {
+              if (isPosExposed(idx)) exposed.push(idx);
+            }
+            // 計算每個可點位置底下壓了多少張牌，給予較高權重，讓深層牌柱與盲牌疊均勻被解鎖
+            const weights = exposed.map(idx => {
+              const pt = positions[idx];
+              let coveredCount = 0;
+              for (const otherIdx of remaining) {
+                if (otherIdx === idx) continue;
+                const other = positions[otherIdx];
+                if (
+                  other.z < pt.z &&
+                  Math.abs(other.gx - pt.gx) < overlapThreshold &&
+                  Math.abs(other.gy - pt.gy) < overlapThreshold
+                ) {
+                  coveredCount++;
+                }
+              }
+              return 1 + coveredCount * 0.85;
+            });
+
+            const totalWeight = weights.reduce((acc, w) => acc + w, 0);
+            let r = Math.random() * totalWeight;
+            let chosenIdx = exposed[exposed.length - 1];
+            for (let i = 0; i < exposed.length; i++) {
+              r -= weights[i];
+              if (r <= 0) {
+                chosenIdx = exposed[i];
+                break;
+              }
+            }
+            remaining.delete(chosenIdx);
+            return chosenIdx;
+          }
+
+          // 根據關卡決定交錯深度機率（1組=簡單、2組=中等、3組=燒腦且保證收集槽峰值 <= 6 格）
+          const prob3Group = level <= 1 ? 0 : level === 2 ? 0.15 : level === 3 ? 0.5 : Math.min(0.85, 0.65 + (level - 4) * 0.08);
+          const prob2Group = level === 1 ? 0.35 : 0.8;
+
+          let tIdx = 0;
+          while (tIdx < shuffledTriplets.length) {
+            const leftTriplets = shuffledTriplets.length - tIdx;
+            const roll = Math.random();
+
+            if (leftTriplets >= 3 && roll < prob3Group) {
+              // 3 組（9 張）安全深層交錯：前 6 張必湊齊 A 消除（收集槽峰值 <= 6），後 3 張依序消除 B 與 C
+              const tA = shuffledTriplets[tIdx];
+              const tB = shuffledTriplets[tIdx + 1];
+              const tC = shuffledTriplets[tIdx + 2];
+              const pickedPositions = [];
+              for (let k = 0; k < 9; k++) {
+                pickedPositions.push(pickExposedPosition());
+              }
+              const firstFive = [tA, tA, tB, tB, tC];
+              for (let i = firstFive.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [firstFive[i], firstFive[j]] = [firstFive[j], firstFive[i]];
+              }
+              const lastThree = [tB, tC, tC];
+              for (let i = lastThree.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [lastThree[i], lastThree[j]] = [lastThree[j], lastThree[i]];
+              }
+              const ninePool = [...firstFive, tA, ...lastThree];
+              pickedPositions.forEach((posIdx, k) => {
+                assignedTypes[posIdx] = ninePool[k];
+              });
+              tIdx += 3;
+            } else if (leftTriplets >= 2 && roll < prob3Group + prob2Group) {
+              // 2 組（6 張）中等交錯：收集槽峰值 <= 5 格
+              const t1 = shuffledTriplets[tIdx];
+              const t2 = shuffledTriplets[tIdx + 1];
+              const pickedPositions = [];
+              for (let k = 0; k < 6; k++) {
+                pickedPositions.push(pickExposedPosition());
+              }
+              const pairPool = [t1, t1, t1, t2, t2, t2];
+              for (let i = pairPool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pairPool[i], pairPool[j]] = [pairPool[j], pairPool[i]];
+              }
+              pickedPositions.forEach((posIdx, k) => {
+                assignedTypes[posIdx] = pairPool[k];
+              });
+              tIdx += 2;
+            } else {
+              // 1 組（3 張）直覺分配
+              const t1 = shuffledTriplets[tIdx];
+              for (let k = 0; k < 3; k++) {
+                const posIdx = pickExposedPosition();
+                assignedTypes[posIdx] = t1;
+              }
+              tIdx += 1;
+            }
+          }
+
+          return assignedTypes;
         }
 
         // 檢查卡牌是否被更高層的卡牌遮擋
         function isCovered(targetCard) {
+          if (targetCard.isPoppedOut) return false;
           const overlapThreshold = 0.88;
           for (let c of cards) {
-            if (c.active && c.z > targetCard.z) {
+            if (c.active && !c.isPoppedOut && c.z > targetCard.z) {
               if (
                 Math.abs(c.gx - targetCard.gx) < overlapThreshold &&
                 Math.abs(c.gy - targetCard.gy) < overlapThreshold
@@ -1244,6 +1663,7 @@
          * 繪製盤面：
          * 1. 主造型區同一位置 (gx, gy) 疊多張牌時，固定只微幅偏移頂牌並露出底下 1 層深色牌邊
          * 2. 下方左右兩側橫向盲盒牌疊：被壓住的牌顯示為不劇透圖案的側邊牌條 (.blind-covered)
+         * 3. 移出 3 張的暫存卡牌獨立繪製在專屬的 #holding-zone，絕不與盤面下方兩疊盲牌重疊
          */
         function renderBoard() {
           const board = document.getElementById('game-board');
@@ -1252,7 +1672,7 @@
           // 統計主造型區同一個座標點目前還活著的卡牌（由上層排到下層）
           const stackGroups = {};
           cards.forEach(c => {
-            if (!c.active || c.isBottomBlind) return;
+            if (!c.active || c.isBottomBlind || c.isPoppedOut) return;
             const key = `${c.gx.toFixed(2)},${c.gy.toFixed(2)}`;
             if (!stackGroups[key]) stackGroups[key] = [];
             stackGroups[key].push(c);
@@ -1266,7 +1686,8 @@
           const stackShiftY = -Math.max(5, Math.round(cardSize * 0.11));
 
           cards.forEach((c, idx) => {
-            if (!c.active) return;
+            // 已移出至暫存區的卡牌不在主盤面內渲染，改由 renderHoldingZone() 獨立渲染
+            if (!c.active || c.isPoppedOut) return;
 
             let offsetX = 0;
             let offsetY = 0;
@@ -1288,6 +1709,7 @@
             const covered = isCovered(c);
             const el = document.createElement('div');
             el.className = 'card';
+            if (isShuffling) el.classList.add('shuffling');
 
             el.style.left = (c.baseX + offsetX) + 'px';
             el.style.top = (c.baseY + offsetY) + 'px';
@@ -1304,15 +1726,66 @@
               if (covered) {
                 el.classList.add('covered');
               } else {
-                el.onclick = () => handleCardClick(c);
+                el.onclick = () => handleCardClick(c, el);
               }
             }
             board.appendChild(el);
           });
+
+          renderHoldingZone();
         }
 
-        // 音效系統（使用內建 Web Audio API 即時合成，免外部音檔、零延遲）
+        // 獨立渲染「📤 移出3張」專用暫存區（完全獨立於盤面外，不與下方兩疊盲牌重疊）
+        function renderHoldingZone() {
+          const zoneEl = document.getElementById('holding-zone');
+          const slotsEl = document.getElementById('holding-slots');
+          if (!zoneEl || !slotsEl) return;
+
+          const poppedCards = cards.filter(c => c.active && c.isPoppedOut);
+          if (poppedCards.length === 0) {
+            zoneEl.classList.remove('active');
+            slotsEl.innerHTML = '';
+            return;
+          }
+
+          zoneEl.classList.add('active');
+          slotsEl.innerHTML = '';
+
+          for (let i = 0; i < 3; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'holding-slot';
+            const cardObj = poppedCards[i];
+            if (cardObj) {
+              const el = document.createElement('div');
+              el.className = 'holding-card';
+              el.style.backgroundImage = `url('${cardObj.type}')`;
+              el.onclick = () => handleCardClick(cardObj, el);
+              slot.appendChild(el);
+            }
+            slotsEl.appendChild(slot);
+          }
+        }
+
+        // 音效與背景音樂系統（使用內建 Web Audio API 即時合成，免外部音檔、零延遲）
         let audioCtx = null;
+        const STORAGE_BGM_KEY = 'pet_match_bgm_v1';
+        let bgmEnabled = localStorage.getItem(STORAGE_BGM_KEY) !== 'off';
+        let bgmTimer = null;
+        let bgmStep = 0;
+
+        // 療癒輕快木琴／音樂盒風格背景旋律（C大調五聲與和弦分解）
+        const BGM_MELODY = [
+          523.25, 659.25, 783.99, 659.25, 880.00, 783.99, 659.25, 587.33,
+          523.25, 587.33, 659.25, 783.99, 659.25, 587.33, 523.25, 0,
+          659.25, 783.99, 880.00, 1046.50, 880.00, 783.99, 659.25, 783.99,
+          587.33, 659.25, 587.33, 523.25, 587.33, 659.25, 523.25, 0
+        ];
+        const BGM_BASS = [
+          261.63, 0, 392.00, 0, 349.23, 0, 392.00, 0,
+          261.63, 0, 329.63, 0, 293.66, 0, 392.00, 0,
+          329.63, 0, 440.00, 0, 349.23, 0, 392.00, 0,
+          293.66, 0, 392.00, 0, 261.63, 0, 261.63, 0
+        ];
 
         function getAudioContext() {
           if (!audioCtx) {
@@ -1326,6 +1799,92 @@
           }
           return audioCtx;
         }
+
+        function playBgmNote() {
+          if (!bgmEnabled) return;
+          try {
+            const ctx = getAudioContext();
+            if (!ctx || ctx.state !== 'running') return;
+            const now = ctx.currentTime;
+            const idx = bgmStep % BGM_MELODY.length;
+            const note = BGM_MELODY[idx];
+            const bass = BGM_BASS[idx];
+            bgmStep++;
+
+            if (note > 0) {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(note, now);
+              gain.gain.setValueAtTime(0.001, now);
+              gain.gain.linearRampToValueAtTime(0.045, now + 0.02);
+              gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.28);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(now);
+              osc.stop(now + 0.29);
+            }
+
+            if (bass > 0) {
+              const bOsc = ctx.createOscillator();
+              const bGain = ctx.createGain();
+              bOsc.type = 'triangle';
+              bOsc.frequency.setValueAtTime(bass, now);
+              bGain.gain.setValueAtTime(0.001, now);
+              bGain.gain.linearRampToValueAtTime(0.028, now + 0.02);
+              bGain.gain.exponentialRampToValueAtTime(0.0008, now + 0.34);
+              bOsc.connect(bGain);
+              bGain.connect(ctx.destination);
+              bOsc.start(now);
+              bOsc.stop(now + 0.35);
+            }
+          } catch (e) {}
+        }
+
+        function startBGM() {
+          if (!bgmEnabled || bgmTimer) return;
+          getAudioContext();
+          bgmTimer = setInterval(playBgmNote, 260);
+        }
+
+        function stopBGM() {
+          if (bgmTimer) {
+            clearInterval(bgmTimer);
+            bgmTimer = null;
+          }
+        }
+
+        function updateBgmBtnUI() {
+          const btn = document.getElementById('bgm-btn');
+          if (!btn) return;
+          if (bgmEnabled) {
+            btn.textContent = '🎵 音樂';
+            btn.classList.add('bgm-on');
+          } else {
+            btn.textContent = '🔇 靜音';
+            btn.classList.remove('bgm-on');
+          }
+        }
+
+        function toggleBGM() {
+          bgmEnabled = !bgmEnabled;
+          localStorage.setItem(STORAGE_BGM_KEY, bgmEnabled ? 'on' : 'off');
+          updateBgmBtnUI();
+          if (bgmEnabled) {
+            startBGM();
+            playBgmNote();
+          } else {
+            stopBGM();
+          }
+        }
+
+        // 當使用者首次點擊畫面任一處時，若音樂開啟則自動啟動背景音樂（符合瀏覽器音訊政策）
+        document.addEventListener('pointerdown', () => {
+          if (bgmEnabled) {
+            getAudioContext();
+            if (!bgmTimer) startBGM();
+          }
+        }, { passive: true });
 
         // 點擊卡牌的清脆波啵聲
         function playCardClickSound() {
@@ -1375,64 +1934,395 @@
           } catch (e) {}
         }
 
-        function handleCardClick(card) {
+        // 使用道具時的輕快音效
+        function playToolSound() {
+          try {
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            [440, 659.25].forEach((freq, idx) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              const start = now + idx * 0.055;
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(freq, start);
+              gain.gain.setValueAtTime(0.18, start);
+              gain.gain.exponentialRampToValueAtTime(0.001, start + 0.12);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(start);
+              osc.stop(start + 0.13);
+            });
+          } catch (e) {}
+        }
+
+        // 過關慶祝勝利音效
+        function playWinSound() {
+          try {
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              const start = now + idx * 0.085;
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(freq, start);
+              gain.gain.setValueAtTime(0.22, start);
+              gain.gain.exponentialRampToValueAtTime(0.001, start + 0.25);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(start);
+              osc.stop(start + 0.26);
+            });
+          } catch (e) {}
+        }
+
+        // 卡牌從盤面平滑飛入下方收集槽動畫
+        function animateCardToTray(sourceRect, targetSlotIdx, imageUrl) {
+          if (!sourceRect) return;
+          const slots = document.querySelectorAll('#tray .tray-slot');
+          const targetEl = slots[targetSlotIdx] || document.getElementById('tray');
+          if (!targetEl) return;
+          const targetRect = targetEl.getBoundingClientRect();
+
+          const flyer = document.createElement('div');
+          flyer.className = 'flying-card';
+          flyer.style.left = `${sourceRect.left}px`;
+          flyer.style.top = `${sourceRect.top}px`;
+          flyer.style.width = `${sourceRect.width}px`;
+          flyer.style.height = `${sourceRect.height}px`;
+          flyer.style.backgroundImage = `url('${imageUrl}')`;
+          document.body.appendChild(flyer);
+
+          requestAnimationFrame(() => {
+            flyer.style.left = `${targetRect.left}px`;
+            flyer.style.top = `${targetRect.top}px`;
+            flyer.style.width = `${targetRect.width}px`;
+            flyer.style.height = `${targetRect.height}px`;
+          });
+
+          setTimeout(() => {
+            flyer.remove();
+          }, 195);
+        }
+
+        // 三張消除時的星星與光點粒子爆破特效
+        function spawnMatchParticles(slotIndices) {
+          const slots = document.querySelectorAll('#tray .tray-slot');
+          const symbols = ['✨', '⭐', '🌟', '💛', '🎉'];
+          const indices = slotIndices && slotIndices.length ? slotIndices : [0, 1, 2];
+
+          indices.forEach(slotIdx => {
+            const slotEl = slots[slotIdx];
+            if (!slotEl) return;
+            const rect = slotEl.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+
+            for (let i = 0; i < 6; i++) {
+              const p = document.createElement('div');
+              p.className = 'match-particle';
+              p.textContent = symbols[(slotIdx + i) % symbols.length];
+              const angle = (Math.PI * 2 * i) / 6 + (Math.random() - 0.5) * 0.4;
+              const dist = 28 + Math.random() * 34;
+              const tx = Math.round(Math.cos(angle) * dist);
+              const ty = Math.round(Math.sin(angle) * dist - 14);
+              const rot = Math.round((Math.random() - 0.5) * 180);
+
+              p.style.left = `${cx - 8}px`;
+              p.style.top = `${cy - 8}px`;
+              p.style.setProperty('--tx', `${tx}px`);
+              p.style.setProperty('--ty', `${ty}px`);
+              p.style.setProperty('--rot', `${rot}deg`);
+              document.body.appendChild(p);
+
+              setTimeout(() => p.remove(), 600);
+            }
+          });
+        }
+
+        // 過關時漫天彩帶雨慶祝特效
+        function spawnConfetti() {
+          const colors = ['#ff6b6b', '#ffd43b', '#51cf66', '#339af0', '#cc5de8', '#ff922b'];
+          for (let i = 0; i < 55; i++) {
+            const piece = document.createElement('div');
+            piece.className = 'confetti-piece';
+            piece.style.left = `${Math.random() * 100}vw`;
+            piece.style.backgroundColor = colors[i % colors.length];
+            piece.style.setProperty('--dur', `${(1.6 + Math.random() * 1.4).toFixed(2)}s`);
+            piece.style.setProperty('--drift', `${Math.round((Math.random() - 0.5) * 140)}px`);
+            piece.style.setProperty('--spin', `${Math.round(360 + Math.random() * 720)}deg`);
+            piece.style.animationDelay = `${(Math.random() * 0.45).toFixed(2)}s`;
+            document.body.appendChild(piece);
+            setTimeout(() => piece.remove(), 3500);
+          }
+        }
+
+        function handleCardClick(card, cardEl) {
           if (tray.length >= TRAY_MAX) return;
 
+          const sourceRect = cardEl ? cardEl.getBoundingClientRect() : null;
           playCardClickSound();
 
           card.active = false;
-          tray.push(card);
+          lastPickedCardId = card.id;
+          tray.push({ id: card.id, type: card.type });
 
           // 將收集槽的卡牌依照圖片路徑字串排序，讓相同的靠在一起
           tray.sort((a, b) => (a.type > b.type ? 1 : -1));
+          const targetSlotIdx = tray.findIndex(c => c.id === card.id);
+
+          if (sourceRect && targetSlotIdx >= 0) {
+            animateCardToTray(sourceRect, targetSlotIdx, card.type);
+          }
 
           checkMatch();
 
           updateStatusUI();
           renderBoard();
           renderTray();
+          updateToolsUI();
           saveProgress();
 
-          setTimeout(checkGameOver, 120);
+          setTimeout(checkGameOver, 140);
         }
 
         function checkMatch() {
           let typeCounts = {};
           let matched = false;
+          let matchedIndices = [];
           tray.forEach(c => (typeCounts[c.type] = (typeCounts[c.type] || 0) + 1));
 
           for (let type in typeCounts) {
             if (typeCounts[type] >= 3) {
               matched = true;
               let removed = 0;
-              tray = tray.filter(c => {
+              const nextTray = [];
+              tray.forEach((c, idx) => {
                 if (c.type === type && removed < 3) {
                   removed++;
-                  return false; // 剔除 3 張
+                  matchedIndices.push(idx);
+                  if (c.id === lastPickedCardId) {
+                    lastPickedCardId = null;
+                  }
+                } else {
+                  nextTray.push(c);
                 }
-                return true;
               });
+              tray = nextTray;
             }
           }
           if (matched) {
-            setTimeout(playMatchSound, 60);
+            setTimeout(() => {
+              playMatchSound();
+              spawnMatchParticles(matchedIndices);
+            }, 60);
           }
         }
 
         function renderTray() {
           const trayEl = document.getElementById('tray');
           trayEl.innerHTML = '';
-          tray.forEach(c => {
-            const el = document.createElement('div');
-            el.className = 'tray-card';
 
-            el.style.backgroundImage = `url('${c.type}')`;
-            el.style.backgroundSize = 'cover';
-            el.style.backgroundPosition = 'center';
-            el.style.backgroundRepeat = 'no-repeat';
+          // 收集槽快滿時（5 張或 6 張）顯示紅橘色呼吸警示框
+          if (tray.length >= 5 && tray.length < TRAY_MAX) {
+            trayEl.classList.add('tray-warning');
+          } else {
+            trayEl.classList.remove('tray-warning');
+          }
 
-            trayEl.appendChild(el);
+          // 固定渲染 7 個凹槽底框，讓剩餘空間一目了然
+          for (let i = 0; i < TRAY_MAX; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'tray-slot';
+
+            const item = tray[i];
+            if (item) {
+              const el = document.createElement('div');
+              el.className = 'tray-card';
+              el.style.backgroundImage = `url('${item.type}')`;
+              el.style.backgroundSize = 'cover';
+              el.style.backgroundPosition = 'center';
+              el.style.backgroundRepeat = 'no-repeat';
+              slot.appendChild(el);
+            }
+
+            trayEl.appendChild(slot);
+          }
+        }
+
+        // 救援道具 1：↩️ 悔棋（將上一張點進收集槽的卡牌退回場上原位）
+        function useUndoTool() {
+          if (toolsRemaining.undo <= 0 || lastPickedCardId === null) return;
+          const idx = tray.findIndex(c => c.id === lastPickedCardId);
+          if (idx === -1) return;
+
+          const [removed] = tray.splice(idx, 1);
+          const boardCard = cards.find(c => c.id === removed.id);
+          if (boardCard) {
+            boardCard.active = true;
+          }
+
+          toolsRemaining.undo--;
+          lastPickedCardId = null;
+          playToolSound();
+          updateStatusUI();
+          renderBoard();
+          renderTray();
+          updateToolsUI();
+          saveProgress();
+        }
+
+        // 救援道具 2：🔀 洗牌（只洗牌場上尚未被移出的剩餘卡牌，已用「移出3張」的卡牌保持不變）
+        function useShuffleTool() {
+          // 排除已使用「📤 移出3張」放到暫存區的卡牌 (c.isPoppedOut)
+          const activeCards = cards.filter(c => c.active && !c.isPoppedOut);
+          if (toolsRemaining.shuffle <= 0 || activeCards.length <= 1) return;
+
+          const pool = activeCards.map(c => c.type);
+          const trayCounts = {};
+          tray.forEach(t => {
+            trayCounts[t.type] = (trayCounts[t.type] || 0) + 1;
           });
+
+          // 統計待洗牌池中每種圖案的數量；若某圖案在池中數量不是 3 的倍數，代表另外 1~2 張在收集槽或暫存區
+          const poolCounts = {};
+          pool.forEach(type => {
+            poolCounts[type] = (poolCounts[type] || 0) + 1;
+          });
+
+          // 將不成套（需要與收集槽或暫存區配對）的餘數牌挑出，優先排在最上層（收集槽有的最優先）
+          const remainderTypes = Object.keys(poolCounts)
+            .filter(type => poolCounts[type] % 3 !== 0)
+            .sort((a, b) => (trayCounts[b] || 0) - (trayCounts[a] || 0));
+
+          const priorityTypes = [];
+          remainderTypes.forEach(type => {
+            const rem = poolCounts[type] % 3;
+            for (let k = 0; k < rem; k++) {
+              const pIdx = pool.indexOf(type);
+              if (pIdx !== -1) {
+                priorityTypes.push(pool.splice(pIdx, 1)[0]);
+              }
+            }
+          });
+
+          // 此時 pool 內剩餘的所有圖案數量皆為 3 的倍數，整理成 triplet 清單並隨機打亂
+          pool.sort();
+          const remainingTriplets = [];
+          for (let i = 0; i + 2 < pool.length; i += 3) {
+            remainingTriplets.push(pool[i]);
+          }
+          for (let i = remainingTriplets.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [remainingTriplets[i], remainingTriplets[j]] = [remainingTriplets[j], remainingTriplets[i]];
+          }
+
+          const overlapThreshold = 0.88;
+          const remaining = new Set(activeCards.map((_, idx) => idx));
+
+          function isActExposed(targetIdx) {
+            const target = activeCards[targetIdx];
+            for (const otherIdx of remaining) {
+              if (otherIdx === targetIdx) continue;
+              const other = activeCards[otherIdx];
+              if (other.z > target.z) {
+                if (
+                  Math.abs(other.gx - target.gx) < overlapThreshold &&
+                  Math.abs(other.gy - target.gy) < overlapThreshold
+                ) {
+                  return false;
+                }
+              }
+            }
+            return true;
+          }
+
+          function pickNextActIdx() {
+            const exposed = [];
+            for (const idx of remaining) {
+              if (isActExposed(idx)) exposed.push(idx);
+            }
+            const chosen = exposed[Math.floor(Math.random() * exposed.length)];
+            remaining.delete(chosen);
+            return chosen;
+          }
+
+          // 1. 先將能與收集槽／暫存區配對消除的圖案放到最上層可點位置
+          priorityTypes.forEach(type => {
+            if (remaining.size > 0) {
+              const idx = pickNextActIdx();
+              activeCards[idx].type = type;
+            }
+          });
+
+          // 2. 接著將剩餘所有 3 張一組的牌依 100% 保證可解的拓撲順序分配完畢
+          let tIdx = 0;
+          while (tIdx < remainingTriplets.length && remaining.size >= 3) {
+            if (tIdx + 1 < remainingTriplets.length && remaining.size >= 6) {
+              const t1 = remainingTriplets[tIdx];
+              const t2 = remainingTriplets[tIdx + 1];
+              const picked = [];
+              for (let k = 0; k < 6; k++) picked.push(pickNextActIdx());
+              const pairPool = [t1, t1, t1, t2, t2, t2];
+              for (let i = pairPool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pairPool[i], pairPool[j]] = [pairPool[j], pairPool[i]];
+              }
+              picked.forEach((actIdx, k) => {
+                activeCards[actIdx].type = pairPool[k];
+              });
+              tIdx += 2;
+            } else {
+              const t1 = remainingTriplets[tIdx];
+              for (let k = 0; k < 3; k++) {
+                if (remaining.size > 0) {
+                  activeCards[pickNextActIdx()].type = t1;
+                }
+              }
+              tIdx += 1;
+            }
+          }
+
+          toolsRemaining.shuffle--;
+          isShuffling = true;
+          playToolSound();
+          renderBoard();
+          updateToolsUI();
+          saveProgress();
+
+          setTimeout(() => {
+            isShuffling = false;
+          }, 380);
+        }
+
+        // 救援道具 3：📤 移出前 3 張（將收集槽最前面的最多 3 張卡牌移到盤面外的專屬 #holding-zone 暫存區）
+        function usePopOutTool() {
+          if (toolsRemaining.pop <= 0 || tray.length === 0) return;
+
+          const count = Math.min(3, tray.length);
+          const poppedItems = tray.splice(0, count);
+
+          poppedItems.forEach(item => {
+            if (item.id === lastPickedCardId) {
+              lastPickedCardId = null;
+            }
+            const boardCard = cards.find(c => c.id === item.id);
+            if (boardCard) {
+              boardCard.isBottomBlind = false;
+              boardCard.isPoppedOut = true;
+              boardCard.active = true;
+            }
+          });
+
+          toolsRemaining.pop--;
+          playToolSound();
+          updateStatusUI();
+          renderBoard();
+          renderTray();
+          updateToolsUI();
+          saveProgress();
         }
 
         function showModal(title, desc, buttons) {
@@ -1459,7 +2349,9 @@
         }
 
         function checkGameOver() {
-          if (cards.every(c => !c.active)) {
+          if (cards.every(c => !c.active) && tray.length === 0) {
+            playWinSound();
+            spawnConfetti();
             const nextLevel = currentLevel + 1;
             const nextConfig = getLevelConfig(nextLevel);
             showModal(
@@ -1508,6 +2400,7 @@
         });
 
         (async function startApp() {
+          updateBgmBtnUI();
           ALL_TYPES = await loadAllImages();
 
           if (!currentPlayer) {
