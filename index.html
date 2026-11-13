@@ -59,8 +59,10 @@
 
     .header-actions {
       display: flex;
-      gap: 5px;
+      gap: 4px;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .btn-player {
@@ -68,8 +70,8 @@
       color: #5c4028;
       border: 1.5px solid #cbb396;
       border-radius: 8px;
-      padding: 4px 8px;
-      font-size: 0.78rem;
+      padding: 4px 7px;
+      font-size: 0.75rem;
       font-weight: 700;
       white-space: nowrap;
       cursor: pointer;
@@ -232,10 +234,24 @@
       flex-shrink: 0;
     }
 
-    .rule-text strong {
+    .rule-text > strong:first-child {
       color: #3d2916;
       display: block;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
+      font-size: 0.9rem;
+    }
+
+    .rule-text strong:not(:first-child) {
+      color: #b84a14;
+      font-weight: 800;
+    }
+
+    .rule-bullets {
+      margin: 4px 0 0 0;
+      padding-left: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
     }
 
     .status-bar {
@@ -345,12 +361,32 @@
       box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);
     }
 
+    /* 💡 提示高亮閃爍動畫 */
+    @keyframes hintPulse {
+      0%, 100% {
+        transform: translateY(-3px) scale(1.08);
+        border-color: #f59f00;
+        box-shadow: 0 0 0 3px rgba(245, 159, 0, 0.45), 0 6px 16px rgba(245, 159, 0, 0.65);
+      }
+      50% {
+        transform: translateY(-7px) scale(1.14);
+        border-color: #ffd43b;
+        box-shadow: 0 0 0 6px rgba(255, 212, 59, 0.65), 0 10px 22px rgba(245, 159, 0, 0.85);
+      }
+    }
+
+    .card.hint-highlight,
+    .holding-card.hint-highlight {
+      animation: hintPulse 0.65s infinite ease-in-out !important;
+      z-index: 9000 !important;
+    }
+
     /* 救援道具列 */
     .tools-bar {
       width: var(--board-size);
       display: flex;
       justify-content: space-between;
-      gap: 8px;
+      gap: 5px;
       margin-top: 8px;
     }
 
@@ -359,15 +395,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      gap: 3px;
       background: linear-gradient(180deg, #fffdf9 0%, #f5ead9 100%);
       color: #4a3520;
       border: 2px solid #b5926b;
       border-bottom: 4px solid #8c6a46;
-      border-radius: 11px;
-      padding: 6px 8px;
-      font-size: clamp(0.76rem, 2.5vw, 0.86rem);
+      border-radius: 10px;
+      padding: 6px 4px;
+      font-size: clamp(0.7rem, 2.2vw, 0.8rem);
       font-weight: 700;
+      white-space: nowrap;
       cursor: pointer;
       user-select: none;
       transition: transform 0.1s ease, filter 0.15s ease, background 0.15s ease;
@@ -677,6 +714,281 @@
     .btn-secondary:active {
       transform: scale(0.96);
     }
+
+    /* 🔥 Combo 連擊浮動大字與新圖鑑解鎖通知 */
+    .combo-floating {
+      position: fixed;
+      left: 50%;
+      z-index: 9800;
+      pointer-events: none;
+      transform: translateX(-50%);
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #fff;
+      background: linear-gradient(135deg, #ff6b6b 0%, #f76707 100%);
+      border: 2px solid #fff;
+      padding: 4px 14px;
+      border-radius: 999px;
+      box-shadow: 0 6px 16px rgba(247, 103, 7, 0.45);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+      white-space: nowrap;
+      animation: comboFloatUp 0.95s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    }
+
+    @keyframes comboFloatUp {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, 10px) scale(0.6);
+      }
+      25% {
+        opacity: 1;
+        transform: translate(-50%, -8px) scale(1.12);
+      }
+      75% {
+        opacity: 1;
+        transform: translate(-50%, -22px) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -38px) scale(0.9);
+      }
+    }
+
+    .unlock-toast {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10002;
+      background: #fffdf9;
+      border: 2px solid #f59f00;
+      border-radius: 999px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #4a3520;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      pointer-events: none;
+      animation: toastSlide 2.2s ease forwards;
+    }
+
+    .unlock-toast-thumb {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background-size: cover;
+      background-position: center;
+      border: 1px solid #cbb396;
+    }
+
+    @keyframes toastSlide {
+      0% { opacity: 0; transform: translate(-50%, -16px) scale(0.9); }
+      15%, 80% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -12px) scale(0.95); }
+    }
+
+    /* ⭐⭐⭐ 過關星級與成績統計面板 */
+    .win-stars {
+      font-size: 2rem;
+      letter-spacing: 6px;
+      margin: 4px 0 6px 0;
+      text-shadow: 0 2px 6px rgba(245, 159, 0, 0.35);
+    }
+
+    .win-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #fff3bf 0%, #ffec99 100%);
+      color: #8c510a;
+      border: 1.5px solid #fcc419;
+      border-radius: 999px;
+      padding: 3px 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .win-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 14px;
+      background: #f9f5ee;
+      border: 1px solid #eadcc9;
+      border-radius: 12px;
+      padding: 8px;
+    }
+
+    .win-stat-box {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .win-stat-label {
+      font-size: 0.72rem;
+      color: #7c6248;
+    }
+
+    .win-stat-val {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #3d2916;
+    }
+
+    /* 📔 60 張角色圖鑑樣式 */
+    .pokedex-progress-wrap {
+      margin: 6px 0 10px 0;
+      text-align: left;
+    }
+
+    .pokedex-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #5c4028;
+      margin-bottom: 4px;
+    }
+
+    .pokedex-progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #ede3d5;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .pokedex-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #5da64e 0%, #82c91e 100%);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .pokedex-tabs {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .pokedex-tab {
+      flex: 1;
+      background: #f5ead9;
+      color: #5c4028;
+      border: 1.5px solid #d8c3a8;
+      border-radius: 8px;
+      padding: 5px 4px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .pokedex-tab.active {
+      background: #5da64e;
+      color: #fff;
+      border-color: #448537;
+    }
+
+    .pokedex-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      max-height: 50vh;
+      overflow-y: auto;
+      padding: 4px 2px;
+      margin-bottom: 14px;
+    }
+
+    .pokedex-item {
+      background: #f9f5ee;
+      border: 2px solid #decbb3;
+      border-radius: 11px;
+      padding: 6px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pokedex-item.unlocked {
+      background: #fffdf9;
+      border-color: #a9845c;
+      box-shadow: 0 2px 5px rgba(92, 64, 35, 0.1);
+    }
+
+    .pokedex-thumb {
+      width: 54px;
+      height: 54px;
+      border-radius: 9px;
+      background-color: #ede3d5;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      color: #9c8267;
+    }
+
+    .pokedex-count {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #6b5035;
+    }
+
+    /* 🏆 排行榜樣式 */
+    .leaderboard-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      max-height: 52vh;
+      overflow-y: auto;
+      margin: 10px 0 16px 0;
+      text-align: left;
+    }
+
+    .rank-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f9f5ee;
+      border: 1.5px solid #eadcc9;
+      border-radius: 11px;
+      padding: 9px 12px;
+    }
+
+    .rank-item.top-1 {
+      background: linear-gradient(135deg, #fff9db 0%, #fff3bf 100%);
+      border-color: #fcc419;
+    }
+
+    .rank-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      color: #3d2916;
+      font-size: 0.9rem;
+    }
+
+    .rank-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      font-size: 0.76rem;
+      color: #6b5035;
+      font-weight: 600;
+    }
+
+    .rank-score {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #d9480f;
+    }
   </style>
 </head>
 
@@ -686,15 +998,18 @@
     <div class="title-row">
       <h2>🃏 卡牌消消樂</h2>
       <div class="header-actions">
-        <button id="bgm-btn" class="btn-player bgm-on" onclick="toggleBGM()" title="開關背景音樂">🎵 音樂</button>
-        <button class="btn-player" onclick="openRulesModal()">📖 規則</button>
-        <button id="player-btn" class="btn-player" onclick="openPlayerModal()">👤 設定玩家</button>
-        <button class="btn-restart" onclick="restartCurrentLevel()">重新本關</button>
+        <button id="bgm-btn" class="btn-player bgm-on" onclick="toggleBGM()" title="開關背景音樂">🎵</button>
+        <button class="btn-player" onclick="openPokedexModal()" title="查看 60 張角色收集圖鑑">📔 圖鑑</button>
+        <button class="btn-player" onclick="openLeaderboardModal()" title="查看玩家排行榜">🏆 排行</button>
+        <button class="btn-player" onclick="openRulesModal()" title="查看遊戲規則">📖 規則</button>
+        <button id="player-btn" class="btn-player" onclick="openPlayerModal()">👤 玩家</button>
+        <button class="btn-restart" onclick="restartCurrentLevel()">重來</button>
       </div>
     </div>
     <div class="status-bar">
       <span id="level-label" class="level-badge">第 1 關</span>
-      <span id="type-count-label">圖案：3 種</span>
+      <span id="timer-label">⏱️ 00:00</span>
+      <span id="score-label">💯 0 分</span>
       <span id="remain-label">剩餘：21 張</span>
     </div>
   </div>
@@ -707,19 +1022,23 @@
     <div id="holding-slots" class="holding-slots"></div>
   </div>
 
-  <!-- 三大救援道具列 -->
+  <!-- 四大救援道具列（每關各限用 1 次） -->
   <div class="tools-bar">
-    <button id="btn-undo" class="btn-tool" onclick="useUndoTool()" title="將最後點進收集槽的一張牌退回場上">
+    <button id="btn-undo" class="btn-tool" onclick="useUndoTool()" title="將最後點進收集槽的一張牌退回原位">
       <span>↩️ 悔棋</span>
       <span id="badge-undo" class="tool-badge">1</span>
     </button>
-    <button id="btn-shuffle" class="btn-tool" onclick="useShuffleTool()" title="將場上剩餘卡牌的圖案重新隨機洗牌">
+    <button id="btn-shuffle" class="btn-tool" onclick="useShuffleTool()" title="重洗場上剩餘卡牌">
       <span>🔀 洗牌</span>
       <span id="badge-shuffle" class="tool-badge">1</span>
     </button>
-    <button id="btn-pop" class="btn-tool" onclick="usePopOutTool()" title="將收集槽前 3 張牌移到場上暫存區">
-      <span>📤 移出3張</span>
+    <button id="btn-pop" class="btn-tool" onclick="usePopOutTool()" title="將收集槽前 3 張牌移到獨立暫存區">
+      <span>📤 移出</span>
       <span id="badge-pop" class="tool-badge">1</span>
+    </button>
+    <button id="btn-hint" class="btn-tool" onclick="useHintTool()" title="高亮提示目前最佳可點擊卡牌">
+      <span>💡 提示</span>
+      <span id="badge-hint" class="tool-badge">1</span>
     </button>
   </div>
 
@@ -727,10 +1046,52 @@
 
   <!-- 過關 / 失敗彈窗 -->
   <div id="modal" class="modal-overlay">
-    <div class="modal-box">
+    <div class="modal-box" style="width: min(90vw, 345px);">
       <h3 id="modal-title">恭喜過關！</h3>
+      <div id="modal-extra"></div>
       <p id="modal-desc">準備好挑戰下一關了嗎？</p>
       <div class="modal-actions" id="modal-actions"></div>
+    </div>
+  </div>
+
+  <!-- 📔 60張角色收集圖鑑彈窗 -->
+  <div id="pokedex-modal" class="modal-overlay">
+    <div class="modal-box" style="width: min(92vw, 370px);">
+      <h3>📔 角色收集圖鑑</h3>
+      <div class="pokedex-progress-wrap">
+        <div class="pokedex-progress-label">
+          <span id="pokedex-progress-text">已解鎖：0 / 60 張</span>
+          <span id="pokedex-percent-text">0%</span>
+        </div>
+        <div class="pokedex-progress-bar">
+          <div id="pokedex-progress-fill" class="pokedex-progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+      <div class="pokedex-tabs">
+        <button id="tab-all" class="pokedex-tab active" onclick="switchPokedexTab('all')">全部</button>
+        <button id="tab-cat" class="pokedex-tab" onclick="switchPokedexTab('cat')">🐱 貓咪</button>
+        <button id="tab-dog" class="pokedex-tab" onclick="switchPokedexTab('dog')">🐶 狗狗</button>
+        <button id="tab-sanrio" class="pokedex-tab" onclick="switchPokedexTab('三麗鷗')">🎀 三麗鷗</button>
+      </div>
+      <div id="pokedex-grid" class="pokedex-grid"></div>
+      <div class="modal-actions">
+        <button class="btn-primary" style="width: 100%;" onclick="closePokedexModal()">返回遊戲</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🏆 玩家排行榜彈窗 -->
+  <div id="leaderboard-modal" class="modal-overlay">
+    <div class="modal-box" style="width: min(90vw, 355px);">
+      <h3>🏆 玩家榮譽排行榜</h3>
+      <div class="pokedex-tabs" style="margin-top: 8px; margin-bottom: 4px;">
+        <button id="rank-tab-score" class="pokedex-tab active" onclick="switchLeaderboardTab('score')">🏆 闖關積分榜</button>
+        <button id="rank-tab-pokedex" class="pokedex-tab" onclick="switchLeaderboardTab('pokedex')">📔 圖鑑收集榜</button>
+      </div>
+      <div id="leaderboard-list" class="leaderboard-list"></div>
+      <div class="modal-actions">
+        <button class="btn-primary" style="width: 100%;" onclick="closeLeaderboardModal()">返回遊戲</button>
+      </div>
     </div>
   </div>
 
@@ -757,7 +1118,13 @@
   <div id="rules-modal" class="modal-overlay">
     <div class="modal-box" style="width: min(90vw, 355px);">
       <h3>📖 遊戲規則</h3>
-      <div class="rules-list">
+      <div class="pokedex-tabs" style="margin-top: 8px; margin-bottom: 10px;">
+        <button id="rules-tab-gameplay" class="pokedex-tab active" onclick="switchRulesTab('gameplay')">🎮 遊戲玩法</button>
+        <button id="rules-tab-scoring" class="pokedex-tab" onclick="switchRulesTab('scoring')">💯 計分規則</button>
+      </div>
+
+      <!-- 第一部分：遊戲玩法 -->
+      <div id="rules-panel-gameplay" class="rules-list">
         <div class="rule-item">
           <span class="rule-icon">👆</span>
           <div class="rule-text">
@@ -782,18 +1149,58 @@
         <div class="rule-item">
           <span class="rule-icon">🪄</span>
           <div class="rule-text">
-            <strong>善用三大救援道具（每關各 1 次）</strong>
-            遇到卡關時可使用「↩️ 悔棋（退回上一張）」、「🔀 洗牌（重洗場上圖案）」或「📤 移出3張（騰出收集槽空間）」。
+            <strong>四大救援道具（每關各 1 次）</strong>
+            可使用「↩️ 悔棋」、「🔀 洗牌」、「📤 移出（移至獨立暫存區）」與「💡 提示（標出最佳牌）」。
+          </div>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">📔</span>
+          <div class="rule-text">
+            <strong>60 張角色圖鑑</strong>
+            每成功消除一種圖案即可永久解鎖對應貼紙，累積進度並可在「🏆 排行」的圖鑑收集榜一較高下！
+          </div>
+        </div>
+      </div>
+
+      <!-- 第二部分：計分規則 -->
+      <div id="rules-panel-scoring" class="rules-list" style="display: none;">
+        <div class="rule-item">
+          <span class="rule-icon">🔥</span>
+          <div class="rule-text">
+            <strong>基礎消除與 Combo 連擊</strong>
+            <ul class="rule-bullets">
+              <li>每次湊齊 3 張消除得 <strong>100 分</strong></li>
+              <li><strong>6 秒內</strong>連續消除觸發連擊，得 <strong>100 × 連擊數</strong>（x2 得 200 分、x3 得 300 分…）</li>
+            </ul>
+          </div>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">⏱️</span>
+          <div class="rule-text">
+            <strong>計時與星級評定（第 N 關）</strong>
+            <ul class="rule-bullets">
+              <li>⭐⭐⭐：<strong>35 + 18×N 秒內</strong>且道具用 ≤ 2 次</li>
+              <li>⭐⭐☆：<strong>75 + 30×N 秒內</strong>過關</li>
+              <li>⭐☆☆：超過上述時間過關</li>
+            </ul>
+          </div>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">🎁</span>
+          <div class="rule-text">
+            <strong>過關獎勵積分</strong>
+            通關額外加 <strong>關卡數 × 150 ＋ 星級 × 100</strong> 分；速度越快、星數越高，總分加成越多！
           </div>
         </div>
         <div class="rule-item">
           <span class="rule-icon">🏆</span>
           <div class="rule-text">
-            <strong>清空全場即可過關</strong>
-            將場上與下方左右兩側盲牌疊的所有卡牌全部消除，即可晉級下一關！
+            <strong>稱號與積分排行榜</strong>
+            高連擊與三星通關可解鎖專屬稱號，累積總分、最高關卡與星數將記錄於「🏆 闖關積分榜」。
           </div>
         </div>
       </div>
+
       <div class="modal-actions">
         <button id="rules-confirm-btn" class="btn-primary" style="width: 100%;"
           onclick="closeRulesModal()">繼續遊戲</button>
@@ -859,9 +1266,59 @@
     let cardSize = 52;
     let cards = [];
     let tray = [];
-    let toolsRemaining = { undo: 1, shuffle: 1, pop: 1 };
+    let toolsRemaining = { undo: 1, shuffle: 1, pop: 1, hint: 1 };
     let lastPickedCardId = null;
     let isShuffling = false;
+    let hintedCardId = null;
+    let hintTimeout = null;
+
+    // 計分、連擊、計時與圖鑑／排行榜狀態
+    let score = 0;
+    let levelStartScore = 0;
+    let bestScore = 0;
+    let maxLevelReached = 1;
+    let totalStars = 0;
+    let unlockedStickers = {};
+    let comboCount = 0;
+    let maxComboInLevel = 1;
+    let lastMatchTime = 0;
+    let levelSeconds = 0;
+    let levelTimer = null;
+    let currentPokedexTab = 'all';
+    let currentLeaderboardTab = 'score';
+
+    // 切換玩家或清空紀錄時，完整重置記憶體中的玩家分數與狀態，避免跨玩家殘留
+    function resetPlayerRuntimeState() {
+      currentLevel = 1;
+      score = 0;
+      levelStartScore = 0;
+      bestScore = 0;
+      maxLevelReached = 1;
+      totalStars = 0;
+      unlockedStickers = {};
+      comboCount = 0;
+      maxComboInLevel = 1;
+      lastMatchTime = 0;
+      levelSeconds = 0;
+    }
+
+    function formatTime(sec) {
+      const m = String(Math.floor(sec / 60)).padStart(2, '0');
+      const s = String(sec % 60).padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function startLevelTimer() {
+      if (levelTimer) clearInterval(levelTimer);
+      levelTimer = setInterval(() => {
+        const anyModalOpen = Boolean(document.querySelector('.modal-overlay.show'));
+        if (!anyModalOpen && cards.some(c => c.active)) {
+          levelSeconds++;
+          const timerEl = document.getElementById('timer-label');
+          if (timerEl) timerEl.textContent = `⏱️ ${formatTime(levelSeconds)}`;
+        }
+      }, 1000);
+    }
 
     // 取得所有玩家的存檔字典
     function getAllProfiles() {
@@ -881,10 +1338,24 @@
 
     function updatePlayerBtnUI() {
       const btn = document.getElementById('player-btn');
-      if (btn) btn.textContent = currentPlayer ? `👤 ${currentPlayer}` : '👤 設定玩家';
+      if (btn) btn.textContent = currentPlayer ? `👤 ${currentPlayer}` : '👤 玩家';
+    }
+
+    function switchRulesTab(tab) {
+      const gameplayTab = document.getElementById('rules-tab-gameplay');
+      const scoringTab = document.getElementById('rules-tab-scoring');
+      const gameplayPanel = document.getElementById('rules-panel-gameplay');
+      const scoringPanel = document.getElementById('rules-panel-scoring');
+
+      const isGameplay = tab !== 'scoring';
+      if (gameplayTab) gameplayTab.classList.toggle('active', isGameplay);
+      if (scoringTab) scoringTab.classList.toggle('active', !isGameplay);
+      if (gameplayPanel) gameplayPanel.style.display = isGameplay ? 'flex' : 'none';
+      if (scoringPanel) scoringPanel.style.display = isGameplay ? 'none' : 'flex';
     }
 
     function openRulesModal(isNewPlayer = false) {
+      switchRulesTab('gameplay');
       const btn = document.getElementById('rules-confirm-btn');
       if (btn) {
         btn.textContent = isNewPlayer ? '開始遊戲！' : '繼續遊戲';
@@ -901,8 +1372,20 @@
       if (!currentPlayer) return;
       try {
         const profiles = getAllProfiles();
+        const prev = profiles[currentPlayer] || {};
+        bestScore = Math.max(bestScore, prev.bestScore || 0, score);
+        maxLevelReached = Math.max(maxLevelReached, prev.maxLevelReached || 1, currentLevel);
+        totalStars = Math.max(totalStars, prev.totalStars || 0);
+
         profiles[currentPlayer] = {
           currentLevel,
+          score,
+          levelStartScore,
+          bestScore,
+          maxLevelReached,
+          totalStars,
+          levelSeconds,
+          unlockedStickers: { ...(prev.unlockedStickers || {}), ...unlockedStickers },
           toolsRemaining: { ...toolsRemaining },
           lastPickedCardId,
           cards: cards.map(c => ({
@@ -928,13 +1411,25 @@
 
     // 從 localStorage 讀取目前玩家上次未完成的遊戲進度
     function loadProgress() {
+      resetPlayerRuntimeState();
       if (!currentPlayer) return false;
       try {
         updatePlayerBtnUI();
         const profiles = getAllProfiles();
         const state = profiles[currentPlayer];
+        if (!state) return false;
+
+        score = Number(state.score || 0);
+        levelStartScore = Number(state.levelStartScore || 0);
+        bestScore = Number(state.bestScore || score || 0);
+        maxLevelReached = Number(state.maxLevelReached || state.currentLevel || 1);
+        totalStars = Number(state.totalStars || 0);
+        unlockedStickers = state.unlockedStickers && typeof state.unlockedStickers === 'object'
+          ? { ...state.unlockedStickers }
+          : {};
+        levelSeconds = Number(state.levelSeconds || 0);
+
         if (
-          !state ||
           typeof state.currentLevel !== 'number' ||
           !Array.isArray(state.cards) ||
           state.cards.length === 0
@@ -997,18 +1492,35 @@
           ? {
               undo: Number(state.toolsRemaining.undo ?? 1),
               shuffle: Number(state.toolsRemaining.shuffle ?? 1),
-              pop: Number(state.toolsRemaining.pop ?? 1)
+              pop: Number(state.toolsRemaining.pop ?? 1),
+              hint: Number(state.toolsRemaining.hint ?? 1)
             }
-          : { undo: 1, shuffle: 1, pop: 1 };
+          : { undo: 1, shuffle: 1, pop: 1, hint: 1 };
         lastPickedCardId = state.lastPickedCardId ?? null;
 
-        closeModal();
+        // 自動檢查並消除收集槽內可能已經湊滿 3 張的卡牌
+        checkMatch();
+
+        // 若目前在第 1 關，起始分必定為 0；且若本關尚未消除任何一組牌，總分必定為 0（自動修正舊版殘留分數）
         const config = getLevelConfig(currentLevel);
+        if (currentLevel === 1) {
+          levelStartScore = 0;
+          const remainingCardsInPlay = cards.filter(c => c.active).length + tray.length;
+          const matchedTriplets = Math.max(0, Math.floor((config.totalCards - remainingCardsInPlay) / 3));
+          if (matchedTriplets === 0) {
+            score = 0;
+          }
+        }
+
+        saveProgress();
+
+        closeModal();
         updateDimensions();
         updateStatusUI(config);
         renderBoard();
         renderTray();
         updateToolsUI();
+        startLevelTimer();
         setTimeout(checkGameOver, 80);
         return true;
       } catch (e) {
@@ -1095,7 +1607,7 @@
           if (currentPlayer === name) {
             currentPlayer = '';
             localStorage.removeItem(STORAGE_CURRENT_PLAYER_KEY);
-            currentLevel = 1;
+            resetPlayerRuntimeState();
             updatePlayerBtnUI();
             initGame();
           }
@@ -1106,7 +1618,7 @@
           localStorage.removeItem(STORAGE_PROFILES_KEY);
           localStorage.removeItem(STORAGE_CURRENT_PLAYER_KEY);
           currentPlayer = '';
-          currentLevel = 1;
+          resetPlayerRuntimeState();
           updatePlayerBtnUI();
           initGame();
           openPlayerModal();
@@ -1124,9 +1636,10 @@
           currentPlayer = trimmed;
           localStorage.setItem(STORAGE_CURRENT_PLAYER_KEY, currentPlayer);
           document.getElementById('player-modal').classList.remove('show');
+          resetPlayerRuntimeState();
           updatePlayerBtnUI();
           if (!loadProgress()) {
-            currentLevel = 1;
+            resetPlayerRuntimeState();
             initGame();
           }
           // 只有無遊玩紀錄的新玩家才自動跳出規則視窗
@@ -1419,8 +1932,11 @@
         function updateStatusUI(config) {
           if (config) {
             document.getElementById('level-label').textContent = `第 ${currentLevel} 關`;
-            document.getElementById('type-count-label').textContent = `圖案：${config.numTypes} 種`;
           }
+          const timerEl = document.getElementById('timer-label');
+          if (timerEl) timerEl.textContent = `⏱️ ${formatTime(levelSeconds)}`;
+          const scoreEl = document.getElementById('score-label');
+          if (scoreEl) scoreEl.textContent = `💯 ${score} 分`;
           const activeCount = cards.filter(c => c.active).length;
           document.getElementById('remain-label').textContent = `剩餘：${activeCount} 張`;
         }
@@ -1429,13 +1945,17 @@
           const btnUndo = document.getElementById('btn-undo');
           const btnShuffle = document.getElementById('btn-shuffle');
           const btnPop = document.getElementById('btn-pop');
+          const btnHint = document.getElementById('btn-hint');
+
           const badgeUndo = document.getElementById('badge-undo');
           const badgeShuffle = document.getElementById('badge-shuffle');
           const badgePop = document.getElementById('badge-pop');
+          const badgeHint = document.getElementById('badge-hint');
 
           if (badgeUndo) badgeUndo.textContent = toolsRemaining.undo;
           if (badgeShuffle) badgeShuffle.textContent = toolsRemaining.shuffle;
           if (badgePop) badgePop.textContent = toolsRemaining.pop;
+          if (badgeHint) badgeHint.textContent = toolsRemaining.hint;
 
           const canUndo =
             toolsRemaining.undo > 0 &&
@@ -1447,19 +1967,36 @@
           const canPop =
             toolsRemaining.pop > 0 &&
             tray.length > 0;
+          const canHint =
+            toolsRemaining.hint > 0 &&
+            cards.some(c => c.active);
 
           if (btnUndo) btnUndo.disabled = !canUndo;
           if (btnShuffle) btnShuffle.disabled = !canShuffle;
           if (btnPop) btnPop.disabled = !canPop;
+          if (btnHint) btnHint.disabled = !canHint;
         }
 
         function initGame() {
           closeModal();
           cards = [];
           tray = [];
-          toolsRemaining = { undo: 1, shuffle: 1, pop: 1 };
+          toolsRemaining = { undo: 1, shuffle: 1, pop: 1, hint: 1 };
           lastPickedCardId = null;
           isShuffling = false;
+          hintedCardId = null;
+          if (hintTimeout) clearTimeout(hintTimeout);
+          comboCount = 0;
+          maxComboInLevel = 1;
+          lastMatchTime = 0;
+          levelSeconds = 0;
+          if (currentLevel === 1) {
+            levelStartScore = 0;
+            score = 0;
+          } else {
+            score = levelStartScore;
+          }
+          startLevelTimer();
 
           const config = getLevelConfig(currentLevel);
           // 隨機從所有 60 張圖片中挑選本關要出場的圖案
@@ -1710,6 +2247,7 @@
             const el = document.createElement('div');
             el.className = 'card';
             if (isShuffling) el.classList.add('shuffling');
+            if (!covered && c.id === hintedCardId) el.classList.add('hint-highlight');
 
             el.style.left = (c.baseX + offsetX) + 'px';
             el.style.top = (c.baseY + offsetY) + 'px';
@@ -1758,6 +2296,7 @@
             if (cardObj) {
               const el = document.createElement('div');
               el.className = 'holding-card';
+              if (cardObj.id === hintedCardId) el.classList.add('hint-highlight');
               el.style.backgroundImage = `url('${cardObj.type}')`;
               el.onclick = () => handleCardClick(cardObj, el);
               slot.appendChild(el);
@@ -1858,10 +2397,10 @@
           const btn = document.getElementById('bgm-btn');
           if (!btn) return;
           if (bgmEnabled) {
-            btn.textContent = '🎵 音樂';
+            btn.textContent = '🎵';
             btn.classList.add('bgm-on');
           } else {
-            btn.textContent = '🔇 靜音';
+            btn.textContent = '🔇';
             btn.classList.remove('bgm-on');
           }
         }
@@ -1909,21 +2448,22 @@
           } catch (e) {}
         }
 
-        // 湊滿 3 張卡牌消除時的清脆叮咚音效
-        function playMatchSound() {
+        // 湊滿 3 張卡牌消除時的清脆叮咚音效（隨連擊數微幅升調）
+        function playMatchSound(combo = 1) {
           try {
             const ctx = getAudioContext();
             if (!ctx) return;
             const now = ctx.currentTime;
+            const pitchMult = Math.min(1.6, 1 + (combo - 1) * 0.08);
 
-            [587.33, 880].forEach((freq, idx) => {
+            [587.33 * pitchMult, 880 * pitchMult].forEach((freq, idx) => {
               const osc = ctx.createOscillator();
               const gain = ctx.createGain();
               const start = now + idx * 0.07;
               osc.type = 'triangle';
               osc.frequency.setValueAtTime(freq, start);
 
-              gain.gain.setValueAtTime(0.2, start);
+              gain.gain.setValueAtTime(0.22, start);
               gain.gain.exponentialRampToValueAtTime(0.001, start + 0.18);
 
               osc.connect(gain);
@@ -1931,6 +2471,47 @@
               osc.start(start);
               osc.stop(start + 0.19);
             });
+          } catch (e) {}
+        }
+
+        // 浮動連擊 Combo 橫幅特效
+        function spawnComboBanner(combo, gained) {
+          try {
+            const banner = document.createElement('div');
+            banner.className = 'combo-floating';
+            banner.style.top = '42%';
+            banner.innerHTML =
+              combo >= 2
+                ? `🔥 COMBO x${combo} <span style="font-size:0.9rem;">+${gained}</span>`
+                : `✨ +${gained}`;
+            document.body.appendChild(banner);
+            setTimeout(() => banner.remove(), 950);
+          } catch (e) {}
+        }
+
+        // 首次解鎖新圖鑑貼紙時的頂部通知
+        function spawnUnlockToast(type) {
+          try {
+            const unlockedCount = Object.keys(unlockedStickers || {}).length;
+            const toast = document.createElement('div');
+            toast.className = 'unlock-toast';
+            toast.innerHTML = `<div class="unlock-toast-thumb" style="background-image:url('${type}')"></div><span>🎉 圖鑑解鎖新角色！（${unlockedCount}/${ALL_TYPES.length || 60}）</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2200);
+          } catch (e) {}
+        }
+
+        function recordStickerUnlock(type) {
+          try {
+            if (!type) return;
+            if (!unlockedStickers || typeof unlockedStickers !== 'object' || Array.isArray(unlockedStickers)) {
+              unlockedStickers = {};
+            }
+            const isFirstTime = !unlockedStickers[type];
+            unlockedStickers[type] = (unlockedStickers[type] || 0) + 1;
+            if (isFirstTime) {
+              spawnUnlockToast(type);
+            }
           } catch (e) {}
         }
 
@@ -2060,12 +2641,19 @@
         }
 
         function handleCardClick(card, cardEl) {
-          if (tray.length >= TRAY_MAX) return;
+          // 若舊存檔導致收集槽有未消除的 3 張同圖案，點擊前先自動清理
+          if (tray.length >= TRAY_MAX) {
+            checkMatch();
+            if (tray.length >= TRAY_MAX) return;
+          }
 
           const sourceRect = cardEl ? cardEl.getBoundingClientRect() : null;
           playCardClickSound();
 
           card.active = false;
+          if (hintedCardId === card.id) {
+            hintedCardId = null;
+          }
           lastPickedCardId = card.id;
           tray.push({ id: card.id, type: card.type });
 
@@ -2097,6 +2685,7 @@
           for (let type in typeCounts) {
             if (typeCounts[type] >= 3) {
               matched = true;
+              // 1. 優先執行收集槽消除，確保無論如何 3 張同圖案一定會從 tray 移除
               let removed = 0;
               const nextTray = [];
               tray.forEach((c, idx) => {
@@ -2111,11 +2700,31 @@
                 }
               });
               tray = nextTray;
+
+              // 2. 計算連擊、加分與圖鑑解鎖
+              const now = Date.now();
+              if (now - lastMatchTime <= 6000) {
+                comboCount++;
+              } else {
+                comboCount = 1;
+              }
+              lastMatchTime = now;
+              if (comboCount > maxComboInLevel) {
+                maxComboInLevel = comboCount;
+              }
+              const gained = 100 * comboCount;
+              score += gained;
+              if (score > bestScore) {
+                bestScore = score;
+              }
+              recordStickerUnlock(type);
+              spawnComboBanner(comboCount, gained);
             }
           }
           if (matched) {
+            const currentCombo = comboCount;
             setTimeout(() => {
-              playMatchSound();
+              playMatchSound(currentCombo);
               spawnMatchParticles(matchedIndices);
             }, 60);
           }
@@ -2287,6 +2896,7 @@
 
           toolsRemaining.shuffle--;
           isShuffling = true;
+          hintedCardId = null;
           playToolSound();
           renderBoard();
           updateToolsUI();
@@ -2325,8 +2935,256 @@
           saveProgress();
         }
 
-        function showModal(title, desc, buttons) {
+        // 救援道具 4：💡 智慧提示（自動高亮標記場上最優先推薦點擊的卡牌）
+        function useHintTool() {
+          if (toolsRemaining.hint <= 0) return;
+
+          const clickableCards = cards.filter(c => c.active && !isCovered(c));
+          if (clickableCards.length === 0) return;
+
+          // 統計收集槽與可點擊卡牌中每種圖案的數量
+          const trayCounts = {};
+          tray.forEach(t => {
+            trayCounts[t.type] = (trayCounts[t.type] || 0) + 1;
+          });
+
+          const clickableCounts = {};
+          clickableCards.forEach(c => {
+            clickableCounts[c.type] = (clickableCounts[c.type] || 0) + 1;
+          });
+
+          // 評分排序：
+          // 1. 收集槽已有 2 張（點了立刻湊滿 3 張消除）
+          // 2. 收集槽 + 可點牌總數 >= 3（可以直接湊成一套消除）
+          // 3. 收集槽已有 1 張
+          // 4. 在可點擊牌中數量最多、或壓在較高層 (z 較大) 的非盲牌
+          const scored = clickableCards.map(c => {
+            const inTray = trayCounts[c.type] || 0;
+            const onSurface = clickableCounts[c.type] || 0;
+            let priority = 0;
+            if (inTray >= 2) priority += 1000;
+            else if (inTray + onSurface >= 3) priority += 500 + inTray * 150;
+            else if (inTray === 1) priority += 200;
+            priority += onSurface * 30 + (c.isBottomBlind ? -10 : 15) + c.z;
+            return { card: c, priority };
+          });
+
+          scored.sort((a, b) => b.priority - a.priority);
+          hintedCardId = scored[0].card.id;
+
+          toolsRemaining.hint--;
+          playToolSound();
+          renderBoard();
+          updateToolsUI();
+          saveProgress();
+
+          if (hintTimeout) clearTimeout(hintTimeout);
+          hintTimeout = setTimeout(() => {
+            if (hintedCardId !== null) {
+              hintedCardId = null;
+              renderBoard();
+            }
+          }, 3500);
+        }
+
+        // ==================== 60 張角色收集圖鑑 ====================
+        function openPokedexModal() {
+          renderPokedex();
+          document.getElementById('pokedex-modal').classList.add('show');
+        }
+
+        function closePokedexModal() {
+          document.getElementById('pokedex-modal').classList.remove('show');
+        }
+
+        function switchPokedexTab(tab) {
+          currentPokedexTab = tab;
+          const tabMap = {
+            all: 'tab-all',
+            cat: 'tab-cat',
+            dog: 'tab-dog',
+            '三麗鷗': 'tab-sanrio'
+          };
+          document.querySelectorAll('.pokedex-tab').forEach(btn => {
+            btn.classList.toggle('active', btn.id === tabMap[tab]);
+          });
+          renderPokedex();
+        }
+
+        function renderPokedex() {
+          const totalCount = ALL_TYPES.length || 60;
+          const stickerDict =
+            unlockedStickers && typeof unlockedStickers === 'object' && !Array.isArray(unlockedStickers)
+              ? unlockedStickers
+              : {};
+          const unlockedCount = ALL_TYPES.filter(t => Boolean(stickerDict[t])).length;
+          const pct = totalCount > 0 ? Math.round((unlockedCount / totalCount) * 100) : 0;
+
+          const progText = document.getElementById('pokedex-progress-text');
+          const pctText = document.getElementById('pokedex-percent-text');
+          const progFill = document.getElementById('pokedex-progress-fill');
+          if (progText) progText.textContent = `已解鎖：${unlockedCount} / ${totalCount} 張`;
+          if (pctText) pctText.textContent = `${pct}%`;
+          if (progFill) progFill.style.width = `${pct}%`;
+
+          const gridEl = document.getElementById('pokedex-grid');
+          if (!gridEl) return;
+          gridEl.innerHTML = '';
+
+          const filtered = ALL_TYPES.filter(url => {
+            if (currentPokedexTab === 'all') return true;
+            return url.includes(`assets/${currentPokedexTab}/`);
+          });
+
+          filtered.forEach(url => {
+            const count = stickerDict[url] || 0;
+            const isUnlocked = count > 0;
+            const item = document.createElement('div');
+            item.className = `pokedex-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+
+            // 解析分類與編號
+            let catLabel = '角色';
+            if (url.includes('assets/cat/')) catLabel = '🐱';
+            else if (url.includes('assets/dog/')) catLabel = '🐶';
+            else if (url.includes('assets/三麗鷗/')) catLabel = '🎀';
+            const numMatch = url.match(/\/(\d+)\.png$/);
+            const numStr = numMatch ? `#${numMatch[1]}` : '';
+
+            if (isUnlocked) {
+              item.innerHTML = `
+                <div class="pokedex-thumb" style="background-image:url('${url}')"></div>
+                <span class="pokedex-count">${catLabel}${numStr} (消${count}次)</span>
+              `;
+            } else {
+              item.innerHTML = `
+                <div class="pokedex-thumb">❓</div>
+                <span class="pokedex-count">${catLabel}${numStr} 未解鎖</span>
+              `;
+            }
+            gridEl.appendChild(item);
+          });
+        }
+
+        // ==================== 玩家榮譽排行榜 ====================
+        function switchLeaderboardTab(tab) {
+          currentLeaderboardTab = tab;
+          const scoreTabBtn = document.getElementById('rank-tab-score');
+          const pokedexTabBtn = document.getElementById('rank-tab-pokedex');
+          if (scoreTabBtn) scoreTabBtn.classList.toggle('active', tab === 'score');
+          if (pokedexTabBtn) pokedexTabBtn.classList.toggle('active', tab === 'pokedex');
+          renderLeaderboard();
+        }
+
+        function openLeaderboardModal(defaultTab = 'score') {
+          switchLeaderboardTab(defaultTab);
+          document.getElementById('leaderboard-modal').classList.add('show');
+        }
+
+        function renderLeaderboard() {
+          const listEl = document.getElementById('leaderboard-list');
+          if (!listEl) return;
+          listEl.innerHTML = '';
+
+          const profiles = getAllProfiles();
+          const names = Object.keys(profiles);
+          if (currentPlayer && !names.includes(currentPlayer)) {
+            names.unshift(currentPlayer);
+          }
+
+          const totalCount = ALL_TYPES.length || 60;
+          const entries = names.map(name => {
+            const data = profiles[name] || {};
+            const maxLvl =
+              name === currentPlayer
+                ? Math.max(maxLevelReached, currentLevel, data.maxLevelReached || 1, data.currentLevel || 1)
+                : Math.max(data.maxLevelReached || 1, data.currentLevel || 1);
+            const best =
+              name === currentPlayer
+                ? Math.max(bestScore, score, data.bestScore || 0, data.score || 0)
+                : Math.max(data.bestScore || 0, data.score || 0);
+            const stars =
+              name === currentPlayer
+                ? Math.max(totalStars, data.totalStars || 0)
+                : data.totalStars || 0;
+            const dexObj =
+              name === currentPlayer
+                ? unlockedStickers
+                : data.unlockedStickers || {};
+            const dexCount = dexObj && typeof dexObj === 'object' ? Object.keys(dexObj).length : 0;
+            const dexTotalMatches =
+              dexObj && typeof dexObj === 'object'
+                ? Object.values(dexObj).reduce((acc, v) => acc + Number(v || 0), 0)
+                : 0;
+            const dexPct = totalCount > 0 ? Math.round((dexCount / totalCount) * 100) : 0;
+
+            return { name, maxLvl, best, stars, dexCount, dexTotalMatches, dexPct };
+          });
+
+          if (currentLeaderboardTab === 'pokedex') {
+            entries.sort((a, b) => {
+              if (b.dexCount !== a.dexCount) return b.dexCount - a.dexCount;
+              if (b.dexTotalMatches !== a.dexTotalMatches) return b.dexTotalMatches - a.dexTotalMatches;
+              return b.best - a.best;
+            });
+          } else {
+            entries.sort((a, b) => {
+              if (b.maxLvl !== a.maxLvl) return b.maxLvl - a.maxLvl;
+              if (b.best !== a.best) return b.best - a.best;
+              return b.stars - a.stars;
+            });
+          }
+
+          if (entries.length === 0) {
+            listEl.innerHTML =
+              '<div style="text-align:center;color:#7c6248;font-size:0.9rem;padding:18px 0;">尚無玩家紀錄</div>';
+          } else {
+            entries.forEach((entry, idx) => {
+              const row = document.createElement('div');
+              row.className = 'rank-item' + (idx === 0 ? ' top-1' : '');
+              const rankStr = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`;
+
+              if (currentLeaderboardTab === 'pokedex') {
+                row.innerHTML = `
+                  <div class="rank-left">
+                    <span style="font-size:1.15rem;">${rankStr}</span>
+                    <div>
+                      <div>${entry.name}${entry.name === currentPlayer ? ' (目前)' : ''}</div>
+                      <div style="font-size:0.74rem;color:#7c6248;font-weight:600;">已解鎖 ${entry.dexCount} / ${totalCount} 張</div>
+                    </div>
+                  </div>
+                  <div class="rank-right">
+                    <span class="rank-score" style="color:#2b8a3e;">📔 ${entry.dexPct}%</span>
+                  </div>
+                `;
+              } else {
+                row.innerHTML = `
+                  <div class="rank-left">
+                    <span style="font-size:1.15rem;">${rankStr}</span>
+                    <div>
+                      <div>${entry.name}${entry.name === currentPlayer ? ' (目前)' : ''}</div>
+                      <div style="font-size:0.74rem;color:#7c6248;font-weight:600;">最高第 ${entry.maxLvl} 關 ・ ⭐ ${entry.stars}</div>
+                    </div>
+                  </div>
+                  <div class="rank-right">
+                    <span class="rank-score">💯 ${entry.best} 分</span>
+                  </div>
+                `;
+              }
+              listEl.appendChild(row);
+            });
+          }
+        }
+
+        function closeLeaderboardModal() {
+          document.getElementById('leaderboard-modal').classList.remove('show');
+        }
+
+        function showModal(title, desc, buttons, extraHtml = '') {
           document.getElementById('modal-title').textContent = title;
+          const extraEl = document.getElementById('modal-extra');
+          if (extraEl) {
+            extraEl.innerHTML = extraHtml;
+          }
           document.getElementById('modal-desc').textContent = desc;
           const actionsEl = document.getElementById('modal-actions');
           actionsEl.innerHTML = '';
@@ -2345,30 +3203,128 @@
         }
 
         function restartCurrentLevel() {
-          initGame();
+          if (currentLevel > 1) {
+            showModal(
+              `🔄 重新開始`,
+              `目前在第 ${currentLevel} 關，請選擇要重試本關或回到第 1 關重新開始（總分歸零）：`,
+              [
+                {
+                  label: `重試第 ${currentLevel} 關`,
+                  primary: true,
+                  onClick: () => {
+                    score = levelStartScore;
+                    initGame();
+                  }
+                },
+                {
+                  label: '回第 1 關（歸零）',
+                  primary: false,
+                  onClick: () => {
+                    currentLevel = 1;
+                    levelStartScore = 0;
+                    score = 0;
+                    initGame();
+                  }
+                }
+              ]
+            );
+          } else {
+            currentLevel = 1;
+            levelStartScore = 0;
+            score = 0;
+            initGame();
+          }
         }
 
         function checkGameOver() {
           if (cards.every(c => !c.active) && tray.length === 0) {
+            if (levelTimer) {
+              clearInterval(levelTimer);
+              levelTimer = null;
+            }
             playWinSound();
             spawnConfetti();
+
             const nextLevel = currentLevel + 1;
             const nextConfig = getLevelConfig(nextLevel);
+
+            // 計算過關星級與趣味稱號
+            const target3StarSec = 35 + currentLevel * 18;
+            const target2StarSec = 75 + currentLevel * 30;
+            const usedToolsCount =
+              1 - toolsRemaining.undo +
+              (1 - toolsRemaining.shuffle) +
+              (1 - toolsRemaining.pop) +
+              (1 - toolsRemaining.hint);
+
+            let stars = 1;
+            if (levelSeconds <= target3StarSec && usedToolsCount <= 2) {
+              stars = 3;
+            } else if (levelSeconds <= target2StarSec) {
+              stars = 2;
+            }
+
+            const starStr = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
+            let titleBadge = '🌱 穩紮穩打過關達人';
+            if (stars === 3 && maxComboInLevel >= 4) {
+              titleBadge = '⚡ 神速連擊消除宗師';
+            } else if (stars === 3) {
+              titleBadge = '👑 零失誤眼明手快大師';
+            } else if (maxComboInLevel >= 3) {
+              titleBadge = '🔥 狂熱連擊快手';
+            }
+
+            // 過關額外獎勵積分
+            const clearBonus = currentLevel * 150 + stars * 100;
+            score += clearBonus;
+            if (score > bestScore) bestScore = score;
+            totalStars += stars;
+            if (nextLevel > maxLevelReached) {
+              maxLevelReached = nextLevel;
+            }
+            updateStatusUI();
+            saveProgress();
+
+            const extraHtml = `
+              <div class="win-stars">${starStr}</div>
+              <div class="win-badge">${titleBadge}</div>
+              <div class="win-stats-grid">
+                <div class="win-stat-box">
+                  <span class="win-stat-label">通關耗時</span>
+                  <span class="win-stat-val">${formatTime(levelSeconds)}</span>
+                </div>
+                <div class="win-stat-box">
+                  <span class="win-stat-label">最高連擊</span>
+                  <span class="win-stat-val">x${Math.max(1, maxComboInLevel)}</span>
+                </div>
+                <div class="win-stat-box">
+                  <span class="win-stat-label">目前總分</span>
+                  <span class="win-stat-val">${score}</span>
+                </div>
+              </div>
+            `;
+
             showModal(
               `🎉 恭喜通過第 ${currentLevel} 關！`,
-              `下一關（第 ${nextLevel} 關）共有 ${nextConfig.numTypes} 種圖案、${nextConfig.totalCards} 張卡牌！`,
+              `獲得過關獎勵 +${clearBonus} 分！下一關（第 ${nextLevel} 關）共有 ${nextConfig.numTypes} 種圖案、${nextConfig.totalCards} 張卡牌！`,
               [
                 {
                   label: `挑戰第 ${nextLevel} 關`,
                   primary: true,
                   onClick: () => {
                     currentLevel = nextLevel;
+                    levelStartScore = score;
                     initGame();
                   }
                 }
-              ]
+              ],
+              extraHtml
             );
           } else if (tray.length >= TRAY_MAX) {
+            if (levelTimer) {
+              clearInterval(levelTimer);
+              levelTimer = null;
+            }
             showModal(
               `💥 收集槽滿了！`,
               `你在第 ${currentLevel} 關挑戰失敗，要再試一次嗎？`,
@@ -2376,13 +3332,18 @@
                 {
                   label: '重試本關',
                   primary: true,
-                  onClick: () => initGame()
+                  onClick: () => {
+                    score = levelStartScore;
+                    initGame();
+                  }
                 },
                 {
                   label: '回第 1 關',
                   primary: false,
                   onClick: () => {
                     currentLevel = 1;
+                    levelStartScore = 0;
+                    score = 0;
                     initGame();
                   }
                 }
