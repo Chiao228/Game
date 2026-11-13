@@ -372,15 +372,7 @@
 
 <script>
   // 預設圖片清單（當直接雙擊開啟 HTML 且無網路時的備用清單）
-  const FALLBACK_TYPES = [
-    'assets/IMG_6066.jpg',
-    'assets/IMG_6067.jpg',
-    'assets/IMG_6068.jpg',
-    'assets/IMG_6070.jpg',
-    'assets/IMG_6071.jpg',
-    'assets/IMG_6072.jpg',
-    'assets/IMG_6073.jpg'
-  ];
+  const FALLBACK_TYPES = Array.from({ length: 20 }, (_, i) => `assets/${String(i + 1).padStart(2, '0')}.png`);
 
   let ALL_TYPES = [];
   const IMAGE_EXT_REGEX = /\.(jpe?g|png|gif|webp|svg|bmp|avif)$/i;
@@ -442,12 +434,18 @@
       }
     } catch (e) {}
 
-    // 3. 針對本機常見連號圖片一併自動探測（如 IMG_6055~IMG_6095 或 1~20）
+    // 3. 針對本機常見連號圖片一併自動探測（如 IMG_6055~IMG_6095 或 01~50）
     for (let n = 6055; n <= 6095; n++) {
       candidates.push(`assets/IMG_${n}.jpg`);
     }
-    for (let n = 1; n <= 20; n++) {
-      candidates.push(`assets/${n}.jpg`, `assets/${n}.png`);
+    for (let n = 1; n <= 50; n++) {
+      const pad2 = String(n).padStart(2, '0');
+      candidates.push(
+        `assets/${pad2}.png`,
+        `assets/${pad2}.jpg`,
+        `assets/${n}.png`,
+        `assets/${n}.jpg`
+      );
     }
 
     // 4. 實際透過瀏覽器 Image 載入測試，只保留真正存在的圖片（已刪除的圖片會自動被剔除）
@@ -858,8 +856,9 @@
     } else {
       const totalCards = 72 + (level - 4) * 18;
       const bottomStackCards = Math.min(28, 14 + (level - 4) * 4);
+      const targetTypes = Math.min(maxTypes, 9 + (level - 4) * 2, Math.floor(totalCards / 6));
       return {
-        numTypes: maxTypes,
+        numTypes: Math.max(1, targetTypes),
         totalCards,
         bottomStackCards,
         shape: shapeObj
@@ -976,7 +975,13 @@
     document.getElementById('tray').innerHTML = '';
 
     const config = getLevelConfig(currentLevel);
-    const levelTypes = ALL_TYPES.slice(0, config.numTypes);
+    // 隨機從所有圖片中挑選本關要出場的圖案，讓每局都能看到不同貓咪
+    const shuffledTypes = [...ALL_TYPES];
+    for (let i = shuffledTypes.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledTypes[i], shuffledTypes[j]] = [shuffledTypes[j], shuffledTypes[i]];
+    }
+    const levelTypes = shuffledTypes.slice(0, config.numTypes);
     const totalTriplets = config.totalCards / 3;
 
     // 生成牌組 (確保每種圖案都是 3 的倍數)
