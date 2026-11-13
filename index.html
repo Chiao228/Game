@@ -1396,6 +1396,7 @@
         <button id="add-player-btn" class="btn-primary" style="padding: 8px 14px; font-size: 0.88rem;"
           onclick="addOrSwitchPlayer()">開始</button>
       </div>
+      <div id="player-name-error" style="display:none; font-size:0.78rem; color:#c92a2a; font-weight:700; margin-top:6px; text-align:left;"></div>
       <div class="modal-actions" id="player-modal-actions">
         <button id="clear-all-btn" class="btn-danger" onclick="clearAllProfiles()">清除全部紀錄</button>
         <button id="close-player-modal-btn" class="btn-secondary" onclick="closePlayerModal()">關閉</button>
@@ -1909,6 +1910,11 @@
         actionsEl.style.display = (currentPlayer || names.length > 0) ? 'flex' : 'none';
       }
 
+      const errEl = document.getElementById('player-name-error');
+      if (errEl) {
+        errEl.style.display = 'none';
+        errEl.textContent = '';
+      }
       const inputEl = document.getElementById('new-player-input');
       inputEl.value = '';
       document.getElementById('player-modal').classList.add('show');
@@ -1945,27 +1951,10 @@
       document.getElementById('player-modal').classList.remove('show');
     }
 
-    async function switchPlayer(name, preloadedCloud = undefined) {
+    function switchPlayer(name) {
       const trimmed = (name || '').trim();
       if (!trimmed) return;
-      const addBtn = document.getElementById('add-player-btn');
-      const origBtnText = addBtn ? addBtn.textContent : '開始';
-      if (addBtn && preloadedCloud === undefined) {
-        addBtn.disabled = true;
-        addBtn.textContent = '同步中...';
-      }
-
-      let hasLocalRecord = Boolean(getAllProfiles()[trimmed]);
-      let foundInCloud = false;
-      try {
-        foundInCloud = await pullPlayerFromCloud(trimmed, preloadedCloud);
-      } catch (e) { }
-
-      if (addBtn) {
-        addBtn.disabled = false;
-        addBtn.textContent = origBtnText;
-      }
-
+      const hasRecord = Boolean(getAllProfiles()[trimmed]);
       currentPlayer = trimmed;
       localStorage.setItem(STORAGE_CURRENT_PLAYER_KEY, currentPlayer);
       document.getElementById('player-modal').classList.remove('show');
@@ -1974,19 +1963,68 @@
       if (!loadProgress()) {
         initGame();
       }
-      // 只有本機與雲端皆無遊玩紀錄的新玩家才自動跳出規則視窗
-      if (!hasLocalRecord && !foundInCloud) {
+      // 只有無遊玩紀錄的新玩家才自動跳出規則視窗
+      if (!hasRecord) {
         openRulesModal(true);
       }
     }
 
-    function addOrSwitchPlayer() {
+    function showPlayerNameError(msg) {
+      const errEl = document.getElementById('player-name-error');
+      if (errEl) {
+        errEl.textContent = msg;
+        errEl.style.display = 'block';
+      }
+      const input = document.getElementById('new-player-input');
+      if (input) input.focus();
+    }
+
+    async function addOrSwitchPlayer() {
       const input = document.getElementById('new-player-input');
       const name = input.value.trim();
+      const errEl = document.getElementById('player-name-error');
+      if (errEl) {
+        errEl.style.display = 'none';
+        errEl.textContent = '';
+      }
       if (!name) {
         input.focus();
         return;
       }
+
+      if (getAllProfiles()[name]) {
+        showPlayerNameError(`⚠️ 「${name}」已存在，請從上方列表點選或換一個名稱！`);
+        return;
+      }
+
+      const addBtn = document.getElementById('add-player-btn');
+      if (addBtn) {
+        addBtn.disabled = true;
+        addBtn.textContent = '檢查中...';
+      }
+
+      let takenInCloud = false;
+      try {
+        const cloudData = await fetchCloudProfileRaw(name);
+        if (cloudData) {
+          takenInCloud = true;
+        } else if (globalLeaderboardCache && typeof globalLeaderboardCache === 'object') {
+          takenInCloud = Object.values(globalLeaderboardCache).some(
+            item => item && item.name && String(item.name).trim() === name
+          );
+        }
+      } catch (e) { }
+
+      if (addBtn) {
+        addBtn.disabled = false;
+        addBtn.textContent = '開始';
+      }
+
+      if (takenInCloud) {
+        showPlayerNameError(`⚠️ 「${name}」已被其他玩家使用，請換一個名稱！`);
+        return;
+      }
+
       switchPlayer(name);
     }
 
@@ -3524,15 +3562,6 @@
         if (!entry.cloudId) return;
         if (Number(entry.best || 0) <= 0) return;
 
-        const isCurr = name === currentPlayer;
-        const curLvl = isCurr ? currentLevel : Number(data.currentLevel || entry.maxLvl || 1);
-        const curScore = isCurr ? score : Number(data.score || 0);
-        const curLevelStart = isCurr ? levelStartScore : Number(data.levelStartScore || curScore || 0);
-        const curStreak = isCurr ? winStreak : Number(data.winStreak || 0);
-        const stickersObj = isCurr ? unlockedStickers : (data.unlockedStickers || {});
-        const badgesObj = isCurr ? unlockedBadges : (data.unlockedBadges || {});
-        const dailyObj = isCurr ? dailyClears : (data.dailyClears || {});
-
         const payload = {
           name: String(entry.name),
           bestScore: Number(entry.best || 0),
@@ -3540,17 +3569,10 @@
           totalStars: Number(entry.stars || 0),
           dexCount: Number(entry.dexCount || 0),
           dexPct: Number(entry.dexPct || 0),
-          currentLevel: Number(curLvl || 1),
-          score: Number(curScore || 0),
-          levelStartScore: Number(curLevelStart || 0),
-          winStreak: Number(curStreak || 0),
-          dailyClears: dailyObj && typeof dailyObj === 'object' ? dailyObj : {},
-          unlockedStickers: stickersObj && typeof stickersObj === 'object' ? stickersObj : {},
-          unlockedBadges: badgesObj && typeof badgesObj === 'object' ? badgesObj : {},
           updatedAt: Date.now()
         };
 
-        const hash = `${entry.cloudId}|${payload.name}|${payload.bestScore}|${payload.maxLevelReached}|${payload.totalStars}|${payload.dexCount}|${payload.currentLevel}|${payload.score}|${payload.winStreak}|${Object.keys(payload.unlockedBadges).length}`;
+        const hash = `${entry.cloudId}|${payload.name}|${payload.bestScore}|${payload.maxLevelReached}|${payload.totalStars}|${payload.dexCount}`;
         if (!force && hash === lastCloudPayloadHashes[entry.cloudId]) return;
 
         const res = await fetch(`${FIREBASE_DB_URL}/leaderboard/${encodeURIComponent(entry.cloudId)}.json`, {
@@ -3597,73 +3619,6 @@
       } catch (e) {
         if (timer) clearTimeout(timer);
         return null;
-      }
-    }
-
-    async function pullPlayerFromCloud(name, preloadedCloud = undefined) {
-      if (!FIREBASE_DB_URL || !name) return false;
-      const trimmed = String(name).trim();
-      const cloudId = getCloudIdByName(trimmed);
-      try {
-        const cloud = preloadedCloud !== undefined ? preloadedCloud : await fetchCloudProfileRaw(trimmed);
-        if (!cloud || typeof cloud !== 'object' || !cloud.name) return false;
-
-        const profiles = getAllProfiles();
-        const local = profiles[trimmed];
-
-        const mergedStickers = { ...(local && local.unlockedStickers ? local.unlockedStickers : {}) };
-        if (cloud.unlockedStickers && typeof cloud.unlockedStickers === 'object') {
-          Object.entries(cloud.unlockedStickers).forEach(([k, v]) => {
-            mergedStickers[k] = Math.max(Number(mergedStickers[k] || 0), Number(v || 0));
-          });
-        }
-
-        const mergedBadges = {
-          ...(cloud.unlockedBadges && typeof cloud.unlockedBadges === 'object' ? cloud.unlockedBadges : {}),
-          ...(local && local.unlockedBadges ? local.unlockedBadges : {})
-        };
-        const mergedDaily = {
-          ...(cloud.dailyClears && typeof cloud.dailyClears === 'object' ? cloud.dailyClears : {}),
-          ...(local && local.dailyClears ? local.dailyClears : {})
-        };
-
-        const useCloudCurrent = !local || Number(cloud.updatedAt || 0) > Number(local.updatedAt || 0);
-        const restoredLevel = useCloudCurrent
-          ? Number(cloud.currentLevel || cloud.maxLevelReached || 1)
-          : Number(local.currentLevel || 1);
-        const restoredScore = useCloudCurrent
-          ? Number(cloud.score !== undefined ? cloud.score : (cloud.bestScore || 0))
-          : Number(local.score || 0);
-        const restoredLevelStart = useCloudCurrent
-          ? Number(cloud.levelStartScore !== undefined ? cloud.levelStartScore : restoredScore)
-          : Number(local.levelStartScore || 0);
-
-        profiles[trimmed] = {
-          ...(local || {}),
-          cloudId,
-          bestScore: Math.max(Number(local && local.bestScore || 0), Number(cloud.bestScore || 0)),
-          maxLevelReached: Math.max(Number(local && local.maxLevelReached || 1), Number(cloud.maxLevelReached || 1)),
-          totalStars: Math.max(Number(local && local.totalStars || 0), Number(cloud.totalStars || 0)),
-          winStreak: useCloudCurrent ? Number(cloud.winStreak || 0) : Number(local && local.winStreak || 0),
-          currentLevel: restoredLevel,
-          score: restoredScore,
-          levelStartScore: restoredLevelStart,
-          dailyClears: mergedDaily,
-          unlockedStickers: mergedStickers,
-          unlockedBadges: mergedBadges,
-          updatedAt: Math.max(Number(local && local.updatedAt || 0), Number(cloud.updatedAt || 0))
-        };
-
-        // 若是從雲端新載入且原本沒有這台裝置的盤面，清除 cards 讓 loadProgress/initGame 依關卡重排
-        if (useCloudCurrent && (!local || !Array.isArray(local.cards) || local.cards.length === 0 || Number(local.currentLevel || 1) !== restoredLevel)) {
-          delete profiles[trimmed].cards;
-          delete profiles[trimmed].tray;
-        }
-
-        localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
-        return true;
-      } catch (e) {
-        return false;
       }
     }
 
