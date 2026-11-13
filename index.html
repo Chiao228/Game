@@ -1685,10 +1685,11 @@
         const state = profiles[currentPlayer];
         if (!state) return false;
 
+        currentLevel = Math.max(1, Number(state.currentLevel || state.maxLevelReached || 1));
         score = Number(state.score || 0);
         levelStartScore = Number(state.levelStartScore || 0);
         bestScore = Number(state.bestScore || score || 0);
-        maxLevelReached = Number(state.maxLevelReached || state.currentLevel || 1);
+        maxLevelReached = Number(state.maxLevelReached || currentLevel || 1);
         totalStars = Number(state.totalStars || 0);
         winStreak = Number(state.winStreak || 0);
         dailyClears = state.dailyClears && typeof state.dailyClears === 'object' ? { ...state.dailyClears } : {};
@@ -1701,14 +1702,11 @@
         levelSeconds = Number(state.levelSeconds || 0);
 
         if (
-          typeof state.currentLevel !== 'number' ||
           !Array.isArray(state.cards) ||
           state.cards.length === 0
         ) {
           return false;
         }
-
-        currentLevel = state.currentLevel;
 
         // 若存檔中有空白圖案紀錄，直接重新發牌
         if (state.cards.some(c => !c.type || typeof c.type !== 'string')) {
@@ -1929,7 +1927,6 @@
           resetPlayerRuntimeState();
           updatePlayerBtnUI();
           if (!loadProgress()) {
-            resetPlayerRuntimeState();
             initGame();
           }
           // 只有本機與雲端皆無遊玩紀錄的新玩家才自動跳出規則視窗
@@ -4043,7 +4040,6 @@
           closeDailyModal();
           isDailyMode = false;
           if (!loadProgress()) {
-            currentLevel = 1;
             initGame();
           }
         }
@@ -4304,7 +4300,9 @@
             openPlayerModal();
           } else if (!loadProgress()) {
             initGame();
-            openRulesModal(true);
+            if (!getAllProfiles()[currentPlayer]) {
+              openRulesModal(true);
+            }
           }
         })();
   </script>
