@@ -64,12 +64,14 @@
       flex-wrap: nowrap;
       justify-content: flex-end;
     }
+
     .header-nav-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 5px;
       width: 100%;
     }
+
     .header-nav-grid .btn-player {
       padding: 5px 2px;
       text-align: center;
@@ -244,7 +246,7 @@
       flex-shrink: 0;
     }
 
-    .rule-text > strong:first-child {
+    .rule-text>strong:first-child {
       color: #3d2916;
       display: block;
       margin-bottom: 3px;
@@ -341,10 +343,21 @@
 
     /* 洗牌動畫 */
     @keyframes cardShuffleSpin {
-      0% { transform: scale(1) rotate(0deg); }
-      45% { transform: scale(0.82) rotate(-10deg); }
-      75% { transform: scale(1.06) rotate(6deg); }
-      100% { transform: scale(1) rotate(0deg); }
+      0% {
+        transform: scale(1) rotate(0deg);
+      }
+
+      45% {
+        transform: scale(0.82) rotate(-10deg);
+      }
+
+      75% {
+        transform: scale(1.06) rotate(6deg);
+      }
+
+      100% {
+        transform: scale(1) rotate(0deg);
+      }
     }
 
     .card.shuffling {
@@ -525,10 +538,13 @@
 
     /* 收集槽快滿時（>= 5 張）紅橘色呼吸警示框 */
     @keyframes trayDangerPulse {
-      0%, 100% {
+
+      0%,
+      100% {
         border-color: #e03131;
         box-shadow: inset 0 3px 7px rgba(66, 40, 16, 0.28), 0 0 0 2px rgba(224, 49, 49, 0.25), 0 0 14px rgba(224, 49, 49, 0.55);
       }
+
       50% {
         border-color: #f76707;
         box-shadow: inset 0 3px 7px rgba(66, 40, 16, 0.28), 0 0 0 4px rgba(247, 103, 7, 0.35), 0 0 20px rgba(247, 103, 7, 0.75);
@@ -564,8 +580,13 @@
     }
 
     @keyframes trayCardLand {
-      0% { transform: scale(0.75); }
-      100% { transform: scale(1); }
+      0% {
+        transform: scale(0.75);
+      }
+
+      100% {
+        transform: scale(1);
+      }
     }
 
     /* 飛入收集槽的動態分身卡牌 */
@@ -604,6 +625,7 @@
         opacity: 1;
         transform: translate(0, 0) scale(0.6) rotate(0deg);
       }
+
       100% {
         opacity: 0;
         transform: translate(var(--tx), var(--ty)) scale(1.25) rotate(var(--rot));
@@ -627,6 +649,7 @@
         opacity: 1;
         transform: translate3d(0, -10px, 0) rotate(0deg);
       }
+
       100% {
         opacity: 0.9;
         transform: translate3d(var(--drift), 105vh, 0) rotate(var(--spin));
@@ -730,14 +753,17 @@
         opacity: 0;
         transform: translate(-50%, 10px) scale(0.6);
       }
+
       25% {
         opacity: 1;
         transform: translate(-50%, -8px) scale(1.12);
       }
+
       75% {
         opacity: 1;
         transform: translate(-50%, -22px) scale(1);
       }
+
       100% {
         opacity: 0;
         transform: translate(-50%, -38px) scale(0.9);
@@ -775,9 +801,21 @@
     }
 
     @keyframes toastSlide {
-      0% { opacity: 0; transform: translate(-50%, -16px) scale(0.9); }
-      15%, 80% { opacity: 1; transform: translate(-50%, 0) scale(1); }
-      100% { opacity: 0; transform: translate(-50%, -12px) scale(0.95); }
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -16px) scale(0.9);
+      }
+
+      15%,
+      80% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -12px) scale(0.95);
+      }
     }
 
     /* ⭐⭐⭐ 過關星級與成績統計面板 */
@@ -1274,7 +1312,8 @@
         <button id="rank-tab-score" class="pokedex-tab active" onclick="switchLeaderboardTab('score')">🏆 闖關積分榜</button>
         <button id="rank-tab-pokedex" class="pokedex-tab" onclick="switchLeaderboardTab('pokedex')">📔 圖鑑收集榜</button>
       </div>
-      <div id="leaderboard-status" style="font-size: 0.74rem; color: #7c6248; font-weight: 700; text-align: center; margin: 2px 0 6px;"></div>
+      <div id="leaderboard-status"
+        style="font-size: 0.74rem; color: #7c6248; font-weight: 700; text-align: center; margin: 2px 0 6px;"></div>
       <div id="leaderboard-list" class="leaderboard-list"></div>
       <div class="modal-actions">
         <button class="btn-primary" style="width: 100%;" onclick="closeLeaderboardModal()">返回遊戲</button>
@@ -1299,7 +1338,8 @@
     <div class="modal-box" style="width: min(90vw, 345px);">
       <h3>⚡ 每日固定挑戰</h3>
       <p id="daily-date-label" style="margin-bottom: 10px; font-weight: 700; color: #5c4028;"></p>
-      <div id="daily-status-box" class="win-stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 16px;"></div>
+      <div id="daily-status-box" class="win-stats-grid"
+        style="grid-template-columns: repeat(2, 1fr); margin-bottom: 16px;"></div>
       <div class="modal-actions" id="daily-modal-actions"></div>
     </div>
   </div>
@@ -1324,7 +1364,8 @@
         <div class="setting-row">
           <span class="setting-label">🎵 背景音樂旋律</span>
           <div class="theme-pills">
-            <button id="bgm-style-xylophone" class="theme-pill active" onclick="setBgmStyle('xylophone')">🎹 輕快木琴</button>
+            <button id="bgm-style-xylophone" class="theme-pill active" onclick="setBgmStyle('xylophone')">🎹
+              輕快木琴</button>
             <button id="bgm-style-musicbox" class="theme-pill" onclick="setBgmStyle('musicbox')">🎶 夢幻八音盒</button>
           </div>
         </div>
@@ -1354,13 +1395,6 @@
           onkeydown="if(event.key==='Enter') addOrSwitchPlayer()">
         <button id="add-player-btn" class="btn-primary" style="padding: 8px 14px; font-size: 0.88rem;"
           onclick="addOrSwitchPlayer()">開始</button>
-      </div>
-      <div id="player-confirm-box" style="display:none; background:#fff7e6; border:1.5px solid #e6c896; border-radius:12px; padding:12px; margin-top:10px; text-align:center;">
-        <div id="player-confirm-msg" style="font-size:0.86rem; color:#5c4028; font-weight:700; line-height:1.45; margin-bottom:10px;"></div>
-        <div style="display:flex; gap:8px; justify-content:center;">
-          <button id="player-confirm-yes" class="btn-primary" style="flex:1; padding:8px 10px; font-size:0.84rem;">是本人，載入紀錄</button>
-          <button id="player-confirm-no" class="btn-secondary" style="flex:1; padding:8px 10px; font-size:0.84rem;" onclick="cancelDuplicatePlayerName()">不是，重新命名</button>
-        </div>
       </div>
       <div class="modal-actions" id="player-modal-actions">
         <button id="clear-all-btn" class="btn-danger" onclick="clearAllProfiles()">清除全部紀錄</button>
@@ -1477,7 +1511,16 @@
       return `url("${encodeURI(String(src || ''))}")`;
     }
 
-    // 直接產生固定 60 張圖庫路徑，避免手機版同時發送大量 404 探測請求導致圖片載入失敗
+    function preloadImage(src) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => resolve(src);
+        img.onerror = () => resolve(src);
+        img.src = encodeURI(src);
+      });
+    }
+
+    // 平行預載確定存在的 60 張 .png 圖片（不發 404 探測請求，並設 3 秒上限避免慢速網路卡住啟動）
     async function loadAllImages() {
       const list = [];
       for (const folder of IMAGE_FOLDERS) {
@@ -1486,6 +1529,10 @@
           list.push(`${folder}/${pad2}.png`);
         }
       }
+      await Promise.race([
+        Promise.all(list.map(preloadImage)),
+        new Promise(resolve => setTimeout(resolve, 3000))
+      ]);
       return list;
     }
 
@@ -1760,10 +1807,10 @@
         tray = Array.isArray(state.tray) ? state.tray : [];
         toolsRemaining = state.toolsRemaining && typeof state.toolsRemaining === 'object'
           ? {
-              undo: Number(state.toolsRemaining.undo ?? 1),
-              shuffle: Number(state.toolsRemaining.shuffle ?? 1),
-              pop: Number(state.toolsRemaining.pop ?? 1)
-            }
+            undo: Number(state.toolsRemaining.undo ?? 1),
+            shuffle: Number(state.toolsRemaining.shuffle ?? 1),
+            pop: Number(state.toolsRemaining.pop ?? 1)
+          }
           : { undo: 1, shuffle: 1, pop: 1 };
         lastPickedCardId = state.lastPickedCardId ?? null;
 
@@ -1797,2019 +1844,1961 @@
       }
     }
 
-        // 切換玩家彈窗相關功能
-        function openPlayerModal() {
-          const profiles = getAllProfiles();
-          const listEl = document.getElementById('player-list');
-          listEl.innerHTML = '';
+    // 切換玩家彈窗相關功能
+    function openPlayerModal() {
+      const profiles = getAllProfiles();
+      const listEl = document.getElementById('player-list');
+      listEl.innerHTML = '';
 
-          const names = Object.keys(profiles);
-          if (currentPlayer && !names.includes(currentPlayer)) {
-            names.unshift(currentPlayer);
+      const names = Object.keys(profiles);
+      if (currentPlayer && !names.includes(currentPlayer)) {
+        names.unshift(currentPlayer);
+      }
+
+      names.forEach(name => {
+        const item = document.createElement('div');
+        item.className = 'player-item' + (name === currentPlayer ? ' active' : '');
+        const pData = profiles[name];
+        const lvl = pData ? pData.currentLevel : 1;
+        const remain = pData && Array.isArray(pData.cards) ? pData.cards.filter(c => c.active).length : '-';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = `👤 ${name}`;
+
+        const rightBox = document.createElement('div');
+        rightBox.className = 'player-right';
+
+        const metaSpan = document.createElement('span');
+        metaSpan.className = 'player-meta';
+        metaSpan.textContent = `第 ${lvl} 關 (剩 ${remain} 張)`;
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn-del-player';
+        delBtn.textContent = '移除';
+        delBtn.title = `移除 ${name} 的紀錄`;
+        delBtn.onclick = e => {
+          e.stopPropagation();
+          deletePlayerProfile(name);
+        };
+
+        rightBox.appendChild(metaSpan);
+        rightBox.appendChild(delBtn);
+
+        item.appendChild(nameSpan);
+        item.appendChild(rightBox);
+        item.onclick = () => switchPlayer(name);
+        listEl.appendChild(item);
+      });
+
+      // 控制「清除全部紀錄」與「關閉」按鈕顯示
+      const titleEl = document.getElementById('player-modal-title');
+      const closeBtn = document.getElementById('close-player-modal-btn');
+      const clearAllBtn = document.getElementById('clear-all-btn');
+      const actionsEl = document.getElementById('player-modal-actions');
+
+      if (titleEl) {
+        titleEl.textContent = currentPlayer ? '👤 切換／管理玩家' : '👤 請輸入玩家名稱';
+      }
+      if (closeBtn) {
+        closeBtn.style.display = currentPlayer ? 'inline-block' : 'none';
+      }
+      if (clearAllBtn) {
+        clearAllBtn.style.display = names.length > 0 ? 'inline-block' : 'none';
+      }
+      if (actionsEl) {
+        actionsEl.style.display = (currentPlayer || names.length > 0) ? 'flex' : 'none';
+      }
+
+      const inputEl = document.getElementById('new-player-input');
+      inputEl.value = '';
+      document.getElementById('player-modal').classList.add('show');
+      setTimeout(() => inputEl.focus(), 50);
+    }
+
+    function deletePlayerProfile(name) {
+      const profiles = getAllProfiles();
+      delete profiles[name];
+      localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
+
+      if (currentPlayer === name) {
+        currentPlayer = '';
+        localStorage.removeItem(STORAGE_CURRENT_PLAYER_KEY);
+        resetPlayerRuntimeState();
+        updatePlayerBtnUI();
+        initGame();
+      }
+      openPlayerModal();
+    }
+
+    function clearAllProfiles() {
+      localStorage.removeItem(STORAGE_PROFILES_KEY);
+      localStorage.removeItem(STORAGE_CURRENT_PLAYER_KEY);
+      currentPlayer = '';
+      resetPlayerRuntimeState();
+      updatePlayerBtnUI();
+      initGame();
+      openPlayerModal();
+    }
+
+    function closePlayerModal() {
+      if (!currentPlayer) return; // 尚未設定名稱前不可直接關閉
+      document.getElementById('player-modal').classList.remove('show');
+    }
+
+    async function switchPlayer(name, preloadedCloud = undefined) {
+      const trimmed = (name || '').trim();
+      if (!trimmed) return;
+      const addBtn = document.getElementById('add-player-btn');
+      const origBtnText = addBtn ? addBtn.textContent : '開始';
+      if (addBtn && preloadedCloud === undefined) {
+        addBtn.disabled = true;
+        addBtn.textContent = '同步中...';
+      }
+
+      let hasLocalRecord = Boolean(getAllProfiles()[trimmed]);
+      let foundInCloud = false;
+      try {
+        foundInCloud = await pullPlayerFromCloud(trimmed, preloadedCloud);
+      } catch (e) { }
+
+      if (addBtn) {
+        addBtn.disabled = false;
+        addBtn.textContent = origBtnText;
+      }
+
+      currentPlayer = trimmed;
+      localStorage.setItem(STORAGE_CURRENT_PLAYER_KEY, currentPlayer);
+      document.getElementById('player-modal').classList.remove('show');
+      resetPlayerRuntimeState();
+      updatePlayerBtnUI();
+      if (!loadProgress()) {
+        initGame();
+      }
+      // 只有本機與雲端皆無遊玩紀錄的新玩家才自動跳出規則視窗
+      if (!hasLocalRecord && !foundInCloud) {
+        openRulesModal(true);
+      }
+    }
+
+    function addOrSwitchPlayer() {
+      const input = document.getElementById('new-player-input');
+      const name = input.value.trim();
+      if (!name) {
+        input.focus();
+        return;
+      }
+      switchPlayer(name);
+    }
+
+    /**
+     * 定義不同形狀的關卡造型
+     * - layers: 交錯重疊的造型圖層
+     * - deepSpots: 會在同一位置直接疊超過 2 張牌（3~5張）的重點牌柱座標
+     */
+    const SHAPE_PATTERNS = [
+      {
+        name: '梅花陣',
+        layers: [
+          [
+            { gx: 0.7, gy: 0.4 }, { gx: 1.6, gy: 0.6 },
+            { gx: 4.3, gy: 0.4 }, { gx: 3.4, gy: 0.6 },
+            { gx: 2.5, gy: 1.1 }, { gx: 1.8, gy: 1.8 }, { gx: 3.2, gy: 1.8 }, { gx: 2.5, gy: 2.5 },
+            { gx: 0.7, gy: 3.0 }, { gx: 1.6, gy: 2.8 },
+            { gx: 4.3, gy: 3.0 }, { gx: 3.4, gy: 2.8 }
+          ],
+          [
+            { gx: 1.15, gy: 0.5 }, { gx: 3.85, gy: 0.5 },
+            { gx: 2.5, gy: 1.8 },
+            { gx: 1.15, gy: 2.9 }, { gx: 3.85, gy: 2.9 }
+          ]
+        ],
+        deepSpots: [
+          { gx: 2.5, gy: 1.8 },
+          { gx: 1.15, gy: 0.5 },
+          { gx: 3.85, gy: 0.5 },
+          { gx: 1.15, gy: 2.9 },
+          { gx: 3.85, gy: 2.9 }
+        ]
+      },
+      {
+        name: '愛心陣',
+        layers: [
+          [
+            { gx: 1.2, gy: 0.3 }, { gx: 2.0, gy: 0.3 }, { gx: 3.0, gy: 0.3 }, { gx: 3.8, gy: 0.3 },
+            { gx: 0.6, gy: 1.1 }, { gx: 1.6, gy: 1.0 }, { gx: 2.5, gy: 0.8 }, { gx: 3.4, gy: 1.0 }, { gx: 4.4, gy: 1.1 },
+            { gx: 1.0, gy: 1.9 }, { gx: 2.0, gy: 1.8 }, { gx: 3.0, gy: 1.8 }, { gx: 4.0, gy: 1.9 },
+            { gx: 1.6, gy: 2.7 }, { gx: 2.5, gy: 2.6 }, { gx: 3.4, gy: 2.7 },
+            { gx: 2.5, gy: 3.4 }
+          ],
+          [
+            { gx: 1.5, gy: 0.6 }, { gx: 3.5, gy: 0.6 },
+            { gx: 1.3, gy: 1.5 }, { gx: 2.5, gy: 1.4 }, { gx: 3.7, gy: 1.5 },
+            { gx: 1.8, gy: 2.3 }, { gx: 3.2, gy: 2.3 },
+            { gx: 2.5, gy: 3.0 }
+          ]
+        ],
+        deepSpots: [
+          { gx: 1.5, gy: 0.6 },
+          { gx: 3.5, gy: 0.6 },
+          { gx: 2.5, gy: 1.4 },
+          { gx: 2.5, gy: 3.0 }
+        ]
+      },
+      {
+        name: '蝴蝶雙翼陣',
+        layers: [
+          [
+            { gx: 0.5, gy: 0.3 }, { gx: 1.4, gy: 0.5 }, { gx: 3.6, gy: 0.5 }, { gx: 4.5, gy: 0.3 },
+            { gx: 0.4, gy: 1.2 }, { gx: 1.3, gy: 1.3 }, { gx: 2.5, gy: 1.0 }, { gx: 3.7, gy: 1.3 }, { gx: 4.6, gy: 1.2 },
+            { gx: 0.8, gy: 2.1 }, { gx: 1.7, gy: 2.0 }, { gx: 2.5, gy: 1.9 }, { gx: 3.3, gy: 2.0 }, { gx: 4.2, gy: 2.1 },
+            { gx: 0.6, gy: 3.0 }, { gx: 1.5, gy: 2.9 }, { gx: 2.5, gy: 2.8 }, { gx: 3.5, gy: 2.9 }, { gx: 4.4, gy: 3.0 }
+          ],
+          [
+            { gx: 0.9, gy: 0.8 }, { gx: 4.1, gy: 0.8 },
+            { gx: 0.9, gy: 1.7 }, { gx: 1.9, gy: 1.6 }, { gx: 3.1, gy: 1.6 }, { gx: 4.1, gy: 1.7 },
+            { gx: 1.2, gy: 2.5 }, { gx: 3.8, gy: 2.5 }
+          ]
+        ],
+        deepSpots: [
+          { gx: 0.9, gy: 0.8 },
+          { gx: 4.1, gy: 0.8 },
+          { gx: 2.5, gy: 1.9 },
+          { gx: 1.2, gy: 2.5 },
+          { gx: 3.8, gy: 2.5 }
+        ]
+      },
+      {
+        name: '鑽石星環陣',
+        layers: [
+          [
+            { gx: 2.5, gy: 0.2 },
+            { gx: 1.6, gy: 0.8 }, { gx: 3.4, gy: 0.8 },
+            { gx: 0.8, gy: 1.4 }, { gx: 2.5, gy: 1.3 }, { gx: 4.2, gy: 1.4 },
+            { gx: 0.4, gy: 2.0 }, { gx: 1.7, gy: 2.0 }, { gx: 3.3, gy: 2.0 }, { gx: 4.6, gy: 2.0 },
+            { gx: 0.8, gy: 2.6 }, { gx: 2.5, gy: 2.7 }, { gx: 4.2, gy: 2.6 },
+            { gx: 1.6, gy: 3.2 }, { gx: 3.4, gy: 3.2 },
+            { gx: 2.5, gy: 3.6 }
+          ],
+          [
+            { gx: 2.5, gy: 0.7 },
+            { gx: 1.2, gy: 1.2 }, { gx: 3.8, gy: 1.2 },
+            { gx: 2.1, gy: 1.7 }, { gx: 2.9, gy: 1.7 },
+            { gx: 2.1, gy: 2.3 }, { gx: 2.9, gy: 2.3 },
+            { gx: 1.2, gy: 2.8 }, { gx: 3.8, gy: 2.8 },
+            { gx: 2.5, gy: 3.2 }
+          ]
+        ],
+        deepSpots: [
+          { gx: 2.5, gy: 2.0 },
+          { gx: 0.4, gy: 2.0 },
+          { gx: 4.6, gy: 2.0 },
+          { gx: 2.5, gy: 0.7 },
+          { gx: 2.5, gy: 3.2 }
+        ]
+      },
+      {
+        name: '雙塔奇兵陣',
+        layers: [
+          [
+            { gx: 0.6, gy: 0.5 }, { gx: 1.5, gy: 0.5 }, { gx: 3.5, gy: 0.5 }, { gx: 4.4, gy: 0.5 },
+            { gx: 0.4, gy: 1.4 }, { gx: 1.6, gy: 1.4 }, { gx: 2.5, gy: 1.1 }, { gx: 3.4, gy: 1.4 }, { gx: 4.6, gy: 1.4 },
+            { gx: 0.4, gy: 2.3 }, { gx: 1.6, gy: 2.3 }, { gx: 2.5, gy: 2.0 }, { gx: 3.4, gy: 2.3 }, { gx: 4.6, gy: 2.3 },
+            { gx: 0.6, gy: 3.1 }, { gx: 1.5, gy: 3.1 }, { gx: 3.5, gy: 3.1 }, { gx: 4.4, gy: 3.1 }
+          ],
+          [
+            { gx: 1.0, gy: 0.9 }, { gx: 4.0, gy: 0.9 },
+            { gx: 1.0, gy: 1.85 }, { gx: 4.0, gy: 1.85 },
+            { gx: 1.0, gy: 2.7 }, { gx: 4.0, gy: 2.7 },
+            { gx: 2.0, gy: 1.6 }, { gx: 3.0, gy: 1.6 }
+          ]
+        ],
+        deepSpots: [
+          { gx: 1.0, gy: 1.85 },
+          { gx: 4.0, gy: 1.85 },
+          { gx: 2.5, gy: 2.0 },
+          { gx: 1.0, gy: 0.9 },
+          { gx: 4.0, gy: 0.9 }
+        ]
+      }
+    ];
+
+    // 根據關卡決定難度設定（隨關卡推進，圖案種類、總牌數、盲牌數與交錯深度皆逐步遞增）
+    function getLevelConfig(level) {
+      const maxTypes = ALL_TYPES.length;
+      const shapeObj = SHAPE_PATTERNS[(level - 1) % SHAPE_PATTERNS.length];
+
+      if (level === 1) {
+        return {
+          numTypes: Math.min(3, maxTypes),
+          totalCards: 21,       // 7 組 × 3 張（新手熱身）
+          bottomStackCards: 4,
+          shape: shapeObj
+        };
+      } else if (level === 2) {
+        return {
+          numTypes: Math.min(5, maxTypes),
+          totalCards: 36,       // 12 組 × 3 張（初階挑戰）
+          bottomStackCards: 8,
+          shape: shapeObj
+        };
+      } else if (level === 3) {
+        return {
+          numTypes: Math.min(8, maxTypes),
+          totalCards: 54,       // 18 組 × 3 張（中階進階）
+          bottomStackCards: 12,
+          shape: shapeObj
+        };
+      } else if (level === 4) {
+        return {
+          numTypes: Math.min(12, maxTypes),
+          totalCards: 72,       // 24 組 × 3 張（高階燒腦）
+          bottomStackCards: 16,
+          shape: shapeObj
+        };
+      } else {
+        const totalCards = 72 + (level - 4) * 18;
+        const bottomStackCards = Math.min(28, 16 + (level - 4) * 4);
+        const targetTypes = Math.min(maxTypes, 12 + (level - 4) * 3, Math.floor(totalCards / 3));
+        return {
+          numTypes: Math.max(1, targetTypes),
+          totalCards,
+          bottomStackCards,
+          shape: shapeObj
+        };
+      }
+    }
+
+    /**
+     * 產生關卡座標：
+     * 1. 主造型區包含交錯重疊圖層，並在特定點 (deepSpots) 疊超過 2 張牌 (3~5張)
+     * 2. 下方卡牌仿照《羊了個羊》排成左右兩側橫向緊密牌疊 (|||||||||[🐱]   [🐱]|||||||||)
+     */
+    function generateLevelPositions(config) {
+      const mainCount = config.totalCards - config.bottomStackCards;
+      const positions = [];
+      let z = 0;
+
+      // 1. 先鋪設造型基礎圖層
+      for (const layer of config.shape.layers) {
+        for (const pt of layer) {
+          if (positions.length < mainCount) {
+            positions.push({ gx: pt.gx, gy: pt.gy, z, isBottomBlind: false });
           }
-
-          names.forEach(name => {
-            const item = document.createElement('div');
-            item.className = 'player-item' + (name === currentPlayer ? ' active' : '');
-            const pData = profiles[name];
-            const lvl = pData ? pData.currentLevel : 1;
-            const remain = pData && Array.isArray(pData.cards) ? pData.cards.filter(c => c.active).length : '-';
-
-            const nameSpan = document.createElement('span');
-            nameSpan.textContent = `👤 ${name}`;
-
-            const rightBox = document.createElement('div');
-            rightBox.className = 'player-right';
-
-            const metaSpan = document.createElement('span');
-            metaSpan.className = 'player-meta';
-            metaSpan.textContent = `第 ${lvl} 關 (剩 ${remain} 張)`;
-
-            const delBtn = document.createElement('button');
-            delBtn.className = 'btn-del-player';
-            delBtn.textContent = '移除';
-            delBtn.title = `移除 ${name} 的紀錄`;
-            delBtn.onclick = e => {
-              e.stopPropagation();
-              deletePlayerProfile(name);
-            };
-
-            rightBox.appendChild(metaSpan);
-            rightBox.appendChild(delBtn);
-
-            item.appendChild(nameSpan);
-            item.appendChild(rightBox);
-            item.onclick = () => switchPlayer(name);
-            listEl.appendChild(item);
-          });
-
-          // 控制「清除全部紀錄」與「關閉」按鈕顯示
-          const titleEl = document.getElementById('player-modal-title');
-          const closeBtn = document.getElementById('close-player-modal-btn');
-          const clearAllBtn = document.getElementById('clear-all-btn');
-          const actionsEl = document.getElementById('player-modal-actions');
-
-          if (titleEl) {
-            titleEl.textContent = currentPlayer ? '👤 切換／管理玩家' : '👤 請輸入玩家名稱';
-          }
-          if (closeBtn) {
-            closeBtn.style.display = currentPlayer ? 'inline-block' : 'none';
-          }
-          if (clearAllBtn) {
-            clearAllBtn.style.display = names.length > 0 ? 'inline-block' : 'none';
-          }
-          if (actionsEl) {
-            actionsEl.style.display = (currentPlayer || names.length > 0) ? 'flex' : 'none';
-          }
-
-          const confirmBox = document.getElementById('player-confirm-box');
-          if (confirmBox) confirmBox.style.display = 'none';
-          const inputEl = document.getElementById('new-player-input');
-          inputEl.value = '';
-          document.getElementById('player-modal').classList.add('show');
-          setTimeout(() => inputEl.focus(), 50);
         }
+        z++;
+      }
 
-        function deletePlayerProfile(name) {
-          const profiles = getAllProfiles();
-          delete profiles[name];
-          localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
+      // 2. 剩餘的主盤面卡牌，集中在 deepSpots 疊成超過 2 張（3~5張以上）的牌疊
+      let spotIdx = 0;
+      while (positions.length < mainCount) {
+        const spot = config.shape.deepSpots[spotIdx % config.shape.deepSpots.length];
+        positions.push({
+          gx: spot.gx,
+          gy: spot.gy,
+          z: z + spotIdx,
+          isBottomBlind: false
+        });
+        spotIdx++;
+      }
 
-          if (currentPlayer === name) {
-            currentPlayer = '';
-            localStorage.removeItem(STORAGE_CURRENT_PLAYER_KEY);
-            resetPlayerRuntimeState();
-            updatePlayerBtnUI();
-            initGame();
-          }
-          openPlayerModal();
+      // 3. 下方左右兩排橫向緊密牌疊：左疊由左往右疊，右疊由右往左疊
+      const leftCount = Math.ceil(config.bottomStackCards / 2);
+      const rightCount = config.bottomStackCards - leftCount;
+      const bottomY = 4.65;
+
+      const leftStep = leftCount > 1 ? Math.min(0.11, 1.0 / (leftCount - 1)) : 0;
+      for (let i = 0; i < leftCount; i++) {
+        positions.push({
+          gx: 0.4 + i * leftStep, // 最右邊那張在最上層 (i 最大，z 最大)
+          gy: bottomY,
+          z: 30 + i,
+          isBottomBlind: true
+        });
+      }
+
+      const rightStep = rightCount > 1 ? Math.min(0.11, 1.0 / (rightCount - 1)) : 0;
+      for (let i = 0; i < rightCount; i++) {
+        positions.push({
+          gx: 4.6 - i * rightStep, // 最左邊那張在最上層 (i 最大，z 最大)
+          gy: bottomY,
+          z: 30 + i,
+          isBottomBlind: true
+        });
+      }
+
+      return positions;
+    }
+
+    // 根據螢幕寬高動態計算遊戲版面與卡牌大小
+    function updateDimensions() {
+      const availW = window.innerWidth - 16;
+      const availH = window.innerHeight - 245;
+      boardSize = Math.round(Math.max(260, Math.min(availW, availH, 520)));
+
+      const pad = Math.round(boardSize * 0.045);
+      unitPx = (boardSize - pad * 2) / LOGICAL_UNITS;
+      cardSize = Math.round(unitPx * 0.94);
+
+      const trayBorder = 4;
+      const trayPadding = Math.max(4, Math.round(boardSize * 0.014));
+      const trayGap = Math.max(4, Math.round(boardSize * 0.014));
+      const trayCardSize = Math.floor(
+        (boardSize - 2 * (trayBorder + trayPadding) - (TRAY_MAX - 1) * trayGap) / TRAY_MAX
+      );
+      const trayHeight = trayCardSize + 2 * (trayBorder + trayPadding);
+
+      const root = document.documentElement;
+      root.style.setProperty('--board-size', `${boardSize}px`);
+      root.style.setProperty('--card-size', `${cardSize}px`);
+      root.style.setProperty('--tray-height', `${trayHeight}px`);
+      root.style.setProperty('--tray-card-size', `${trayCardSize}px`);
+      root.style.setProperty('--tray-gap', `${trayGap}px`);
+      root.style.setProperty('--tray-padding', `${trayPadding}px`);
+
+      cards.forEach(c => {
+        c.baseX = pad + c.gx * unitPx;
+        c.baseY = pad + c.gy * unitPx;
+      });
+    }
+
+    function updateStatusUI(config) {
+      if (config) {
+        document.getElementById('level-label').textContent = isDailyMode ? '⚡ 今日挑戰' : `第 ${currentLevel} 關`;
+      }
+      const timerEl = document.getElementById('timer-label');
+      if (timerEl) timerEl.textContent = `⏱️ ${formatTime(levelSeconds)}`;
+      const scoreEl = document.getElementById('score-label');
+      if (scoreEl) scoreEl.textContent = `💯 ${score} 分`;
+      const activeCount = cards.filter(c => c.active).length;
+      document.getElementById('remain-label').textContent = `剩餘：${activeCount} 張`;
+    }
+
+    function updateToolsUI() {
+      const btnUndo = document.getElementById('btn-undo');
+      const btnShuffle = document.getElementById('btn-shuffle');
+      const btnPop = document.getElementById('btn-pop');
+
+      const badgeUndo = document.getElementById('badge-undo');
+      const badgeShuffle = document.getElementById('badge-shuffle');
+      const badgePop = document.getElementById('badge-pop');
+
+      if (badgeUndo) badgeUndo.textContent = toolsRemaining.undo;
+      if (badgeShuffle) badgeShuffle.textContent = toolsRemaining.shuffle;
+      if (badgePop) badgePop.textContent = toolsRemaining.pop;
+
+      const canUndo =
+        toolsRemaining.undo > 0 &&
+        lastPickedCardId !== null &&
+        tray.some(c => c.id === lastPickedCardId);
+      const canShuffle =
+        toolsRemaining.shuffle > 0 &&
+        cards.filter(c => c.active && !c.isPoppedOut).length > 1;
+      const canPop =
+        toolsRemaining.pop > 0 &&
+        tray.length > 0;
+
+      if (btnUndo) btnUndo.disabled = !canUndo;
+      if (btnShuffle) btnShuffle.disabled = !canShuffle;
+      if (btnPop) btnPop.disabled = !canPop;
+    }
+
+    // 可重現的隨機種子產生器（用於每日挑戰固定牌局）
+    function mulberry32(seed) {
+      return function () {
+        let t = (seed += 0x6d2b79f5);
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function getDailyDateStr() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
+    function initGame() {
+      closeModal();
+      cards = [];
+      tray = [];
+      toolsRemaining = { undo: 1, shuffle: 1, pop: 1 };
+      lastPickedCardId = null;
+      isShuffling = false;
+      comboFreezeUntil = 0;
+      comboCount = 0;
+      maxComboInLevel = 1;
+      lastMatchTime = 0;
+      levelSeconds = 0;
+      if (isDailyMode) {
+        score = 0;
+      } else if (currentLevel === 1) {
+        levelStartScore = 0;
+        score = 0;
+      } else {
+        score = levelStartScore;
+      }
+      startLevelTimer();
+
+      let rng = Math.random;
+      let config;
+      if (isDailyMode) {
+        const dateNum = Number(getDailyDateStr().replace(/-/g, '')) || 20260101;
+        rng = mulberry32(dateNum);
+        config = {
+          numTypes: Math.min(8, ALL_TYPES.length),
+          totalCards: 54,
+          bottomStackCards: 12,
+          shape: SHAPE_PATTERNS[dateNum % SHAPE_PATTERNS.length]
+        };
+      } else {
+        config = getLevelConfig(currentLevel);
+      }
+
+      // 隨機（或依每日種子）從所有 60 張圖片中挑選本關要出場的圖案
+      const shuffledTypes = [...ALL_TYPES];
+      for (let i = shuffledTypes.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [shuffledTypes[i], shuffledTypes[j]] = [shuffledTypes[j], shuffledTypes[i]];
+      }
+      const levelTypes = shuffledTypes.slice(0, config.numTypes);
+      const totalTriplets = config.totalCards / 3;
+
+      // 生成每組 3 張的圖案清單
+      const tripletTypes = [];
+      for (let i = 0; i < totalTriplets; i++) {
+        tripletTypes.push(levelTypes[i % levelTypes.length]);
+      }
+
+      const positions = generateLevelPositions(config);
+      // 使用「100% 保證可解」且「難度隨關卡遞增」的拓撲模擬演算法分配卡牌圖案
+      const deck = generateSolvableDeck(positions, tripletTypes, isDailyMode ? 3 : currentLevel, rng);
+
+      // ✨ 特殊機能卡指派：第 2 關以上（或每日挑戰）隨機挑 1 種圖案為「2x 雙倍金卡」，第 3 關以上再加 1 種「❄️ 連擊延時卡」
+      const specialMap = {};
+      if (isDailyMode || currentLevel >= 2) {
+        const doubleType = levelTypes[Math.floor(rng() * levelTypes.length)];
+        specialMap[doubleType] = 'double';
+      }
+      if ((isDailyMode || currentLevel >= 3) && levelTypes.length >= 2) {
+        const candidates = levelTypes.filter(t => !specialMap[t]);
+        if (candidates.length > 0) {
+          const freezeType = candidates[Math.floor(rng() * candidates.length)];
+          specialMap[freezeType] = 'freeze';
         }
+      }
 
-        function clearAllProfiles() {
-          localStorage.removeItem(STORAGE_PROFILES_KEY);
-          localStorage.removeItem(STORAGE_CURRENT_PLAYER_KEY);
-          currentPlayer = '';
-          resetPlayerRuntimeState();
-          updatePlayerBtnUI();
-          initGame();
-          openPlayerModal();
-        }
+      deck.forEach((type, index) => {
+        const pos = positions[index];
+        cards.push({
+          id: index,
+          type: type,
+          gx: pos.gx,
+          gy: pos.gy,
+          baseX: 0,
+          baseY: 0,
+          z: pos.z,
+          special: specialMap[type] || null,
+          isBottomBlind: pos.isBottomBlind,
+          isPoppedOut: false,
+          active: true
+        });
+      });
 
-        function closePlayerModal() {
-          if (!currentPlayer) return; // 尚未設定名稱前不可直接關閉
-          document.getElementById('player-modal').classList.remove('show');
-        }
+      updateDimensions();
+      updateStatusUI(config);
+      renderBoard();
+      renderTray();
+      updateToolsUI();
+      saveProgress();
+    }
 
-        async function switchPlayer(name, preloadedCloud = undefined) {
-          const trimmed = (name || '').trim();
-          if (!trimmed) return;
-          const addBtn = document.getElementById('add-player-btn');
-          const origBtnText = addBtn ? addBtn.textContent : '開始';
-          if (addBtn && preloadedCloud === undefined) {
-            addBtn.disabled = true;
-            addBtn.textContent = '同步中...';
-          }
+    /**
+     * 100% 保證可解 + 隨關卡遞增難度的發牌演算法（Progressive Solvable Deal）：
+     * - 第 1 關：主要以單組（3 張）直接相鄰分配，輕鬆好上手（收集槽只需 3~4 格）。
+     * - 第 2 關：主要以 2 組（6 張）交錯分配（收集槽周轉峰值 <= 5 格）。
+     * - 第 3 關以上：逐步拉高 3 組（9 張）深層交錯比例（收集槽周轉峰值達 6 格，緊貼 7 格上限），
+     *   越後面越需要仔細觀察下層卡牌，但數學上 100% 保證一定存在不靠道具也能完全消除的通關路徑！
+     */
+    function generateSolvableDeck(positions, tripletTypes, level = 1, rng = Math.random) {
+      const shuffledTriplets = [...tripletTypes];
+      for (let i = shuffledTriplets.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [shuffledTriplets[i], shuffledTriplets[j]] = [shuffledTriplets[j], shuffledTriplets[i]];
+      }
 
-          let hasLocalRecord = Boolean(getAllProfiles()[trimmed]);
-          let foundInCloud = false;
-          try {
-            foundInCloud = await pullPlayerFromCloud(trimmed, preloadedCloud);
-          } catch (e) { }
+      const overlapThreshold = 0.88;
+      const remaining = new Set(positions.map((_, idx) => idx));
+      const assignedTypes = new Array(positions.length);
 
-          if (addBtn) {
-            addBtn.disabled = false;
-            addBtn.textContent = origBtnText;
-          }
-
-          currentPlayer = trimmed;
-          localStorage.setItem(STORAGE_CURRENT_PLAYER_KEY, currentPlayer);
-          document.getElementById('player-modal').classList.remove('show');
-          resetPlayerRuntimeState();
-          updatePlayerBtnUI();
-          if (!loadProgress()) {
-            initGame();
-          }
-          // 只有本機與雲端皆無遊玩紀錄的新玩家才自動跳出規則視窗
-          if (!hasLocalRecord && !foundInCloud) {
-            openRulesModal(true);
-          }
-        }
-
-        function cancelDuplicatePlayerName() {
-          const confirmBox = document.getElementById('player-confirm-box');
-          if (confirmBox) confirmBox.style.display = 'none';
-          const input = document.getElementById('new-player-input');
-          if (input) {
-            input.value = '';
-            input.focus();
-          }
-        }
-
-        async function addOrSwitchPlayer() {
-          const input = document.getElementById('new-player-input');
-          const name = input.value.trim();
-          if (!name) {
-            input.focus();
-            return;
-          }
-
-          const addBtn = document.getElementById('add-player-btn');
-          const confirmBox = document.getElementById('player-confirm-box');
-          if (confirmBox) confirmBox.style.display = 'none';
-
-          if (addBtn) {
-            addBtn.disabled = true;
-            addBtn.textContent = '檢查中...';
-          }
-
-          const localData = getAllProfiles()[name] || null;
-          let cloudData = null;
-          try {
-            cloudData = await fetchCloudProfileRaw(name);
-          } catch (e) { }
-
-          if (addBtn) {
-            addBtn.disabled = false;
-            addBtn.textContent = '開始';
-          }
-
-          if (localData || cloudData) {
-            const maxLvl = Math.max(
-              Number(localData && localData.maxLevelReached || 1),
-              Number(localData && localData.currentLevel || 1),
-              Number(cloudData && cloudData.maxLevelReached || 1),
-              Number(cloudData && cloudData.currentLevel || 1)
-            );
-            const best = Math.max(
-              Number(localData && localData.bestScore || 0),
-              Number(localData && localData.score || 0),
-              Number(cloudData && cloudData.bestScore || 0)
-            );
-            const msgEl = document.getElementById('player-confirm-msg');
-            const yesBtn = document.getElementById('player-confirm-yes');
-            if (confirmBox && msgEl && yesBtn) {
-              msgEl.textContent = `「${name}」已有遊玩紀錄（最高第 ${maxLvl} 關・${best} 分），請問是你本人嗎？`;
-              yesBtn.onclick = () => {
-                confirmBox.style.display = 'none';
-                switchPlayer(name, cloudData);
-              };
-              confirmBox.style.display = 'block';
-              return;
+      function isPosExposed(targetIdx) {
+        const target = positions[targetIdx];
+        if (target.isPoppedOut) return true;
+        for (const otherIdx of remaining) {
+          if (otherIdx === targetIdx) continue;
+          const other = positions[otherIdx];
+          if (!other.isPoppedOut && other.z > target.z) {
+            if (
+              Math.abs(other.gx - target.gx) < overlapThreshold &&
+              Math.abs(other.gy - target.gy) < overlapThreshold
+            ) {
+              return false;
             }
           }
-
-          await switchPlayer(name, null);
         }
+        return true;
+      }
 
-        /**
-         * 定義不同形狀的關卡造型
-         * - layers: 交錯重疊的造型圖層
-         * - deepSpots: 會在同一位置直接疊超過 2 張牌（3~5張）的重點牌柱座標
-         */
-        const SHAPE_PATTERNS = [
-          {
-            name: '梅花陣',
-            layers: [
-              [
-                { gx: 0.7, gy: 0.4 }, { gx: 1.6, gy: 0.6 },
-                { gx: 4.3, gy: 0.4 }, { gx: 3.4, gy: 0.6 },
-                { gx: 2.5, gy: 1.1 }, { gx: 1.8, gy: 1.8 }, { gx: 3.2, gy: 1.8 }, { gx: 2.5, gy: 2.5 },
-                { gx: 0.7, gy: 3.0 }, { gx: 1.6, gy: 2.8 },
-                { gx: 4.3, gy: 3.0 }, { gx: 3.4, gy: 2.8 }
-              ],
-              [
-                { gx: 1.15, gy: 0.5 }, { gx: 3.85, gy: 0.5 },
-                { gx: 2.5, gy: 1.8 },
-                { gx: 1.15, gy: 2.9 }, { gx: 3.85, gy: 2.9 }
-              ]
-            ],
-            deepSpots: [
-              { gx: 2.5, gy: 1.8 },
-              { gx: 1.15, gy: 0.5 },
-              { gx: 3.85, gy: 0.5 },
-              { gx: 1.15, gy: 2.9 },
-              { gx: 3.85, gy: 2.9 }
-            ]
-          },
-          {
-            name: '愛心陣',
-            layers: [
-              [
-                { gx: 1.2, gy: 0.3 }, { gx: 2.0, gy: 0.3 }, { gx: 3.0, gy: 0.3 }, { gx: 3.8, gy: 0.3 },
-                { gx: 0.6, gy: 1.1 }, { gx: 1.6, gy: 1.0 }, { gx: 2.5, gy: 0.8 }, { gx: 3.4, gy: 1.0 }, { gx: 4.4, gy: 1.1 },
-                { gx: 1.0, gy: 1.9 }, { gx: 2.0, gy: 1.8 }, { gx: 3.0, gy: 1.8 }, { gx: 4.0, gy: 1.9 },
-                { gx: 1.6, gy: 2.7 }, { gx: 2.5, gy: 2.6 }, { gx: 3.4, gy: 2.7 },
-                { gx: 2.5, gy: 3.4 }
-              ],
-              [
-                { gx: 1.5, gy: 0.6 }, { gx: 3.5, gy: 0.6 },
-                { gx: 1.3, gy: 1.5 }, { gx: 2.5, gy: 1.4 }, { gx: 3.7, gy: 1.5 },
-                { gx: 1.8, gy: 2.3 }, { gx: 3.2, gy: 2.3 },
-                { gx: 2.5, gy: 3.0 }
-              ]
-            ],
-            deepSpots: [
-              { gx: 1.5, gy: 0.6 },
-              { gx: 3.5, gy: 0.6 },
-              { gx: 2.5, gy: 1.4 },
-              { gx: 2.5, gy: 3.0 }
-            ]
-          },
-          {
-            name: '蝴蝶雙翼陣',
-            layers: [
-              [
-                { gx: 0.5, gy: 0.3 }, { gx: 1.4, gy: 0.5 }, { gx: 3.6, gy: 0.5 }, { gx: 4.5, gy: 0.3 },
-                { gx: 0.4, gy: 1.2 }, { gx: 1.3, gy: 1.3 }, { gx: 2.5, gy: 1.0 }, { gx: 3.7, gy: 1.3 }, { gx: 4.6, gy: 1.2 },
-                { gx: 0.8, gy: 2.1 }, { gx: 1.7, gy: 2.0 }, { gx: 2.5, gy: 1.9 }, { gx: 3.3, gy: 2.0 }, { gx: 4.2, gy: 2.1 },
-                { gx: 0.6, gy: 3.0 }, { gx: 1.5, gy: 2.9 }, { gx: 2.5, gy: 2.8 }, { gx: 3.5, gy: 2.9 }, { gx: 4.4, gy: 3.0 }
-              ],
-              [
-                { gx: 0.9, gy: 0.8 }, { gx: 4.1, gy: 0.8 },
-                { gx: 0.9, gy: 1.7 }, { gx: 1.9, gy: 1.6 }, { gx: 3.1, gy: 1.6 }, { gx: 4.1, gy: 1.7 },
-                { gx: 1.2, gy: 2.5 }, { gx: 3.8, gy: 2.5 }
-              ]
-            ],
-            deepSpots: [
-              { gx: 0.9, gy: 0.8 },
-              { gx: 4.1, gy: 0.8 },
-              { gx: 2.5, gy: 1.9 },
-              { gx: 1.2, gy: 2.5 },
-              { gx: 3.8, gy: 2.5 }
-            ]
-          },
-          {
-            name: '鑽石星環陣',
-            layers: [
-              [
-                { gx: 2.5, gy: 0.2 },
-                { gx: 1.6, gy: 0.8 }, { gx: 3.4, gy: 0.8 },
-                { gx: 0.8, gy: 1.4 }, { gx: 2.5, gy: 1.3 }, { gx: 4.2, gy: 1.4 },
-                { gx: 0.4, gy: 2.0 }, { gx: 1.7, gy: 2.0 }, { gx: 3.3, gy: 2.0 }, { gx: 4.6, gy: 2.0 },
-                { gx: 0.8, gy: 2.6 }, { gx: 2.5, gy: 2.7 }, { gx: 4.2, gy: 2.6 },
-                { gx: 1.6, gy: 3.2 }, { gx: 3.4, gy: 3.2 },
-                { gx: 2.5, gy: 3.6 }
-              ],
-              [
-                { gx: 2.5, gy: 0.7 },
-                { gx: 1.2, gy: 1.2 }, { gx: 3.8, gy: 1.2 },
-                { gx: 2.1, gy: 1.7 }, { gx: 2.9, gy: 1.7 },
-                { gx: 2.1, gy: 2.3 }, { gx: 2.9, gy: 2.3 },
-                { gx: 1.2, gy: 2.8 }, { gx: 3.8, gy: 2.8 },
-                { gx: 2.5, gy: 3.2 }
-              ]
-            ],
-            deepSpots: [
-              { gx: 2.5, gy: 2.0 },
-              { gx: 0.4, gy: 2.0 },
-              { gx: 4.6, gy: 2.0 },
-              { gx: 2.5, gy: 0.7 },
-              { gx: 2.5, gy: 3.2 }
-            ]
-          },
-          {
-            name: '雙塔奇兵陣',
-            layers: [
-              [
-                { gx: 0.6, gy: 0.5 }, { gx: 1.5, gy: 0.5 }, { gx: 3.5, gy: 0.5 }, { gx: 4.4, gy: 0.5 },
-                { gx: 0.4, gy: 1.4 }, { gx: 1.6, gy: 1.4 }, { gx: 2.5, gy: 1.1 }, { gx: 3.4, gy: 1.4 }, { gx: 4.6, gy: 1.4 },
-                { gx: 0.4, gy: 2.3 }, { gx: 1.6, gy: 2.3 }, { gx: 2.5, gy: 2.0 }, { gx: 3.4, gy: 2.3 }, { gx: 4.6, gy: 2.3 },
-                { gx: 0.6, gy: 3.1 }, { gx: 1.5, gy: 3.1 }, { gx: 3.5, gy: 3.1 }, { gx: 4.4, gy: 3.1 }
-              ],
-              [
-                { gx: 1.0, gy: 0.9 }, { gx: 4.0, gy: 0.9 },
-                { gx: 1.0, gy: 1.85 }, { gx: 4.0, gy: 1.85 },
-                { gx: 1.0, gy: 2.7 }, { gx: 4.0, gy: 2.7 },
-                { gx: 2.0, gy: 1.6 }, { gx: 3.0, gy: 1.6 }
-              ]
-            ],
-            deepSpots: [
-              { gx: 1.0, gy: 1.85 },
-              { gx: 4.0, gy: 1.85 },
-              { gx: 2.5, gy: 2.0 },
-              { gx: 1.0, gy: 0.9 },
-              { gx: 4.0, gy: 0.9 }
-            ]
-          }
-        ];
-
-        // 根據關卡決定難度設定（隨關卡推進，圖案種類、總牌數、盲牌數與交錯深度皆逐步遞增）
-        function getLevelConfig(level) {
-          const maxTypes = ALL_TYPES.length;
-          const shapeObj = SHAPE_PATTERNS[(level - 1) % SHAPE_PATTERNS.length];
-
-          if (level === 1) {
-            return {
-              numTypes: Math.min(3, maxTypes),
-              totalCards: 21,       // 7 組 × 3 張（新手熱身）
-              bottomStackCards: 4,
-              shape: shapeObj
-            };
-          } else if (level === 2) {
-            return {
-              numTypes: Math.min(5, maxTypes),
-              totalCards: 36,       // 12 組 × 3 張（初階挑戰）
-              bottomStackCards: 8,
-              shape: shapeObj
-            };
-          } else if (level === 3) {
-            return {
-              numTypes: Math.min(8, maxTypes),
-              totalCards: 54,       // 18 組 × 3 張（中階進階）
-              bottomStackCards: 12,
-              shape: shapeObj
-            };
-          } else if (level === 4) {
-            return {
-              numTypes: Math.min(12, maxTypes),
-              totalCards: 72,       // 24 組 × 3 張（高階燒腦）
-              bottomStackCards: 16,
-              shape: shapeObj
-            };
-          } else {
-            const totalCards = 72 + (level - 4) * 18;
-            const bottomStackCards = Math.min(28, 16 + (level - 4) * 4);
-            const targetTypes = Math.min(maxTypes, 12 + (level - 4) * 3, Math.floor(totalCards / 3));
-            return {
-              numTypes: Math.max(1, targetTypes),
-              totalCards,
-              bottomStackCards,
-              shape: shapeObj
-            };
-          }
+      function pickExposedPosition() {
+        const exposed = [];
+        for (const idx of remaining) {
+          if (isPosExposed(idx)) exposed.push(idx);
         }
-
-        /**
-         * 產生關卡座標：
-         * 1. 主造型區包含交錯重疊圖層，並在特定點 (deepSpots) 疊超過 2 張牌 (3~5張)
-         * 2. 下方卡牌仿照《羊了個羊》排成左右兩側橫向緊密牌疊 (|||||||||[🐱]   [🐱]|||||||||)
-         */
-        function generateLevelPositions(config) {
-          const mainCount = config.totalCards - config.bottomStackCards;
-          const positions = [];
-          let z = 0;
-
-          // 1. 先鋪設造型基礎圖層
-          for (const layer of config.shape.layers) {
-            for (const pt of layer) {
-              if (positions.length < mainCount) {
-                positions.push({ gx: pt.gx, gy: pt.gy, z, isBottomBlind: false });
-              }
+        // 計算每個可點位置底下壓了多少張牌，給予較高權重，讓深層牌柱與盲牌疊均勻被解鎖
+        const weights = exposed.map(idx => {
+          const pt = positions[idx];
+          let coveredCount = 0;
+          for (const otherIdx of remaining) {
+            if (otherIdx === idx) continue;
+            const other = positions[otherIdx];
+            if (
+              other.z < pt.z &&
+              Math.abs(other.gx - pt.gx) < overlapThreshold &&
+              Math.abs(other.gy - pt.gy) < overlapThreshold
+            ) {
+              coveredCount++;
             }
-            z++;
           }
+          return 1 + coveredCount * 0.85;
+        });
 
-          // 2. 剩餘的主盤面卡牌，集中在 deepSpots 疊成超過 2 張（3~5張以上）的牌疊
-          let spotIdx = 0;
-          while (positions.length < mainCount) {
-            const spot = config.shape.deepSpots[spotIdx % config.shape.deepSpots.length];
-            positions.push({
-              gx: spot.gx,
-              gy: spot.gy,
-              z: z + spotIdx,
-              isBottomBlind: false
-            });
-            spotIdx++;
+        const totalWeight = weights.reduce((acc, w) => acc + w, 0);
+        let r = rng() * totalWeight;
+        let chosenIdx = exposed[exposed.length - 1];
+        for (let i = 0; i < exposed.length; i++) {
+          r -= weights[i];
+          if (r <= 0) {
+            chosenIdx = exposed[i];
+            break;
           }
-
-          // 3. 下方左右兩排橫向緊密牌疊：左疊由左往右疊，右疊由右往左疊
-          const leftCount = Math.ceil(config.bottomStackCards / 2);
-          const rightCount = config.bottomStackCards - leftCount;
-          const bottomY = 4.65;
-
-          const leftStep = leftCount > 1 ? Math.min(0.11, 1.0 / (leftCount - 1)) : 0;
-          for (let i = 0; i < leftCount; i++) {
-            positions.push({
-              gx: 0.4 + i * leftStep, // 最右邊那張在最上層 (i 最大，z 最大)
-              gy: bottomY,
-              z: 30 + i,
-              isBottomBlind: true
-            });
-          }
-
-          const rightStep = rightCount > 1 ? Math.min(0.11, 1.0 / (rightCount - 1)) : 0;
-          for (let i = 0; i < rightCount; i++) {
-            positions.push({
-              gx: 4.6 - i * rightStep, // 最左邊那張在最上層 (i 最大，z 最大)
-              gy: bottomY,
-              z: 30 + i,
-              isBottomBlind: true
-            });
-          }
-
-          return positions;
         }
+        remaining.delete(chosenIdx);
+        return chosenIdx;
+      }
 
-        // 根據螢幕寬高動態計算遊戲版面與卡牌大小
-        function updateDimensions() {
-          const availW = window.innerWidth - 16;
-          const availH = window.innerHeight - 245;
-          boardSize = Math.round(Math.max(260, Math.min(availW, availH, 520)));
+      // 根據關卡決定交錯深度機率（1組=簡單、2組=中等、3組=燒腦且保證收集槽峰值 <= 6 格）
+      const prob3Group = level <= 1 ? 0 : level === 2 ? 0.15 : level === 3 ? 0.5 : Math.min(0.85, 0.65 + (level - 4) * 0.08);
+      const prob2Group = level === 1 ? 0.35 : 0.8;
 
-          const pad = Math.round(boardSize * 0.045);
-          unitPx = (boardSize - pad * 2) / LOGICAL_UNITS;
-          cardSize = Math.round(unitPx * 0.94);
+      let tIdx = 0;
+      while (tIdx < shuffledTriplets.length) {
+        const leftTriplets = shuffledTriplets.length - tIdx;
+        const roll = rng();
 
-          const trayBorder = 4;
-          const trayPadding = Math.max(4, Math.round(boardSize * 0.014));
-          const trayGap = Math.max(4, Math.round(boardSize * 0.014));
-          const trayCardSize = Math.floor(
-            (boardSize - 2 * (trayBorder + trayPadding) - (TRAY_MAX - 1) * trayGap) / TRAY_MAX
-          );
-          const trayHeight = trayCardSize + 2 * (trayBorder + trayPadding);
-
-          const root = document.documentElement;
-          root.style.setProperty('--board-size', `${boardSize}px`);
-          root.style.setProperty('--card-size', `${cardSize}px`);
-          root.style.setProperty('--tray-height', `${trayHeight}px`);
-          root.style.setProperty('--tray-card-size', `${trayCardSize}px`);
-          root.style.setProperty('--tray-gap', `${trayGap}px`);
-          root.style.setProperty('--tray-padding', `${trayPadding}px`);
-
-          cards.forEach(c => {
-            c.baseX = pad + c.gx * unitPx;
-            c.baseY = pad + c.gy * unitPx;
-          });
-        }
-
-        function updateStatusUI(config) {
-          if (config) {
-            document.getElementById('level-label').textContent = isDailyMode ? '⚡ 今日挑戰' : `第 ${currentLevel} 關`;
+        if (leftTriplets >= 3 && roll < prob3Group) {
+          // 3 組（9 張）安全深層交錯：前 6 張必湊齊 A 消除（收集槽峰值 <= 6），後 3 張依序消除 B 與 C
+          const tA = shuffledTriplets[tIdx];
+          const tB = shuffledTriplets[tIdx + 1];
+          const tC = shuffledTriplets[tIdx + 2];
+          const pickedPositions = [];
+          for (let k = 0; k < 9; k++) {
+            pickedPositions.push(pickExposedPosition());
           }
-          const timerEl = document.getElementById('timer-label');
-          if (timerEl) timerEl.textContent = `⏱️ ${formatTime(levelSeconds)}`;
-          const scoreEl = document.getElementById('score-label');
-          if (scoreEl) scoreEl.textContent = `💯 ${score} 分`;
-          const activeCount = cards.filter(c => c.active).length;
-          document.getElementById('remain-label').textContent = `剩餘：${activeCount} 張`;
-        }
-
-        function updateToolsUI() {
-          const btnUndo = document.getElementById('btn-undo');
-          const btnShuffle = document.getElementById('btn-shuffle');
-          const btnPop = document.getElementById('btn-pop');
-
-          const badgeUndo = document.getElementById('badge-undo');
-          const badgeShuffle = document.getElementById('badge-shuffle');
-          const badgePop = document.getElementById('badge-pop');
-
-          if (badgeUndo) badgeUndo.textContent = toolsRemaining.undo;
-          if (badgeShuffle) badgeShuffle.textContent = toolsRemaining.shuffle;
-          if (badgePop) badgePop.textContent = toolsRemaining.pop;
-
-          const canUndo =
-            toolsRemaining.undo > 0 &&
-            lastPickedCardId !== null &&
-            tray.some(c => c.id === lastPickedCardId);
-          const canShuffle =
-            toolsRemaining.shuffle > 0 &&
-            cards.filter(c => c.active && !c.isPoppedOut).length > 1;
-          const canPop =
-            toolsRemaining.pop > 0 &&
-            tray.length > 0;
-
-          if (btnUndo) btnUndo.disabled = !canUndo;
-          if (btnShuffle) btnShuffle.disabled = !canShuffle;
-          if (btnPop) btnPop.disabled = !canPop;
-        }
-
-        // 可重現的隨機種子產生器（用於每日挑戰固定牌局）
-        function mulberry32(seed) {
-          return function () {
-            let t = (seed += 0x6d2b79f5);
-            t = Math.imul(t ^ (t >>> 15), t | 1);
-            t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-          };
-        }
-
-        function getDailyDateStr() {
-          const d = new Date();
-          const y = d.getFullYear();
-          const m = String(d.getMonth() + 1).padStart(2, '0');
-          const day = String(d.getDate()).padStart(2, '0');
-          return `${y}-${m}-${day}`;
-        }
-
-        function initGame() {
-          closeModal();
-          cards = [];
-          tray = [];
-          toolsRemaining = { undo: 1, shuffle: 1, pop: 1 };
-          lastPickedCardId = null;
-          isShuffling = false;
-          comboFreezeUntil = 0;
-          comboCount = 0;
-          maxComboInLevel = 1;
-          lastMatchTime = 0;
-          levelSeconds = 0;
-          if (isDailyMode) {
-            score = 0;
-          } else if (currentLevel === 1) {
-            levelStartScore = 0;
-            score = 0;
-          } else {
-            score = levelStartScore;
-          }
-          startLevelTimer();
-
-          let rng = Math.random;
-          let config;
-          if (isDailyMode) {
-            const dateNum = Number(getDailyDateStr().replace(/-/g, '')) || 20260101;
-            rng = mulberry32(dateNum);
-            config = {
-              numTypes: Math.min(8, ALL_TYPES.length),
-              totalCards: 54,
-              bottomStackCards: 12,
-              shape: SHAPE_PATTERNS[dateNum % SHAPE_PATTERNS.length]
-            };
-          } else {
-            config = getLevelConfig(currentLevel);
-          }
-
-          // 隨機（或依每日種子）從所有 60 張圖片中挑選本關要出場的圖案
-          const shuffledTypes = [...ALL_TYPES];
-          for (let i = shuffledTypes.length - 1; i > 0; i--) {
+          const firstFive = [tA, tA, tB, tB, tC];
+          for (let i = firstFive.length - 1; i > 0; i--) {
             const j = Math.floor(rng() * (i + 1));
-            [shuffledTypes[i], shuffledTypes[j]] = [shuffledTypes[j], shuffledTypes[i]];
+            [firstFive[i], firstFive[j]] = [firstFive[j], firstFive[i]];
           }
-          const levelTypes = shuffledTypes.slice(0, config.numTypes);
-          const totalTriplets = config.totalCards / 3;
-
-          // 生成每組 3 張的圖案清單
-          const tripletTypes = [];
-          for (let i = 0; i < totalTriplets; i++) {
-            tripletTypes.push(levelTypes[i % levelTypes.length]);
-          }
-
-          const positions = generateLevelPositions(config);
-          // 使用「100% 保證可解」且「難度隨關卡遞增」的拓撲模擬演算法分配卡牌圖案
-          const deck = generateSolvableDeck(positions, tripletTypes, isDailyMode ? 3 : currentLevel, rng);
-
-          // ✨ 特殊機能卡指派：第 2 關以上（或每日挑戰）隨機挑 1 種圖案為「2x 雙倍金卡」，第 3 關以上再加 1 種「❄️ 連擊延時卡」
-          const specialMap = {};
-          if (isDailyMode || currentLevel >= 2) {
-            const doubleType = levelTypes[Math.floor(rng() * levelTypes.length)];
-            specialMap[doubleType] = 'double';
-          }
-          if ((isDailyMode || currentLevel >= 3) && levelTypes.length >= 2) {
-            const candidates = levelTypes.filter(t => !specialMap[t]);
-            if (candidates.length > 0) {
-              const freezeType = candidates[Math.floor(rng() * candidates.length)];
-              specialMap[freezeType] = 'freeze';
-            }
-          }
-
-          deck.forEach((type, index) => {
-            const pos = positions[index];
-            cards.push({
-              id: index,
-              type: type,
-              gx: pos.gx,
-              gy: pos.gy,
-              baseX: 0,
-              baseY: 0,
-              z: pos.z,
-              special: specialMap[type] || null,
-              isBottomBlind: pos.isBottomBlind,
-              isPoppedOut: false,
-              active: true
-            });
-          });
-
-          updateDimensions();
-          updateStatusUI(config);
-          renderBoard();
-          renderTray();
-          updateToolsUI();
-          saveProgress();
-        }
-
-        /**
-         * 100% 保證可解 + 隨關卡遞增難度的發牌演算法（Progressive Solvable Deal）：
-         * - 第 1 關：主要以單組（3 張）直接相鄰分配，輕鬆好上手（收集槽只需 3~4 格）。
-         * - 第 2 關：主要以 2 組（6 張）交錯分配（收集槽周轉峰值 <= 5 格）。
-         * - 第 3 關以上：逐步拉高 3 組（9 張）深層交錯比例（收集槽周轉峰值達 6 格，緊貼 7 格上限），
-         *   越後面越需要仔細觀察下層卡牌，但數學上 100% 保證一定存在不靠道具也能完全消除的通關路徑！
-         */
-        function generateSolvableDeck(positions, tripletTypes, level = 1, rng = Math.random) {
-          const shuffledTriplets = [...tripletTypes];
-          for (let i = shuffledTriplets.length - 1; i > 0; i--) {
+          const lastThree = [tB, tC, tC];
+          for (let i = lastThree.length - 1; i > 0; i--) {
             const j = Math.floor(rng() * (i + 1));
-            [shuffledTriplets[i], shuffledTriplets[j]] = [shuffledTriplets[j], shuffledTriplets[i]];
+            [lastThree[i], lastThree[j]] = [lastThree[j], lastThree[i]];
           }
+          const ninePool = [...firstFive, tA, ...lastThree];
+          pickedPositions.forEach((posIdx, k) => {
+            assignedTypes[posIdx] = ninePool[k];
+          });
+          tIdx += 3;
+        } else if (leftTriplets >= 2 && roll < prob3Group + prob2Group) {
+          // 2 組（6 張）中等交錯：收集槽峰值 <= 5 格
+          const t1 = shuffledTriplets[tIdx];
+          const t2 = shuffledTriplets[tIdx + 1];
+          const pickedPositions = [];
+          for (let k = 0; k < 6; k++) {
+            pickedPositions.push(pickExposedPosition());
+          }
+          const pairPool = [t1, t1, t1, t2, t2, t2];
+          for (let i = pairPool.length - 1; i > 0; i--) {
+            const j = Math.floor(rng() * (i + 1));
+            [pairPool[i], pairPool[j]] = [pairPool[j], pairPool[i]];
+          }
+          pickedPositions.forEach((posIdx, k) => {
+            assignedTypes[posIdx] = pairPool[k];
+          });
+          tIdx += 2;
+        } else {
+          // 1 組（3 張）直覺分配
+          const t1 = shuffledTriplets[tIdx];
+          for (let k = 0; k < 3; k++) {
+            const posIdx = pickExposedPosition();
+            assignedTypes[posIdx] = t1;
+          }
+          tIdx += 1;
+        }
+      }
 
-          const overlapThreshold = 0.88;
-          const remaining = new Set(positions.map((_, idx) => idx));
-          const assignedTypes = new Array(positions.length);
+      return assignedTypes;
+    }
 
-          function isPosExposed(targetIdx) {
-            const target = positions[targetIdx];
-            if (target.isPoppedOut) return true;
-            for (const otherIdx of remaining) {
-              if (otherIdx === targetIdx) continue;
-              const other = positions[otherIdx];
-              if (!other.isPoppedOut && other.z > target.z) {
-                if (
-                  Math.abs(other.gx - target.gx) < overlapThreshold &&
-                  Math.abs(other.gy - target.gy) < overlapThreshold
-                ) {
-                  return false;
-                }
-              }
-            }
+    // 檢查卡牌是否被更高層的卡牌遮擋
+    function isCovered(targetCard) {
+      if (targetCard.isPoppedOut) return false;
+      const overlapThreshold = 0.88;
+      for (let c of cards) {
+        if (c.active && !c.isPoppedOut && c.z > targetCard.z) {
+          if (
+            Math.abs(c.gx - targetCard.gx) < overlapThreshold &&
+            Math.abs(c.gy - targetCard.gy) < overlapThreshold
+          ) {
             return true;
           }
-
-          function pickExposedPosition() {
-            const exposed = [];
-            for (const idx of remaining) {
-              if (isPosExposed(idx)) exposed.push(idx);
-            }
-            // 計算每個可點位置底下壓了多少張牌，給予較高權重，讓深層牌柱與盲牌疊均勻被解鎖
-            const weights = exposed.map(idx => {
-              const pt = positions[idx];
-              let coveredCount = 0;
-              for (const otherIdx of remaining) {
-                if (otherIdx === idx) continue;
-                const other = positions[otherIdx];
-                if (
-                  other.z < pt.z &&
-                  Math.abs(other.gx - pt.gx) < overlapThreshold &&
-                  Math.abs(other.gy - pt.gy) < overlapThreshold
-                ) {
-                  coveredCount++;
-                }
-              }
-              return 1 + coveredCount * 0.85;
-            });
-
-            const totalWeight = weights.reduce((acc, w) => acc + w, 0);
-            let r = rng() * totalWeight;
-            let chosenIdx = exposed[exposed.length - 1];
-            for (let i = 0; i < exposed.length; i++) {
-              r -= weights[i];
-              if (r <= 0) {
-                chosenIdx = exposed[i];
-                break;
-              }
-            }
-            remaining.delete(chosenIdx);
-            return chosenIdx;
-          }
-
-          // 根據關卡決定交錯深度機率（1組=簡單、2組=中等、3組=燒腦且保證收集槽峰值 <= 6 格）
-          const prob3Group = level <= 1 ? 0 : level === 2 ? 0.15 : level === 3 ? 0.5 : Math.min(0.85, 0.65 + (level - 4) * 0.08);
-          const prob2Group = level === 1 ? 0.35 : 0.8;
-
-          let tIdx = 0;
-          while (tIdx < shuffledTriplets.length) {
-            const leftTriplets = shuffledTriplets.length - tIdx;
-            const roll = rng();
-
-            if (leftTriplets >= 3 && roll < prob3Group) {
-              // 3 組（9 張）安全深層交錯：前 6 張必湊齊 A 消除（收集槽峰值 <= 6），後 3 張依序消除 B 與 C
-              const tA = shuffledTriplets[tIdx];
-              const tB = shuffledTriplets[tIdx + 1];
-              const tC = shuffledTriplets[tIdx + 2];
-              const pickedPositions = [];
-              for (let k = 0; k < 9; k++) {
-                pickedPositions.push(pickExposedPosition());
-              }
-              const firstFive = [tA, tA, tB, tB, tC];
-              for (let i = firstFive.length - 1; i > 0; i--) {
-                const j = Math.floor(rng() * (i + 1));
-                [firstFive[i], firstFive[j]] = [firstFive[j], firstFive[i]];
-              }
-              const lastThree = [tB, tC, tC];
-              for (let i = lastThree.length - 1; i > 0; i--) {
-                const j = Math.floor(rng() * (i + 1));
-                [lastThree[i], lastThree[j]] = [lastThree[j], lastThree[i]];
-              }
-              const ninePool = [...firstFive, tA, ...lastThree];
-              pickedPositions.forEach((posIdx, k) => {
-                assignedTypes[posIdx] = ninePool[k];
-              });
-              tIdx += 3;
-            } else if (leftTriplets >= 2 && roll < prob3Group + prob2Group) {
-              // 2 組（6 張）中等交錯：收集槽峰值 <= 5 格
-              const t1 = shuffledTriplets[tIdx];
-              const t2 = shuffledTriplets[tIdx + 1];
-              const pickedPositions = [];
-              for (let k = 0; k < 6; k++) {
-                pickedPositions.push(pickExposedPosition());
-              }
-              const pairPool = [t1, t1, t1, t2, t2, t2];
-              for (let i = pairPool.length - 1; i > 0; i--) {
-                const j = Math.floor(rng() * (i + 1));
-                [pairPool[i], pairPool[j]] = [pairPool[j], pairPool[i]];
-              }
-              pickedPositions.forEach((posIdx, k) => {
-                assignedTypes[posIdx] = pairPool[k];
-              });
-              tIdx += 2;
-            } else {
-              // 1 組（3 張）直覺分配
-              const t1 = shuffledTriplets[tIdx];
-              for (let k = 0; k < 3; k++) {
-                const posIdx = pickExposedPosition();
-                assignedTypes[posIdx] = t1;
-              }
-              tIdx += 1;
-            }
-          }
-
-          return assignedTypes;
         }
+      }
+      return false;
+    }
 
-        // 檢查卡牌是否被更高層的卡牌遮擋
-        function isCovered(targetCard) {
-          if (targetCard.isPoppedOut) return false;
-          const overlapThreshold = 0.88;
-          for (let c of cards) {
-            if (c.active && !c.isPoppedOut && c.z > targetCard.z) {
-              if (
-                Math.abs(c.gx - targetCard.gx) < overlapThreshold &&
-                Math.abs(c.gy - targetCard.gy) < overlapThreshold
-              ) {
-                return true;
-              }
-            }
-          }
-          return false;
-        }
+    /**
+     * 繪製盤面：
+     * 1. 主造型區同一位置 (gx, gy) 疊多張牌時，固定只微幅偏移頂牌並露出底下 1 層深色牌邊
+     * 2. 下方左右兩側橫向盲盒牌疊：被壓住的牌顯示為不劇透圖案的側邊牌條 (.blind-covered)
+     * 3. 移出 3 張的暫存卡牌獨立繪製在專屬的 #holding-zone，絕不與盤面下方兩疊盲牌重疊
+     */
+    function renderBoard() {
+      const board = document.getElementById('game-board');
+      board.innerHTML = '';
 
-        /**
-         * 繪製盤面：
-         * 1. 主造型區同一位置 (gx, gy) 疊多張牌時，固定只微幅偏移頂牌並露出底下 1 層深色牌邊
-         * 2. 下方左右兩側橫向盲盒牌疊：被壓住的牌顯示為不劇透圖案的側邊牌條 (.blind-covered)
-         * 3. 移出 3 張的暫存卡牌獨立繪製在專屬的 #holding-zone，絕不與盤面下方兩疊盲牌重疊
-         */
-        function renderBoard() {
-          const board = document.getElementById('game-board');
-          board.innerHTML = '';
+      // 統計主造型區同一個座標點目前還活著的卡牌（由上層排到下層）
+      const stackGroups = {};
+      cards.forEach(c => {
+        if (!c.active || c.isBottomBlind || c.isPoppedOut) return;
+        const key = `${c.gx.toFixed(2)},${c.gy.toFixed(2)}`;
+        if (!stackGroups[key]) stackGroups[key] = [];
+        stackGroups[key].push(c);
+      });
 
-          // 統計主造型區同一個座標點目前還活著的卡牌（由上層排到下層）
-          const stackGroups = {};
-          cards.forEach(c => {
-            if (!c.active || c.isBottomBlind || c.isPoppedOut) return;
-            const key = `${c.gx.toFixed(2)},${c.gy.toFixed(2)}`;
-            if (!stackGroups[key]) stackGroups[key] = [];
-            stackGroups[key].push(c);
-          });
+      Object.values(stackGroups).forEach(group => {
+        group.sort((a, b) => b.z - a.z); // index 0 為該疊最上面那張
+      });
 
-          Object.values(stackGroups).forEach(group => {
-            group.sort((a, b) => b.z - a.z); // index 0 為該疊最上面那張
-          });
+      const stackShiftX = -Math.max(4, Math.round(cardSize * 0.09));
+      const stackShiftY = -Math.max(5, Math.round(cardSize * 0.11));
 
-          const stackShiftX = -Math.max(4, Math.round(cardSize * 0.09));
-          const stackShiftY = -Math.max(5, Math.round(cardSize * 0.11));
+      cards.forEach((c, idx) => {
+        // 已移出至暫存區的卡牌不在主盤面內渲染，改由 renderHoldingZone() 獨立渲染
+        if (!c.active || c.isPoppedOut) return;
 
-          cards.forEach((c, idx) => {
-            // 已移出至暫存區的卡牌不在主盤面內渲染，改由 renderHoldingZone() 獨立渲染
-            if (!c.active || c.isPoppedOut) return;
+        let offsetX = 0;
+        let offsetY = 0;
 
-            let offsetX = 0;
-            let offsetY = 0;
+        if (!c.isBottomBlind) {
+          const key = `${c.gx.toFixed(2)},${c.gy.toFixed(2)}`;
+          const group = stackGroups[key];
+          const rankInStack = group.indexOf(c); // 0 = 最頂層, 1 = 第二層, >=2 = 更底層
 
-            if (!c.isBottomBlind) {
-              const key = `${c.gx.toFixed(2)},${c.gy.toFixed(2)}`;
-              const group = stackGroups[key];
-              const rankInStack = group.indexOf(c); // 0 = 最頂層, 1 = 第二層, >=2 = 更底層
+          // 同一疊中第 3 張以下的牌完全藏在第 2 張的位置底下，不重複渲染以免陰影疊加洩漏張數
+          if (rankInStack >= 2) return;
 
-              // 同一疊中第 3 張以下的牌完全藏在第 2 張的位置底下，不重複渲染以免陰影疊加洩漏張數
-              if (rankInStack >= 2) return;
-
-              if (group.length > 1 && rankInStack === 0) {
-                offsetX = stackShiftX;
-                offsetY = stackShiftY;
-              }
-            }
-
-            const covered = isCovered(c);
-            const el = document.createElement('div');
-            el.className = 'card';
-            if (isShuffling) el.classList.add('shuffling');
-
-            el.style.left = (c.baseX + offsetX) + 'px';
-            el.style.top = (c.baseY + offsetY) + 'px';
-            el.style.zIndex = c.z * 10 + idx;
-
-            if (covered && c.isBottomBlind) {
-              el.classList.add('blind-covered');
-            } else {
-              el.style.backgroundImage = toCssImgUrl(c.type);
-              el.style.backgroundSize = 'cover';
-              el.style.backgroundPosition = 'center';
-              el.style.backgroundRepeat = 'no-repeat';
-
-              if (c.special === 'double') {
-                el.classList.add('special-double');
-                el.innerHTML = '<span class="special-badge double">2x</span>';
-              } else if (c.special === 'freeze') {
-                el.classList.add('special-freeze');
-                el.innerHTML = '<span class="special-badge freeze">❄️</span>';
-              }
-
-              if (covered) {
-                el.classList.add('covered');
-              } else {
-                el.onclick = () => handleCardClick(c, el);
-              }
-            }
-            board.appendChild(el);
-          });
-
-          renderHoldingZone();
-        }
-
-        // 獨立渲染「📤 移出3張」專用暫存區（完全獨立於盤面外，不與下方兩疊盲牌重疊）
-        function renderHoldingZone() {
-          const zoneEl = document.getElementById('holding-zone');
-          const slotsEl = document.getElementById('holding-slots');
-          if (!zoneEl || !slotsEl) return;
-
-          const poppedCards = cards.filter(c => c.active && c.isPoppedOut);
-          if (poppedCards.length === 0) {
-            zoneEl.classList.remove('active');
-            slotsEl.innerHTML = '';
-            return;
-          }
-
-          zoneEl.classList.add('active');
-          slotsEl.innerHTML = '';
-
-          for (let i = 0; i < 3; i++) {
-            const slot = document.createElement('div');
-            slot.className = 'holding-slot';
-            const cardObj = poppedCards[i];
-            if (cardObj) {
-              const el = document.createElement('div');
-              el.className = 'holding-card';
-              el.style.backgroundImage = toCssImgUrl(cardObj.type);
-              el.onclick = () => handleCardClick(cardObj, el);
-              slot.appendChild(el);
-            }
-            slotsEl.appendChild(slot);
+          if (group.length > 1 && rankInStack === 0) {
+            offsetX = stackShiftX;
+            offsetY = stackShiftY;
           }
         }
 
-        // 音效、背景音樂與主題／震動設定系統（使用內建 Web Audio API 即時合成，免外部音檔、零延遲）
-        let audioCtx = null;
-        const STORAGE_BGM_KEY = 'pet_match_bgm_v1';
-        const STORAGE_BGM_STYLE_KEY = 'pet_match_bgm_style_v1';
-        const STORAGE_SFX_KEY = 'pet_match_sfx_v1';
-        const STORAGE_VIBRATE_KEY = 'pet_match_vibrate_v1';
-        const STORAGE_THEME_KEY = 'pet_match_theme_v1';
+        const covered = isCovered(c);
+        const el = document.createElement('div');
+        el.className = 'card';
+        if (isShuffling) el.classList.add('shuffling');
 
-        let bgmEnabled = localStorage.getItem(STORAGE_BGM_KEY) !== 'off';
-        let bgmStyle = localStorage.getItem(STORAGE_BGM_STYLE_KEY) || 'xylophone';
-        let sfxEnabled = localStorage.getItem(STORAGE_SFX_KEY) !== 'off';
-        let vibrateEnabled = localStorage.getItem(STORAGE_VIBRATE_KEY) !== 'off';
-        let currentTheme = localStorage.getItem(STORAGE_THEME_KEY) || 'meadow';
-        let bgmTimer = null;
-        let bgmStep = 0;
+        el.style.left = (c.baseX + offsetX) + 'px';
+        el.style.top = (c.baseY + offsetY) + 'px';
+        el.style.zIndex = c.z * 10 + idx;
 
-        function triggerVibrate(pattern) {
-          if (!vibrateEnabled) return;
-          try {
-            if (navigator.vibrate) navigator.vibrate(pattern);
-          } catch (e) {}
-        }
+        if (covered && c.isBottomBlind) {
+          el.classList.add('blind-covered');
+        } else {
+          el.style.backgroundImage = toCssImgUrl(c.type);
+          el.style.backgroundSize = 'cover';
+          el.style.backgroundPosition = 'center';
+          el.style.backgroundRepeat = 'no-repeat';
 
-        // 旋律 1：療癒輕快木琴（C大調五聲與和弦分解）
-        const BGM_MELODY = [
-          523.25, 659.25, 783.99, 659.25, 880.00, 783.99, 659.25, 587.33,
-          523.25, 587.33, 659.25, 783.99, 659.25, 587.33, 523.25, 0,
-          659.25, 783.99, 880.00, 1046.50, 880.00, 783.99, 659.25, 783.99,
-          587.33, 659.25, 587.33, 523.25, 587.33, 659.25, 523.25, 0
-        ];
-        const BGM_BASS = [
-          261.63, 0, 392.00, 0, 349.23, 0, 392.00, 0,
-          261.63, 0, 329.63, 0, 293.66, 0, 392.00, 0,
-          329.63, 0, 440.00, 0, 349.23, 0, 392.00, 0,
-          293.66, 0, 392.00, 0, 261.63, 0, 261.63, 0
-        ];
-
-        // 旋律 2：夢幻八音盒華爾滋（高音清脆八音盒）
-        const BGM_MUSICBOX_MELODY = [
-          783.99, 1046.50, 987.77, 783.99, 880.00, 659.25, 698.46, 783.99,
-          880.00, 987.77, 1046.50, 783.99, 659.25, 587.33, 523.25, 0,
-          1046.50, 987.77, 880.00, 783.99, 880.00, 783.99, 659.25, 523.25,
-          587.33, 659.25, 783.99, 659.25, 587.33, 523.25, 523.25, 0
-        ];
-        const BGM_MUSICBOX_BASS = [
-          261.63, 392.00, 523.25, 0, 349.23, 440.00, 523.25, 0,
-          293.66, 440.00, 587.33, 0, 196.00, 392.00, 261.63, 0,
-          261.63, 392.00, 523.25, 0, 329.63, 392.00, 523.25, 0,
-          293.66, 392.00, 261.63, 0, 261.63, 0, 261.63, 0
-        ];
-
-        function getAudioContext() {
-          if (!audioCtx) {
-            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-            if (AudioContextClass) {
-              audioCtx = new AudioContextClass();
-            }
+          if (c.special === 'double') {
+            el.classList.add('special-double');
+            el.innerHTML = '<span class="special-badge double">2x</span>';
+          } else if (c.special === 'freeze') {
+            el.classList.add('special-freeze');
+            el.innerHTML = '<span class="special-badge freeze">❄️</span>';
           }
-          if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
-          }
-          return audioCtx;
-        }
 
-        function playBgmNote() {
-          if (!bgmEnabled) return;
-          try {
-            const ctx = getAudioContext();
-            if (!ctx || ctx.state !== 'running') return;
-            const now = ctx.currentTime;
-            const melodyArr = bgmStyle === 'musicbox' ? BGM_MUSICBOX_MELODY : BGM_MELODY;
-            const bassArr = bgmStyle === 'musicbox' ? BGM_MUSICBOX_BASS : BGM_BASS;
-            const idx = bgmStep % melodyArr.length;
-            const note = melodyArr[idx];
-            const bass = bassArr[idx];
-            bgmStep++;
-
-            if (note > 0) {
-              const osc = ctx.createOscillator();
-              const gain = ctx.createGain();
-              osc.type = bgmStyle === 'musicbox' ? 'triangle' : 'sine';
-              osc.frequency.setValueAtTime(note, now);
-              gain.gain.setValueAtTime(0.001, now);
-              gain.gain.linearRampToValueAtTime(bgmStyle === 'musicbox' ? 0.036 : 0.045, now + 0.02);
-              gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.28);
-              osc.connect(gain);
-              gain.connect(ctx.destination);
-              osc.start(now);
-              osc.stop(now + 0.29);
-            }
-
-            if (bass > 0) {
-              const bOsc = ctx.createOscillator();
-              const bGain = ctx.createGain();
-              bOsc.type = 'triangle';
-              bOsc.frequency.setValueAtTime(bass, now);
-              bGain.gain.setValueAtTime(0.001, now);
-              bGain.gain.linearRampToValueAtTime(0.024, now + 0.02);
-              bGain.gain.exponentialRampToValueAtTime(0.0008, now + 0.34);
-              bOsc.connect(bGain);
-              bGain.connect(ctx.destination);
-              bOsc.start(now);
-              bOsc.stop(now + 0.35);
-            }
-          } catch (e) {}
-        }
-
-        function startBGM() {
-          if (!bgmEnabled || bgmTimer) return;
-          getAudioContext();
-          bgmTimer = setInterval(playBgmNote, 260);
-        }
-
-        function stopBGM() {
-          if (bgmTimer) {
-            clearInterval(bgmTimer);
-            bgmTimer = null;
-          }
-        }
-
-        function updateBgmBtnUI() {
-          const btn = document.getElementById('bgm-toggle-btn');
-          if (!btn) return;
-          btn.textContent = bgmEnabled ? '開啟' : '關閉';
-          btn.classList.toggle('on', bgmEnabled);
-        }
-
-        function toggleBGM() {
-          bgmEnabled = !bgmEnabled;
-          localStorage.setItem(STORAGE_BGM_KEY, bgmEnabled ? 'on' : 'off');
-          updateBgmBtnUI();
-          if (bgmEnabled) {
-            startBGM();
-            playBgmNote();
+          if (covered) {
+            el.classList.add('covered');
           } else {
-            stopBGM();
+            el.onclick = () => handleCardClick(c, el);
           }
         }
+        board.appendChild(el);
+      });
 
-        // 當使用者首次點擊畫面任一處時，若音樂開啟則自動啟動背景音樂（符合瀏覽器音訊政策）
-        document.addEventListener('pointerdown', () => {
-          if (bgmEnabled) {
-            getAudioContext();
-            if (!bgmTimer) startBGM();
-          }
-        }, { passive: true });
+      renderHoldingZone();
+    }
 
-        // 點擊卡牌的清脆波啵聲
-        function playCardClickSound() {
-          triggerVibrate(10);
-          if (!sfxEnabled) return;
-          try {
-            const ctx = getAudioContext();
-            if (!ctx) return;
-            const now = ctx.currentTime;
+    // 獨立渲染「📤 移出3張」專用暫存區（完全獨立於盤面外，不與下方兩疊盲牌重疊）
+    function renderHoldingZone() {
+      const zoneEl = document.getElementById('holding-zone');
+      const slotsEl = document.getElementById('holding-slots');
+      if (!zoneEl || !slotsEl) return;
 
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(480, now);
-            osc.frequency.exponentialRampToValueAtTime(820, now + 0.065);
+      const poppedCards = cards.filter(c => c.active && c.isPoppedOut);
+      if (poppedCards.length === 0) {
+        zoneEl.classList.remove('active');
+        slotsEl.innerHTML = '';
+        return;
+      }
 
-            gain.gain.setValueAtTime(0.22, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+      zoneEl.classList.add('active');
+      slotsEl.innerHTML = '';
 
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start(now);
-            osc.stop(now + 0.075);
-          } catch (e) {}
+      for (let i = 0; i < 3; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'holding-slot';
+        const cardObj = poppedCards[i];
+        if (cardObj) {
+          const el = document.createElement('div');
+          el.className = 'holding-card';
+          el.style.backgroundImage = toCssImgUrl(cardObj.type);
+          el.onclick = () => handleCardClick(cardObj, el);
+          slot.appendChild(el);
+        }
+        slotsEl.appendChild(slot);
+      }
+    }
+
+    // 音效、背景音樂與主題／震動設定系統（使用內建 Web Audio API 即時合成，免外部音檔、零延遲）
+    let audioCtx = null;
+    const STORAGE_BGM_KEY = 'pet_match_bgm_v1';
+    const STORAGE_BGM_STYLE_KEY = 'pet_match_bgm_style_v1';
+    const STORAGE_SFX_KEY = 'pet_match_sfx_v1';
+    const STORAGE_VIBRATE_KEY = 'pet_match_vibrate_v1';
+    const STORAGE_THEME_KEY = 'pet_match_theme_v1';
+
+    let bgmEnabled = localStorage.getItem(STORAGE_BGM_KEY) !== 'off';
+    let bgmStyle = localStorage.getItem(STORAGE_BGM_STYLE_KEY) || 'xylophone';
+    let sfxEnabled = localStorage.getItem(STORAGE_SFX_KEY) !== 'off';
+    let vibrateEnabled = localStorage.getItem(STORAGE_VIBRATE_KEY) !== 'off';
+    let currentTheme = localStorage.getItem(STORAGE_THEME_KEY) || 'meadow';
+    let bgmTimer = null;
+    let bgmStep = 0;
+
+    function triggerVibrate(pattern) {
+      if (!vibrateEnabled) return;
+      try {
+        if (navigator.vibrate) navigator.vibrate(pattern);
+      } catch (e) { }
+    }
+
+    // 旋律 1：療癒輕快木琴（C大調五聲與和弦分解）
+    const BGM_MELODY = [
+      523.25, 659.25, 783.99, 659.25, 880.00, 783.99, 659.25, 587.33,
+      523.25, 587.33, 659.25, 783.99, 659.25, 587.33, 523.25, 0,
+      659.25, 783.99, 880.00, 1046.50, 880.00, 783.99, 659.25, 783.99,
+      587.33, 659.25, 587.33, 523.25, 587.33, 659.25, 523.25, 0
+    ];
+    const BGM_BASS = [
+      261.63, 0, 392.00, 0, 349.23, 0, 392.00, 0,
+      261.63, 0, 329.63, 0, 293.66, 0, 392.00, 0,
+      329.63, 0, 440.00, 0, 349.23, 0, 392.00, 0,
+      293.66, 0, 392.00, 0, 261.63, 0, 261.63, 0
+    ];
+
+    // 旋律 2：夢幻八音盒華爾滋（高音清脆八音盒）
+    const BGM_MUSICBOX_MELODY = [
+      783.99, 1046.50, 987.77, 783.99, 880.00, 659.25, 698.46, 783.99,
+      880.00, 987.77, 1046.50, 783.99, 659.25, 587.33, 523.25, 0,
+      1046.50, 987.77, 880.00, 783.99, 880.00, 783.99, 659.25, 523.25,
+      587.33, 659.25, 783.99, 659.25, 587.33, 523.25, 523.25, 0
+    ];
+    const BGM_MUSICBOX_BASS = [
+      261.63, 392.00, 523.25, 0, 349.23, 440.00, 523.25, 0,
+      293.66, 440.00, 587.33, 0, 196.00, 392.00, 261.63, 0,
+      261.63, 392.00, 523.25, 0, 329.63, 392.00, 523.25, 0,
+      293.66, 392.00, 261.63, 0, 261.63, 0, 261.63, 0
+    ];
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playBgmNote() {
+      if (!bgmEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx || ctx.state !== 'running') return;
+        const now = ctx.currentTime;
+        const melodyArr = bgmStyle === 'musicbox' ? BGM_MUSICBOX_MELODY : BGM_MELODY;
+        const bassArr = bgmStyle === 'musicbox' ? BGM_MUSICBOX_BASS : BGM_BASS;
+        const idx = bgmStep % melodyArr.length;
+        const note = melodyArr[idx];
+        const bass = bassArr[idx];
+        bgmStep++;
+
+        if (note > 0) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = bgmStyle === 'musicbox' ? 'triangle' : 'sine';
+          osc.frequency.setValueAtTime(note, now);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(bgmStyle === 'musicbox' ? 0.036 : 0.045, now + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.28);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.29);
         }
 
-        // 湊滿 3 張卡牌消除時的清脆叮咚音效（隨連擊數微幅升調）
-        function playMatchSound(combo = 1) {
-          triggerVibrate(22);
-          if (!sfxEnabled) return;
-          try {
-            const ctx = getAudioContext();
-            if (!ctx) return;
-            const now = ctx.currentTime;
-            const pitchMult = Math.min(1.6, 1 + (combo - 1) * 0.08);
-
-            [587.33 * pitchMult, 880 * pitchMult].forEach((freq, idx) => {
-              const osc = ctx.createOscillator();
-              const gain = ctx.createGain();
-              const start = now + idx * 0.07;
-              osc.type = 'triangle';
-              osc.frequency.setValueAtTime(freq, start);
-
-              gain.gain.setValueAtTime(0.22, start);
-              gain.gain.exponentialRampToValueAtTime(0.001, start + 0.18);
-
-              osc.connect(gain);
-              gain.connect(ctx.destination);
-              osc.start(start);
-              osc.stop(start + 0.19);
-            });
-          } catch (e) {}
+        if (bass > 0) {
+          const bOsc = ctx.createOscillator();
+          const bGain = ctx.createGain();
+          bOsc.type = 'triangle';
+          bOsc.frequency.setValueAtTime(bass, now);
+          bGain.gain.setValueAtTime(0.001, now);
+          bGain.gain.linearRampToValueAtTime(0.024, now + 0.02);
+          bGain.gain.exponentialRampToValueAtTime(0.0008, now + 0.34);
+          bOsc.connect(bGain);
+          bGain.connect(ctx.destination);
+          bOsc.start(now);
+          bOsc.stop(now + 0.35);
         }
+      } catch (e) { }
+    }
 
-        // 浮動連擊 Combo 橫幅特效
-        function spawnComboBanner(combo, gained) {
-          try {
-            const banner = document.createElement('div');
-            banner.className = 'combo-floating';
-            banner.style.top = '42%';
-            banner.innerHTML =
-              combo >= 2
-                ? `🔥 COMBO x${combo} <span style="font-size:0.9rem;">+${gained}</span>`
-                : `✨ +${gained}`;
-            document.body.appendChild(banner);
-            setTimeout(() => banner.remove(), 950);
-          } catch (e) {}
+    function startBGM() {
+      if (!bgmEnabled || bgmTimer) return;
+      getAudioContext();
+      bgmTimer = setInterval(playBgmNote, 260);
+    }
+
+    function stopBGM() {
+      if (bgmTimer) {
+        clearInterval(bgmTimer);
+        bgmTimer = null;
+      }
+    }
+
+    function updateBgmBtnUI() {
+      const btn = document.getElementById('bgm-toggle-btn');
+      if (!btn) return;
+      btn.textContent = bgmEnabled ? '開啟' : '關閉';
+      btn.classList.toggle('on', bgmEnabled);
+    }
+
+    function toggleBGM() {
+      bgmEnabled = !bgmEnabled;
+      localStorage.setItem(STORAGE_BGM_KEY, bgmEnabled ? 'on' : 'off');
+      updateBgmBtnUI();
+      if (bgmEnabled) {
+        startBGM();
+        playBgmNote();
+      } else {
+        stopBGM();
+      }
+    }
+
+    // 當使用者首次點擊畫面任一處時，若音樂開啟則自動啟動背景音樂（符合瀏覽器音訊政策）
+    document.addEventListener('pointerdown', () => {
+      if (bgmEnabled) {
+        getAudioContext();
+        if (!bgmTimer) startBGM();
+      }
+    }, { passive: true });
+
+    // 點擊卡牌的清脆波啵聲
+    function playCardClickSound() {
+      triggerVibrate(10);
+      if (!sfxEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(480, now);
+        osc.frequency.exponentialRampToValueAtTime(820, now + 0.065);
+
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.075);
+      } catch (e) { }
+    }
+
+    // 湊滿 3 張卡牌消除時的清脆叮咚音效（隨連擊數微幅升調）
+    function playMatchSound(combo = 1) {
+      triggerVibrate(22);
+      if (!sfxEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const pitchMult = Math.min(1.6, 1 + (combo - 1) * 0.08);
+
+        [587.33 * pitchMult, 880 * pitchMult].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const start = now + idx * 0.07;
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, start);
+
+          gain.gain.setValueAtTime(0.22, start);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + 0.18);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(start);
+          osc.stop(start + 0.19);
+        });
+      } catch (e) { }
+    }
+
+    // 浮動連擊 Combo 橫幅特效
+    function spawnComboBanner(combo, gained) {
+      try {
+        const banner = document.createElement('div');
+        banner.className = 'combo-floating';
+        banner.style.top = '42%';
+        banner.innerHTML =
+          combo >= 2
+            ? `🔥 COMBO x${combo} <span style="font-size:0.9rem;">+${gained}</span>`
+            : `✨ +${gained}`;
+        document.body.appendChild(banner);
+        setTimeout(() => banner.remove(), 950);
+      } catch (e) { }
+    }
+
+    // 首次解鎖新圖鑑貼紙時的頂部通知
+    function spawnUnlockToast(type) {
+      try {
+        const unlockedCount = Object.keys(unlockedStickers || {}).length;
+        const toast = document.createElement('div');
+        toast.className = 'unlock-toast';
+        toast.innerHTML = `<div class="unlock-toast-thumb" style='background-image:${toCssImgUrl(type)}'></div><span>🎉 圖鑑解鎖新角色！（${unlockedCount}/${ALL_TYPES.length || 60}）</span>`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2200);
+      } catch (e) { }
+    }
+
+    function recordStickerUnlock(type) {
+      try {
+        if (!type) return;
+        if (!unlockedStickers || typeof unlockedStickers !== 'object' || Array.isArray(unlockedStickers)) {
+          unlockedStickers = {};
         }
-
-        // 首次解鎖新圖鑑貼紙時的頂部通知
-        function spawnUnlockToast(type) {
-          try {
-            const unlockedCount = Object.keys(unlockedStickers || {}).length;
-            const toast = document.createElement('div');
-            toast.className = 'unlock-toast';
-            toast.innerHTML = `<div class="unlock-toast-thumb" style='background-image:${toCssImgUrl(type)}'></div><span>🎉 圖鑑解鎖新角色！（${unlockedCount}/${ALL_TYPES.length || 60}）</span>`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2200);
-          } catch (e) {}
+        const isFirstTime = !unlockedStickers[type];
+        unlockedStickers[type] = (unlockedStickers[type] || 0) + 1;
+        if (isFirstTime) {
+          spawnUnlockToast(type);
         }
+      } catch (e) { }
+    }
 
-        function recordStickerUnlock(type) {
-          try {
-            if (!type) return;
-            if (!unlockedStickers || typeof unlockedStickers !== 'object' || Array.isArray(unlockedStickers)) {
-              unlockedStickers = {};
+    // 使用道具時的輕快音效
+    function playToolSound() {
+      triggerVibrate(15);
+      if (!sfxEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        [440, 659.25].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const start = now + idx * 0.055;
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, start);
+          gain.gain.setValueAtTime(0.18, start);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + 0.12);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(start);
+          osc.stop(start + 0.13);
+        });
+      } catch (e) { }
+    }
+
+    // 過關慶祝勝利音效
+    function playWinSound() {
+      triggerVibrate([40, 30, 60]);
+      if (!sfxEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const start = now + idx * 0.085;
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, start);
+          gain.gain.setValueAtTime(0.22, start);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(start);
+          osc.stop(start + 0.26);
+        });
+      } catch (e) { }
+    }
+
+    // 卡牌從盤面平滑飛入下方收集槽動畫
+    function animateCardToTray(sourceRect, targetSlotIdx, imageUrl) {
+      if (!sourceRect) return;
+      const slots = document.querySelectorAll('#tray .tray-slot');
+      const targetEl = slots[targetSlotIdx] || document.getElementById('tray');
+      if (!targetEl) return;
+      const targetRect = targetEl.getBoundingClientRect();
+
+      const flyer = document.createElement('div');
+      flyer.className = 'flying-card';
+      flyer.style.left = `${sourceRect.left}px`;
+      flyer.style.top = `${sourceRect.top}px`;
+      flyer.style.width = `${sourceRect.width}px`;
+      flyer.style.height = `${sourceRect.height}px`;
+      flyer.style.backgroundImage = toCssImgUrl(imageUrl);
+      document.body.appendChild(flyer);
+
+      requestAnimationFrame(() => {
+        flyer.style.left = `${targetRect.left}px`;
+        flyer.style.top = `${targetRect.top}px`;
+        flyer.style.width = `${targetRect.width}px`;
+        flyer.style.height = `${targetRect.height}px`;
+      });
+
+      setTimeout(() => {
+        flyer.remove();
+      }, 195);
+    }
+
+    // 三張消除時的星星與光點粒子爆破特效
+    function spawnMatchParticles(slotIndices) {
+      const slots = document.querySelectorAll('#tray .tray-slot');
+      const symbols = ['✨', '⭐', '🌟', '💛', '🎉'];
+      const indices = slotIndices && slotIndices.length ? slotIndices : [0, 1, 2];
+
+      indices.forEach(slotIdx => {
+        const slotEl = slots[slotIdx];
+        if (!slotEl) return;
+        const rect = slotEl.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+
+        for (let i = 0; i < 6; i++) {
+          const p = document.createElement('div');
+          p.className = 'match-particle';
+          p.textContent = symbols[(slotIdx + i) % symbols.length];
+          const angle = (Math.PI * 2 * i) / 6 + (Math.random() - 0.5) * 0.4;
+          const dist = 28 + Math.random() * 34;
+          const tx = Math.round(Math.cos(angle) * dist);
+          const ty = Math.round(Math.sin(angle) * dist - 14);
+          const rot = Math.round((Math.random() - 0.5) * 180);
+
+          p.style.left = `${cx - 8}px`;
+          p.style.top = `${cy - 8}px`;
+          p.style.setProperty('--tx', `${tx}px`);
+          p.style.setProperty('--ty', `${ty}px`);
+          p.style.setProperty('--rot', `${rot}deg`);
+          document.body.appendChild(p);
+
+          setTimeout(() => p.remove(), 600);
+        }
+      });
+    }
+
+    // 過關時漫天彩帶雨慶祝特效
+    function spawnConfetti() {
+      const colors = ['#ff6b6b', '#ffd43b', '#51cf66', '#339af0', '#cc5de8', '#ff922b'];
+      for (let i = 0; i < 55; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = `${Math.random() * 100}vw`;
+        piece.style.backgroundColor = colors[i % colors.length];
+        piece.style.setProperty('--dur', `${(1.6 + Math.random() * 1.4).toFixed(2)}s`);
+        piece.style.setProperty('--drift', `${Math.round((Math.random() - 0.5) * 140)}px`);
+        piece.style.setProperty('--spin', `${Math.round(360 + Math.random() * 720)}deg`);
+        piece.style.animationDelay = `${(Math.random() * 0.45).toFixed(2)}s`;
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 3500);
+      }
+    }
+
+    function handleCardClick(card, cardEl) {
+      // 若舊存檔導致收集槽有未消除的 3 張同圖案，點擊前先自動清理
+      if (tray.length >= TRAY_MAX) {
+        checkMatch();
+        if (tray.length >= TRAY_MAX) return;
+      }
+
+      const sourceRect = cardEl ? cardEl.getBoundingClientRect() : null;
+      playCardClickSound();
+
+      card.active = false;
+      lastPickedCardId = card.id;
+      tray.push({ id: card.id, type: card.type, special: card.special || null });
+
+      // 將收集槽的卡牌依照圖片路徑字串排序，讓相同的靠在一起
+      tray.sort((a, b) => (a.type > b.type ? 1 : -1));
+      const targetSlotIdx = tray.findIndex(c => c.id === card.id);
+
+      if (sourceRect && targetSlotIdx >= 0) {
+        animateCardToTray(sourceRect, targetSlotIdx, card.type);
+      }
+
+      checkMatch();
+
+      updateStatusUI();
+      renderBoard();
+      renderTray();
+      updateToolsUI();
+      saveProgress();
+
+      setTimeout(checkGameOver, 140);
+    }
+
+    function checkMatch() {
+      let typeCounts = {};
+      let matched = false;
+      let matchedIndices = [];
+      tray.forEach(c => (typeCounts[c.type] = (typeCounts[c.type] || 0) + 1));
+
+      for (let type in typeCounts) {
+        if (typeCounts[type] >= 3) {
+          matched = true;
+          // 1. 優先執行收集槽消除，確保無論如何 3 張同圖案一定會從 tray 移除
+          let removed = 0;
+          let matchedSpecial = null;
+          const nextTray = [];
+          tray.forEach((c, idx) => {
+            if (c.type === type && removed < 3) {
+              removed++;
+              matchedIndices.push(idx);
+              if (c.special) matchedSpecial = c.special;
+              if (c.id === lastPickedCardId) {
+                lastPickedCardId = null;
+              }
+            } else {
+              nextTray.push(c);
             }
-            const isFirstTime = !unlockedStickers[type];
-            unlockedStickers[type] = (unlockedStickers[type] || 0) + 1;
-            if (isFirstTime) {
-              spawnUnlockToast(type);
-            }
-          } catch (e) {}
-        }
-
-        // 使用道具時的輕快音效
-        function playToolSound() {
-          triggerVibrate(15);
-          if (!sfxEnabled) return;
-          try {
-            const ctx = getAudioContext();
-            if (!ctx) return;
-            const now = ctx.currentTime;
-            [440, 659.25].forEach((freq, idx) => {
-              const osc = ctx.createOscillator();
-              const gain = ctx.createGain();
-              const start = now + idx * 0.055;
-              osc.type = 'sine';
-              osc.frequency.setValueAtTime(freq, start);
-              gain.gain.setValueAtTime(0.18, start);
-              gain.gain.exponentialRampToValueAtTime(0.001, start + 0.12);
-              osc.connect(gain);
-              gain.connect(ctx.destination);
-              osc.start(start);
-              osc.stop(start + 0.13);
-            });
-          } catch (e) {}
-        }
-
-        // 過關慶祝勝利音效
-        function playWinSound() {
-          triggerVibrate([40, 30, 60]);
-          if (!sfxEnabled) return;
-          try {
-            const ctx = getAudioContext();
-            if (!ctx) return;
-            const now = ctx.currentTime;
-            [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
-              const osc = ctx.createOscillator();
-              const gain = ctx.createGain();
-              const start = now + idx * 0.085;
-              osc.type = 'triangle';
-              osc.frequency.setValueAtTime(freq, start);
-              gain.gain.setValueAtTime(0.22, start);
-              gain.gain.exponentialRampToValueAtTime(0.001, start + 0.25);
-              osc.connect(gain);
-              gain.connect(ctx.destination);
-              osc.start(start);
-              osc.stop(start + 0.26);
-            });
-          } catch (e) {}
-        }
-
-        // 卡牌從盤面平滑飛入下方收集槽動畫
-        function animateCardToTray(sourceRect, targetSlotIdx, imageUrl) {
-          if (!sourceRect) return;
-          const slots = document.querySelectorAll('#tray .tray-slot');
-          const targetEl = slots[targetSlotIdx] || document.getElementById('tray');
-          if (!targetEl) return;
-          const targetRect = targetEl.getBoundingClientRect();
-
-          const flyer = document.createElement('div');
-          flyer.className = 'flying-card';
-          flyer.style.left = `${sourceRect.left}px`;
-          flyer.style.top = `${sourceRect.top}px`;
-          flyer.style.width = `${sourceRect.width}px`;
-          flyer.style.height = `${sourceRect.height}px`;
-          flyer.style.backgroundImage = toCssImgUrl(imageUrl);
-          document.body.appendChild(flyer);
-
-          requestAnimationFrame(() => {
-            flyer.style.left = `${targetRect.left}px`;
-            flyer.style.top = `${targetRect.top}px`;
-            flyer.style.width = `${targetRect.width}px`;
-            flyer.style.height = `${targetRect.height}px`;
           });
+          tray = nextTray;
 
-          setTimeout(() => {
-            flyer.remove();
-          }, 195);
-        }
-
-        // 三張消除時的星星與光點粒子爆破特效
-        function spawnMatchParticles(slotIndices) {
-          const slots = document.querySelectorAll('#tray .tray-slot');
-          const symbols = ['✨', '⭐', '🌟', '💛', '🎉'];
-          const indices = slotIndices && slotIndices.length ? slotIndices : [0, 1, 2];
-
-          indices.forEach(slotIdx => {
-            const slotEl = slots[slotIdx];
-            if (!slotEl) return;
-            const rect = slotEl.getBoundingClientRect();
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
-
-            for (let i = 0; i < 6; i++) {
-              const p = document.createElement('div');
-              p.className = 'match-particle';
-              p.textContent = symbols[(slotIdx + i) % symbols.length];
-              const angle = (Math.PI * 2 * i) / 6 + (Math.random() - 0.5) * 0.4;
-              const dist = 28 + Math.random() * 34;
-              const tx = Math.round(Math.cos(angle) * dist);
-              const ty = Math.round(Math.sin(angle) * dist - 14);
-              const rot = Math.round((Math.random() - 0.5) * 180);
-
-              p.style.left = `${cx - 8}px`;
-              p.style.top = `${cy - 8}px`;
-              p.style.setProperty('--tx', `${tx}px`);
-              p.style.setProperty('--ty', `${ty}px`);
-              p.style.setProperty('--rot', `${rot}deg`);
-              document.body.appendChild(p);
-
-              setTimeout(() => p.remove(), 600);
-            }
-          });
-        }
-
-        // 過關時漫天彩帶雨慶祝特效
-        function spawnConfetti() {
-          const colors = ['#ff6b6b', '#ffd43b', '#51cf66', '#339af0', '#cc5de8', '#ff922b'];
-          for (let i = 0; i < 55; i++) {
-            const piece = document.createElement('div');
-            piece.className = 'confetti-piece';
-            piece.style.left = `${Math.random() * 100}vw`;
-            piece.style.backgroundColor = colors[i % colors.length];
-            piece.style.setProperty('--dur', `${(1.6 + Math.random() * 1.4).toFixed(2)}s`);
-            piece.style.setProperty('--drift', `${Math.round((Math.random() - 0.5) * 140)}px`);
-            piece.style.setProperty('--spin', `${Math.round(360 + Math.random() * 720)}deg`);
-            piece.style.animationDelay = `${(Math.random() * 0.45).toFixed(2)}s`;
-            document.body.appendChild(piece);
-            setTimeout(() => piece.remove(), 3500);
-          }
-        }
-
-        function handleCardClick(card, cardEl) {
-          // 若舊存檔導致收集槽有未消除的 3 張同圖案，點擊前先自動清理
-          if (tray.length >= TRAY_MAX) {
-            checkMatch();
-            if (tray.length >= TRAY_MAX) return;
-          }
-
-          const sourceRect = cardEl ? cardEl.getBoundingClientRect() : null;
-          playCardClickSound();
-
-          card.active = false;
-          lastPickedCardId = card.id;
-          tray.push({ id: card.id, type: card.type, special: card.special || null });
-
-          // 將收集槽的卡牌依照圖片路徑字串排序，讓相同的靠在一起
-          tray.sort((a, b) => (a.type > b.type ? 1 : -1));
-          const targetSlotIdx = tray.findIndex(c => c.id === card.id);
-
-          if (sourceRect && targetSlotIdx >= 0) {
-            animateCardToTray(sourceRect, targetSlotIdx, card.type);
-          }
-
-          checkMatch();
-
-          updateStatusUI();
-          renderBoard();
-          renderTray();
-          updateToolsUI();
-          saveProgress();
-
-          setTimeout(checkGameOver, 140);
-        }
-
-        function checkMatch() {
-          let typeCounts = {};
-          let matched = false;
-          let matchedIndices = [];
-          tray.forEach(c => (typeCounts[c.type] = (typeCounts[c.type] || 0) + 1));
-
-          for (let type in typeCounts) {
-            if (typeCounts[type] >= 3) {
-              matched = true;
-              // 1. 優先執行收集槽消除，確保無論如何 3 張同圖案一定會從 tray 移除
-              let removed = 0;
-              let matchedSpecial = null;
-              const nextTray = [];
-              tray.forEach((c, idx) => {
-                if (c.type === type && removed < 3) {
-                  removed++;
-                  matchedIndices.push(idx);
-                  if (c.special) matchedSpecial = c.special;
-                  if (c.id === lastPickedCardId) {
-                    lastPickedCardId = null;
-                  }
-                } else {
-                  nextTray.push(c);
-                }
-              });
-              tray = nextTray;
-
-              // 2. 計算連擊、特殊機能卡加成與圖鑑解鎖
-              const now = Date.now();
-              const comboWindowMs = now <= comboFreezeUntil ? 12000 : 6000;
-              if (now - lastMatchTime <= comboWindowMs) {
-                comboCount++;
-              } else {
-                comboCount = 1;
-              }
-              lastMatchTime = now;
-              if (comboCount > maxComboInLevel) {
-                maxComboInLevel = comboCount;
-              }
-
-              let gained = 100 * comboCount;
-              let bannerSuffix = '';
-              if (matchedSpecial === 'double') {
-                gained *= 2;
-                bannerSuffix = ' 🪙2x';
-              } else if (matchedSpecial === 'freeze') {
-                comboFreezeUntil = now + 12000;
-                gained += 150;
-                bannerSuffix = ' ❄️連擊延長';
-              }
-
-              score += gained;
-              if (score > bestScore) {
-                bestScore = score;
-              }
-              recordStickerUnlock(type);
-              spawnComboBanner(comboCount, `${gained}${bannerSuffix}`);
-              checkAchievements({ event: 'match' });
-            }
-          }
-          if (matched) {
-            const currentCombo = comboCount;
-            setTimeout(() => {
-              playMatchSound(currentCombo);
-              spawnMatchParticles(matchedIndices);
-            }, 60);
-          }
-        }
-
-        function renderTray() {
-          const trayEl = document.getElementById('tray');
-          trayEl.innerHTML = '';
-
-          // 收集槽快滿時（5 張或 6 張）顯示紅橘色呼吸警示框
-          if (tray.length >= 5 && tray.length < TRAY_MAX) {
-            trayEl.classList.add('tray-warning');
+          // 2. 計算連擊、特殊機能卡加成與圖鑑解鎖
+          const now = Date.now();
+          const comboWindowMs = now <= comboFreezeUntil ? 12000 : 6000;
+          if (now - lastMatchTime <= comboWindowMs) {
+            comboCount++;
           } else {
-            trayEl.classList.remove('tray-warning');
+            comboCount = 1;
+          }
+          lastMatchTime = now;
+          if (comboCount > maxComboInLevel) {
+            maxComboInLevel = comboCount;
           }
 
-          // 固定渲染 7 個凹槽底框，讓剩餘空間一目了然
-          for (let i = 0; i < TRAY_MAX; i++) {
-            const slot = document.createElement('div');
-            slot.className = 'tray-slot';
-
-            const item = tray[i];
-            if (item) {
-              const el = document.createElement('div');
-              el.className = 'tray-card';
-              el.style.backgroundImage = toCssImgUrl(item.type);
-              el.style.backgroundSize = 'cover';
-              el.style.backgroundPosition = 'center';
-              el.style.backgroundRepeat = 'no-repeat';
-              slot.appendChild(el);
-            }
-
-            trayEl.appendChild(slot);
+          let gained = 100 * comboCount;
+          let bannerSuffix = '';
+          if (matchedSpecial === 'double') {
+            gained *= 2;
+            bannerSuffix = ' 🪙2x';
+          } else if (matchedSpecial === 'freeze') {
+            comboFreezeUntil = now + 12000;
+            gained += 150;
+            bannerSuffix = ' ❄️連擊延長';
           }
+
+          score += gained;
+          if (score > bestScore) {
+            bestScore = score;
+          }
+          recordStickerUnlock(type);
+          spawnComboBanner(comboCount, `${gained}${bannerSuffix}`);
+          checkAchievements({ event: 'match' });
+        }
+      }
+      if (matched) {
+        const currentCombo = comboCount;
+        setTimeout(() => {
+          playMatchSound(currentCombo);
+          spawnMatchParticles(matchedIndices);
+        }, 60);
+      }
+    }
+
+    function renderTray() {
+      const trayEl = document.getElementById('tray');
+      trayEl.innerHTML = '';
+
+      // 收集槽快滿時（5 張或 6 張）顯示紅橘色呼吸警示框
+      if (tray.length >= 5 && tray.length < TRAY_MAX) {
+        trayEl.classList.add('tray-warning');
+      } else {
+        trayEl.classList.remove('tray-warning');
+      }
+
+      // 固定渲染 7 個凹槽底框，讓剩餘空間一目了然
+      for (let i = 0; i < TRAY_MAX; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'tray-slot';
+
+        const item = tray[i];
+        if (item) {
+          const el = document.createElement('div');
+          el.className = 'tray-card';
+          el.style.backgroundImage = toCssImgUrl(item.type);
+          el.style.backgroundSize = 'cover';
+          el.style.backgroundPosition = 'center';
+          el.style.backgroundRepeat = 'no-repeat';
+          slot.appendChild(el);
         }
 
-        // 救援道具 1：↩️ 悔棋（將上一張點進收集槽的卡牌退回場上原位）
-        function useUndoTool() {
-          if (toolsRemaining.undo <= 0 || lastPickedCardId === null) return;
-          const idx = tray.findIndex(c => c.id === lastPickedCardId);
-          if (idx === -1) return;
+        trayEl.appendChild(slot);
+      }
+    }
 
-          const [removed] = tray.splice(idx, 1);
-          const boardCard = cards.find(c => c.id === removed.id);
-          if (boardCard) {
-            boardCard.active = true;
+    // 救援道具 1：↩️ 悔棋（將上一張點進收集槽的卡牌退回場上原位）
+    function useUndoTool() {
+      if (toolsRemaining.undo <= 0 || lastPickedCardId === null) return;
+      const idx = tray.findIndex(c => c.id === lastPickedCardId);
+      if (idx === -1) return;
+
+      const [removed] = tray.splice(idx, 1);
+      const boardCard = cards.find(c => c.id === removed.id);
+      if (boardCard) {
+        boardCard.active = true;
+      }
+
+      toolsRemaining.undo--;
+      lastPickedCardId = null;
+      playToolSound();
+      updateStatusUI();
+      renderBoard();
+      renderTray();
+      updateToolsUI();
+      saveProgress();
+    }
+
+    // 救援道具 2：🔀 洗牌（只洗牌場上尚未被移出的剩餘卡牌，已用「移出3張」的卡牌保持不變）
+    function useShuffleTool() {
+      // 排除已使用「📤 移出3張」放到暫存區的卡牌 (c.isPoppedOut)
+      const activeCards = cards.filter(c => c.active && !c.isPoppedOut);
+      if (toolsRemaining.shuffle <= 0 || activeCards.length <= 1) return;
+
+      const pool = activeCards.map(c => c.type);
+      const trayCounts = {};
+      tray.forEach(t => {
+        trayCounts[t.type] = (trayCounts[t.type] || 0) + 1;
+      });
+
+      // 統計待洗牌池中每種圖案的數量；若某圖案在池中數量不是 3 的倍數，代表另外 1~2 張在收集槽或暫存區
+      const poolCounts = {};
+      pool.forEach(type => {
+        poolCounts[type] = (poolCounts[type] || 0) + 1;
+      });
+
+      // 將不成套（需要與收集槽或暫存區配對）的餘數牌挑出，優先排在最上層（收集槽有的最優先）
+      const remainderTypes = Object.keys(poolCounts)
+        .filter(type => poolCounts[type] % 3 !== 0)
+        .sort((a, b) => (trayCounts[b] || 0) - (trayCounts[a] || 0));
+
+      const priorityTypes = [];
+      remainderTypes.forEach(type => {
+        const rem = poolCounts[type] % 3;
+        for (let k = 0; k < rem; k++) {
+          const pIdx = pool.indexOf(type);
+          if (pIdx !== -1) {
+            priorityTypes.push(pool.splice(pIdx, 1)[0]);
           }
-
-          toolsRemaining.undo--;
-          lastPickedCardId = null;
-          playToolSound();
-          updateStatusUI();
-          renderBoard();
-          renderTray();
-          updateToolsUI();
-          saveProgress();
         }
+      });
 
-        // 救援道具 2：🔀 洗牌（只洗牌場上尚未被移出的剩餘卡牌，已用「移出3張」的卡牌保持不變）
-        function useShuffleTool() {
-          // 排除已使用「📤 移出3張」放到暫存區的卡牌 (c.isPoppedOut)
-          const activeCards = cards.filter(c => c.active && !c.isPoppedOut);
-          if (toolsRemaining.shuffle <= 0 || activeCards.length <= 1) return;
+      // 此時 pool 內剩餘的所有圖案數量皆為 3 的倍數，整理成 triplet 清單並隨機打亂
+      pool.sort();
+      const remainingTriplets = [];
+      for (let i = 0; i + 2 < pool.length; i += 3) {
+        remainingTriplets.push(pool[i]);
+      }
+      for (let i = remainingTriplets.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [remainingTriplets[i], remainingTriplets[j]] = [remainingTriplets[j], remainingTriplets[i]];
+      }
 
-          const pool = activeCards.map(c => c.type);
-          const trayCounts = {};
-          tray.forEach(t => {
-            trayCounts[t.type] = (trayCounts[t.type] || 0) + 1;
-          });
+      const overlapThreshold = 0.88;
+      const remaining = new Set(activeCards.map((_, idx) => idx));
 
-          // 統計待洗牌池中每種圖案的數量；若某圖案在池中數量不是 3 的倍數，代表另外 1~2 張在收集槽或暫存區
-          const poolCounts = {};
-          pool.forEach(type => {
-            poolCounts[type] = (poolCounts[type] || 0) + 1;
-          });
-
-          // 將不成套（需要與收集槽或暫存區配對）的餘數牌挑出，優先排在最上層（收集槽有的最優先）
-          const remainderTypes = Object.keys(poolCounts)
-            .filter(type => poolCounts[type] % 3 !== 0)
-            .sort((a, b) => (trayCounts[b] || 0) - (trayCounts[a] || 0));
-
-          const priorityTypes = [];
-          remainderTypes.forEach(type => {
-            const rem = poolCounts[type] % 3;
-            for (let k = 0; k < rem; k++) {
-              const pIdx = pool.indexOf(type);
-              if (pIdx !== -1) {
-                priorityTypes.push(pool.splice(pIdx, 1)[0]);
-              }
+      function isActExposed(targetIdx) {
+        const target = activeCards[targetIdx];
+        for (const otherIdx of remaining) {
+          if (otherIdx === targetIdx) continue;
+          const other = activeCards[otherIdx];
+          if (other.z > target.z) {
+            if (
+              Math.abs(other.gx - target.gx) < overlapThreshold &&
+              Math.abs(other.gy - target.gy) < overlapThreshold
+            ) {
+              return false;
             }
-          });
-
-          // 此時 pool 內剩餘的所有圖案數量皆為 3 的倍數，整理成 triplet 清單並隨機打亂
-          pool.sort();
-          const remainingTriplets = [];
-          for (let i = 0; i + 2 < pool.length; i += 3) {
-            remainingTriplets.push(pool[i]);
           }
-          for (let i = remainingTriplets.length - 1; i > 0; i--) {
+        }
+        return true;
+      }
+
+      function pickNextActIdx() {
+        const exposed = [];
+        for (const idx of remaining) {
+          if (isActExposed(idx)) exposed.push(idx);
+        }
+        const chosen = exposed[Math.floor(Math.random() * exposed.length)];
+        remaining.delete(chosen);
+        return chosen;
+      }
+
+      // 1. 先將能與收集槽／暫存區配對消除的圖案放到最上層可點位置
+      priorityTypes.forEach(type => {
+        if (remaining.size > 0) {
+          const idx = pickNextActIdx();
+          activeCards[idx].type = type;
+        }
+      });
+
+      // 2. 接著將剩餘所有 3 張一組的牌依 100% 保證可解的拓撲順序分配完畢
+      let tIdx = 0;
+      while (tIdx < remainingTriplets.length && remaining.size >= 3) {
+        if (tIdx + 1 < remainingTriplets.length && remaining.size >= 6) {
+          const t1 = remainingTriplets[tIdx];
+          const t2 = remainingTriplets[tIdx + 1];
+          const picked = [];
+          for (let k = 0; k < 6; k++) picked.push(pickNextActIdx());
+          const pairPool = [t1, t1, t1, t2, t2, t2];
+          for (let i = pairPool.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [remainingTriplets[i], remainingTriplets[j]] = [remainingTriplets[j], remainingTriplets[i]];
+            [pairPool[i], pairPool[j]] = [pairPool[j], pairPool[i]];
           }
-
-          const overlapThreshold = 0.88;
-          const remaining = new Set(activeCards.map((_, idx) => idx));
-
-          function isActExposed(targetIdx) {
-            const target = activeCards[targetIdx];
-            for (const otherIdx of remaining) {
-              if (otherIdx === targetIdx) continue;
-              const other = activeCards[otherIdx];
-              if (other.z > target.z) {
-                if (
-                  Math.abs(other.gx - target.gx) < overlapThreshold &&
-                  Math.abs(other.gy - target.gy) < overlapThreshold
-                ) {
-                  return false;
-                }
-              }
-            }
-            return true;
-          }
-
-          function pickNextActIdx() {
-            const exposed = [];
-            for (const idx of remaining) {
-              if (isActExposed(idx)) exposed.push(idx);
-            }
-            const chosen = exposed[Math.floor(Math.random() * exposed.length)];
-            remaining.delete(chosen);
-            return chosen;
-          }
-
-          // 1. 先將能與收集槽／暫存區配對消除的圖案放到最上層可點位置
-          priorityTypes.forEach(type => {
+          picked.forEach((actIdx, k) => {
+            activeCards[actIdx].type = pairPool[k];
+          });
+          tIdx += 2;
+        } else {
+          const t1 = remainingTriplets[tIdx];
+          for (let k = 0; k < 3; k++) {
             if (remaining.size > 0) {
-              const idx = pickNextActIdx();
-              activeCards[idx].type = type;
-            }
-          });
-
-          // 2. 接著將剩餘所有 3 張一組的牌依 100% 保證可解的拓撲順序分配完畢
-          let tIdx = 0;
-          while (tIdx < remainingTriplets.length && remaining.size >= 3) {
-            if (tIdx + 1 < remainingTriplets.length && remaining.size >= 6) {
-              const t1 = remainingTriplets[tIdx];
-              const t2 = remainingTriplets[tIdx + 1];
-              const picked = [];
-              for (let k = 0; k < 6; k++) picked.push(pickNextActIdx());
-              const pairPool = [t1, t1, t1, t2, t2, t2];
-              for (let i = pairPool.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [pairPool[i], pairPool[j]] = [pairPool[j], pairPool[i]];
-              }
-              picked.forEach((actIdx, k) => {
-                activeCards[actIdx].type = pairPool[k];
-              });
-              tIdx += 2;
-            } else {
-              const t1 = remainingTriplets[tIdx];
-              for (let k = 0; k < 3; k++) {
-                if (remaining.size > 0) {
-                  activeCards[pickNextActIdx()].type = t1;
-                }
-              }
-              tIdx += 1;
+              activeCards[pickNextActIdx()].type = t1;
             }
           }
-
-          toolsRemaining.shuffle--;
-          isShuffling = true;
-          playToolSound();
-          renderBoard();
-          updateToolsUI();
-          saveProgress();
-
-          setTimeout(() => {
-            isShuffling = false;
-          }, 380);
+          tIdx += 1;
         }
+      }
 
-        // 救援道具 3：📤 移出前 3 張（將收集槽最前面的最多 3 張卡牌移到盤面外的專屬 #holding-zone 暫存區）
-        function usePopOutTool() {
-          if (toolsRemaining.pop <= 0 || tray.length === 0) return;
+      toolsRemaining.shuffle--;
+      isShuffling = true;
+      playToolSound();
+      renderBoard();
+      updateToolsUI();
+      saveProgress();
 
-          const count = Math.min(3, tray.length);
-          const poppedItems = tray.splice(0, count);
+      setTimeout(() => {
+        isShuffling = false;
+      }, 380);
+    }
 
-          poppedItems.forEach(item => {
-            if (item.id === lastPickedCardId) {
-              lastPickedCardId = null;
-            }
-            const boardCard = cards.find(c => c.id === item.id);
-            if (boardCard) {
-              boardCard.isBottomBlind = false;
-              boardCard.isPoppedOut = true;
-              boardCard.active = true;
-            }
-          });
+    // 救援道具 3：📤 移出前 3 張（將收集槽最前面的最多 3 張卡牌移到盤面外的專屬 #holding-zone 暫存區）
+    function usePopOutTool() {
+      if (toolsRemaining.pop <= 0 || tray.length === 0) return;
 
-          toolsRemaining.pop--;
-          playToolSound();
-          updateStatusUI();
-          renderBoard();
-          renderTray();
-          updateToolsUI();
-          saveProgress();
+      const count = Math.min(3, tray.length);
+      const poppedItems = tray.splice(0, count);
+
+      poppedItems.forEach(item => {
+        if (item.id === lastPickedCardId) {
+          lastPickedCardId = null;
         }
-
-        // ==================== 60 張角色收集圖鑑 ====================
-        function openPokedexModal() {
-          renderPokedex();
-          document.getElementById('pokedex-modal').classList.add('show');
+        const boardCard = cards.find(c => c.id === item.id);
+        if (boardCard) {
+          boardCard.isBottomBlind = false;
+          boardCard.isPoppedOut = true;
+          boardCard.active = true;
         }
+      });
 
-        function closePokedexModal() {
-          document.getElementById('pokedex-modal').classList.remove('show');
-        }
+      toolsRemaining.pop--;
+      playToolSound();
+      updateStatusUI();
+      renderBoard();
+      renderTray();
+      updateToolsUI();
+      saveProgress();
+    }
 
-        function switchPokedexTab(tab) {
-          currentPokedexTab = tab;
-          const tabMap = {
-            all: 'tab-all',
-            cat: 'tab-cat',
-            dog: 'tab-dog',
-            '三麗鷗': 'tab-sanrio'
-          };
-          document.querySelectorAll('.pokedex-tab').forEach(btn => {
-            btn.classList.toggle('active', btn.id === tabMap[tab]);
-          });
-          renderPokedex();
-        }
+    // ==================== 60 張角色收集圖鑑 ====================
+    function openPokedexModal() {
+      renderPokedex();
+      document.getElementById('pokedex-modal').classList.add('show');
+    }
 
-        function renderPokedex() {
-          const totalCount = ALL_TYPES.length || 60;
-          const stickerDict =
-            unlockedStickers && typeof unlockedStickers === 'object' && !Array.isArray(unlockedStickers)
-              ? unlockedStickers
-              : {};
-          const unlockedCount = ALL_TYPES.filter(t => Boolean(stickerDict[t])).length;
-          const pct = totalCount > 0 ? Math.round((unlockedCount / totalCount) * 100) : 0;
+    function closePokedexModal() {
+      document.getElementById('pokedex-modal').classList.remove('show');
+    }
 
-          const progText = document.getElementById('pokedex-progress-text');
-          const pctText = document.getElementById('pokedex-percent-text');
-          const progFill = document.getElementById('pokedex-progress-fill');
-          if (progText) progText.textContent = `已解鎖：${unlockedCount} / ${totalCount} 張`;
-          if (pctText) pctText.textContent = `${pct}%`;
-          if (progFill) progFill.style.width = `${pct}%`;
+    function switchPokedexTab(tab) {
+      currentPokedexTab = tab;
+      const tabMap = {
+        all: 'tab-all',
+        cat: 'tab-cat',
+        dog: 'tab-dog',
+        '三麗鷗': 'tab-sanrio'
+      };
+      document.querySelectorAll('.pokedex-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.id === tabMap[tab]);
+      });
+      renderPokedex();
+    }
 
-          const gridEl = document.getElementById('pokedex-grid');
-          if (!gridEl) return;
-          gridEl.innerHTML = '';
+    function renderPokedex() {
+      const totalCount = ALL_TYPES.length || 60;
+      const stickerDict =
+        unlockedStickers && typeof unlockedStickers === 'object' && !Array.isArray(unlockedStickers)
+          ? unlockedStickers
+          : {};
+      const unlockedCount = ALL_TYPES.filter(t => Boolean(stickerDict[t])).length;
+      const pct = totalCount > 0 ? Math.round((unlockedCount / totalCount) * 100) : 0;
 
-          const filtered = ALL_TYPES.filter(url => {
-            if (currentPokedexTab === 'all') return true;
-            return url.includes(`assets/${currentPokedexTab}/`);
-          });
+      const progText = document.getElementById('pokedex-progress-text');
+      const pctText = document.getElementById('pokedex-percent-text');
+      const progFill = document.getElementById('pokedex-progress-fill');
+      if (progText) progText.textContent = `已解鎖：${unlockedCount} / ${totalCount} 張`;
+      if (pctText) pctText.textContent = `${pct}%`;
+      if (progFill) progFill.style.width = `${pct}%`;
 
-          filtered.forEach(url => {
-            const count = stickerDict[url] || 0;
-            const isUnlocked = count > 0;
-            const item = document.createElement('div');
-            item.className = `pokedex-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+      const gridEl = document.getElementById('pokedex-grid');
+      if (!gridEl) return;
+      gridEl.innerHTML = '';
 
-            // 解析分類與編號
-            let catLabel = '角色';
-            if (url.includes('assets/cat/')) catLabel = '🐱';
-            else if (url.includes('assets/dog/')) catLabel = '🐶';
-            else if (url.includes('assets/三麗鷗/')) catLabel = '🎀';
-            const numMatch = url.match(/\/(\d+)\.png$/);
-            const numStr = numMatch ? `#${numMatch[1]}` : '';
+      const filtered = ALL_TYPES.filter(url => {
+        if (currentPokedexTab === 'all') return true;
+        return url.includes(`assets/${currentPokedexTab}/`);
+      });
 
-            if (isUnlocked) {
-              item.innerHTML = `
+      filtered.forEach(url => {
+        const count = stickerDict[url] || 0;
+        const isUnlocked = count > 0;
+        const item = document.createElement('div');
+        item.className = `pokedex-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+
+        // 解析分類與編號
+        let catLabel = '角色';
+        if (url.includes('assets/cat/')) catLabel = '🐱';
+        else if (url.includes('assets/dog/')) catLabel = '🐶';
+        else if (url.includes('assets/三麗鷗/')) catLabel = '🎀';
+        const numMatch = url.match(/\/(\d+)\.png$/);
+        const numStr = numMatch ? `#${numMatch[1]}` : '';
+
+        if (isUnlocked) {
+          item.innerHTML = `
                 <div class="pokedex-thumb" style='background-image:${toCssImgUrl(url)}'></div>
                 <span class="pokedex-count">${catLabel}${numStr} (消${count}次)</span>
               `;
-            } else {
-              item.innerHTML = `
+        } else {
+          item.innerHTML = `
                 <div class="pokedex-thumb">❓</div>
                 <span class="pokedex-count">${catLabel}${numStr} 未解鎖</span>
               `;
-            }
-            gridEl.appendChild(item);
+        }
+        gridEl.appendChild(item);
+      });
+    }
+
+    // ==================== 玩家榮譽排行榜（跨裝置全球同步） ====================
+    function escapeHtml(str) {
+      return String(str || '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[ch]));
+    }
+
+    function getCloudIdByName(name) {
+      const trimmed = String(name || '').trim();
+      if (!trimmed) return '';
+      return 'u_' + encodeURIComponent(trimmed).replace(/\./g, '%2E');
+    }
+
+    function ensureProfileCloudId(name) {
+      if (!name) return '';
+      const cloudId = getCloudIdByName(name);
+      const profiles = getAllProfiles();
+      const data = profiles[name] || {};
+      if (data.cloudId === cloudId) return cloudId;
+      profiles[name] = { ...data, cloudId };
+      try {
+        localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
+      } catch (e) { }
+      return cloudId;
+    }
+
+    function buildLocalEntry(name, data) {
+      const totalCount = ALL_TYPES.length || 60;
+      const maxLvl =
+        name === currentPlayer
+          ? Math.max(maxLevelReached, currentLevel, data.maxLevelReached || 1, data.currentLevel || 1)
+          : Math.max(data.maxLevelReached || 1, data.currentLevel || 1);
+      const best =
+        name === currentPlayer
+          ? Math.max(bestScore, score, data.bestScore || 0, data.score || 0)
+          : Math.max(data.bestScore || 0, data.score || 0);
+      const stars =
+        name === currentPlayer
+          ? Math.max(totalStars, data.totalStars || 0)
+          : data.totalStars || 0;
+      const dexObj =
+        name === currentPlayer
+          ? unlockedStickers
+          : data.unlockedStickers || {};
+      const dexCount = dexObj && typeof dexObj === 'object' ? Object.keys(dexObj).length : 0;
+      const dexTotalMatches =
+        dexObj && typeof dexObj === 'object'
+          ? Object.values(dexObj).reduce((acc, v) => acc + Number(v || 0), 0)
+          : 0;
+      const dexPct = totalCount > 0 ? Math.round((dexCount / totalCount) * 100) : 0;
+      const cloudId = getCloudIdByName(name);
+
+      return {
+        cloudId,
+        name,
+        maxLvl,
+        best,
+        stars,
+        dexCount,
+        dexTotalMatches,
+        dexPct,
+        isLocalCurrent: name === currentPlayer
+      };
+    }
+
+    function scheduleCloudLeaderboardSync() {
+      if (!FIREBASE_DB_URL || !currentPlayer) return;
+      if (cloudSyncTimer) clearTimeout(cloudSyncTimer);
+      cloudSyncTimer = setTimeout(() => {
+        syncPlayerToCloud(false);
+      }, 2500);
+    }
+
+    async function syncProfileEntryToCloud(name, force = false) {
+      if (!FIREBASE_DB_URL || !name) return;
+      try {
+        const profiles = getAllProfiles();
+        const data = profiles[name] || {};
+        const entry = buildLocalEntry(name, data);
+        if (!entry.cloudId) return;
+        if (Number(entry.best || 0) <= 0) return;
+
+        const isCurr = name === currentPlayer;
+        const curLvl = isCurr ? currentLevel : Number(data.currentLevel || entry.maxLvl || 1);
+        const curScore = isCurr ? score : Number(data.score || 0);
+        const curLevelStart = isCurr ? levelStartScore : Number(data.levelStartScore || curScore || 0);
+        const curStreak = isCurr ? winStreak : Number(data.winStreak || 0);
+        const stickersObj = isCurr ? unlockedStickers : (data.unlockedStickers || {});
+        const badgesObj = isCurr ? unlockedBadges : (data.unlockedBadges || {});
+        const dailyObj = isCurr ? dailyClears : (data.dailyClears || {});
+
+        const payload = {
+          name: String(entry.name),
+          bestScore: Number(entry.best || 0),
+          maxLevelReached: Number(entry.maxLvl || 1),
+          totalStars: Number(entry.stars || 0),
+          dexCount: Number(entry.dexCount || 0),
+          dexPct: Number(entry.dexPct || 0),
+          currentLevel: Number(curLvl || 1),
+          score: Number(curScore || 0),
+          levelStartScore: Number(curLevelStart || 0),
+          winStreak: Number(curStreak || 0),
+          dailyClears: dailyObj && typeof dailyObj === 'object' ? dailyObj : {},
+          unlockedStickers: stickersObj && typeof stickersObj === 'object' ? stickersObj : {},
+          unlockedBadges: badgesObj && typeof badgesObj === 'object' ? badgesObj : {},
+          updatedAt: Date.now()
+        };
+
+        const hash = `${entry.cloudId}|${payload.name}|${payload.bestScore}|${payload.maxLevelReached}|${payload.totalStars}|${payload.dexCount}|${payload.currentLevel}|${payload.score}|${payload.winStreak}|${Object.keys(payload.unlockedBadges).length}`;
+        if (!force && hash === lastCloudPayloadHashes[entry.cloudId]) return;
+
+        const res = await fetch(`${FIREBASE_DB_URL}/leaderboard/${encodeURIComponent(entry.cloudId)}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          lastCloudPayloadHashes[entry.cloudId] = hash;
+        }
+      } catch (e) { }
+    }
+
+    async function syncPlayerToCloud(force = false) {
+      if (!currentPlayer) return;
+      await syncProfileEntryToCloud(currentPlayer, force);
+    }
+
+    async function syncAllLocalProfilesToCloud(force = false) {
+      if (!FIREBASE_DB_URL) return;
+      const profiles = getAllProfiles();
+      const names = Object.keys(profiles);
+      if (currentPlayer && !names.includes(currentPlayer)) {
+        names.unshift(currentPlayer);
+      }
+      await Promise.all(names.map(name => syncProfileEntryToCloud(name, force || name === currentPlayer)));
+    }
+
+    async function fetchCloudProfileRaw(name) {
+      if (!FIREBASE_DB_URL || !name) return null;
+      const trimmed = String(name).trim();
+      const cloudId = getCloudIdByName(trimmed);
+      const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      const timer = controller ? setTimeout(() => controller.abort(), 3500) : null;
+      try {
+        const res = await fetch(`${FIREBASE_DB_URL}/leaderboard/${encodeURIComponent(cloudId)}.json`, {
+          signal: controller ? controller.signal : undefined
+        });
+        if (timer) clearTimeout(timer);
+        if (!res.ok) return null;
+        const cloud = await res.json();
+        if (!cloud || typeof cloud !== 'object' || !cloud.name) return null;
+        return cloud;
+      } catch (e) {
+        if (timer) clearTimeout(timer);
+        return null;
+      }
+    }
+
+    async function pullPlayerFromCloud(name, preloadedCloud = undefined) {
+      if (!FIREBASE_DB_URL || !name) return false;
+      const trimmed = String(name).trim();
+      const cloudId = getCloudIdByName(trimmed);
+      try {
+        const cloud = preloadedCloud !== undefined ? preloadedCloud : await fetchCloudProfileRaw(trimmed);
+        if (!cloud || typeof cloud !== 'object' || !cloud.name) return false;
+
+        const profiles = getAllProfiles();
+        const local = profiles[trimmed];
+
+        const mergedStickers = { ...(local && local.unlockedStickers ? local.unlockedStickers : {}) };
+        if (cloud.unlockedStickers && typeof cloud.unlockedStickers === 'object') {
+          Object.entries(cloud.unlockedStickers).forEach(([k, v]) => {
+            mergedStickers[k] = Math.max(Number(mergedStickers[k] || 0), Number(v || 0));
           });
         }
 
-        // ==================== 玩家榮譽排行榜（跨裝置全球同步） ====================
-        function escapeHtml(str) {
-          return String(str || '').replace(/[&<>"']/g, ch => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-          }[ch]));
+        const mergedBadges = {
+          ...(cloud.unlockedBadges && typeof cloud.unlockedBadges === 'object' ? cloud.unlockedBadges : {}),
+          ...(local && local.unlockedBadges ? local.unlockedBadges : {})
+        };
+        const mergedDaily = {
+          ...(cloud.dailyClears && typeof cloud.dailyClears === 'object' ? cloud.dailyClears : {}),
+          ...(local && local.dailyClears ? local.dailyClears : {})
+        };
+
+        const useCloudCurrent = !local || Number(cloud.updatedAt || 0) > Number(local.updatedAt || 0);
+        const restoredLevel = useCloudCurrent
+          ? Number(cloud.currentLevel || cloud.maxLevelReached || 1)
+          : Number(local.currentLevel || 1);
+        const restoredScore = useCloudCurrent
+          ? Number(cloud.score !== undefined ? cloud.score : (cloud.bestScore || 0))
+          : Number(local.score || 0);
+        const restoredLevelStart = useCloudCurrent
+          ? Number(cloud.levelStartScore !== undefined ? cloud.levelStartScore : restoredScore)
+          : Number(local.levelStartScore || 0);
+
+        profiles[trimmed] = {
+          ...(local || {}),
+          cloudId,
+          bestScore: Math.max(Number(local && local.bestScore || 0), Number(cloud.bestScore || 0)),
+          maxLevelReached: Math.max(Number(local && local.maxLevelReached || 1), Number(cloud.maxLevelReached || 1)),
+          totalStars: Math.max(Number(local && local.totalStars || 0), Number(cloud.totalStars || 0)),
+          winStreak: useCloudCurrent ? Number(cloud.winStreak || 0) : Number(local && local.winStreak || 0),
+          currentLevel: restoredLevel,
+          score: restoredScore,
+          levelStartScore: restoredLevelStart,
+          dailyClears: mergedDaily,
+          unlockedStickers: mergedStickers,
+          unlockedBadges: mergedBadges,
+          updatedAt: Math.max(Number(local && local.updatedAt || 0), Number(cloud.updatedAt || 0))
+        };
+
+        // 若是從雲端新載入且原本沒有這台裝置的盤面，清除 cards 讓 loadProgress/initGame 依關卡重排
+        if (useCloudCurrent && (!local || !Array.isArray(local.cards) || local.cards.length === 0 || Number(local.currentLevel || 1) !== restoredLevel)) {
+          delete profiles[trimmed].cards;
+          delete profiles[trimmed].tray;
         }
 
-        function getCloudIdByName(name) {
-          const trimmed = String(name || '').trim();
-          if (!trimmed) return '';
-          return 'u_' + encodeURIComponent(trimmed).replace(/\./g, '%2E');
+        localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    async function fetchGlobalLeaderboard() {
+      if (!FIREBASE_DB_URL) return;
+      leaderboardStatusText = '🌐 正在同步全球排行榜...';
+      renderLeaderboard();
+
+      try {
+        await syncAllLocalProfilesToCloud(false);
+        const res = await fetch(`${FIREBASE_DB_URL}/leaderboard.json`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        globalLeaderboardCache = data && typeof data === 'object' ? data : {};
+        const totalCount = Object.values(globalLeaderboardCache).filter(
+          item => item && typeof item === 'object' && Number(item.bestScore || 0) > 0
+        ).length;
+        leaderboardStatusText = `🌐 全球即時榜（共 ${totalCount} 位玩家）`;
+      } catch (e) {
+        leaderboardStatusText = '📴 離線或連線失敗（目前顯示本機紀錄）';
+      }
+      renderLeaderboard();
+    }
+
+    function switchLeaderboardTab(tab) {
+      currentLeaderboardTab = tab;
+      const scoreTabBtn = document.getElementById('rank-tab-score');
+      const pokedexTabBtn = document.getElementById('rank-tab-pokedex');
+      if (scoreTabBtn) scoreTabBtn.classList.toggle('active', tab === 'score');
+      if (pokedexTabBtn) pokedexTabBtn.classList.toggle('active', tab === 'pokedex');
+      renderLeaderboard();
+    }
+
+    function openLeaderboardModal(defaultTab = 'score') {
+      switchLeaderboardTab(defaultTab);
+      document.getElementById('leaderboard-modal').classList.add('show');
+      fetchGlobalLeaderboard();
+    }
+
+    function renderLeaderboard() {
+      const listEl = document.getElementById('leaderboard-list');
+      const statusEl = document.getElementById('leaderboard-status');
+      if (statusEl) {
+        statusEl.textContent = leaderboardStatusText || '';
+      }
+      if (!listEl) return;
+      listEl.innerHTML = '';
+
+      const profiles = getAllProfiles();
+      const names = Object.keys(profiles);
+      if (currentPlayer && !names.includes(currentPlayer)) {
+        names.unshift(currentPlayer);
+      }
+
+      const totalCount = ALL_TYPES.length || 60;
+      const byName = new Map();
+
+      const mergeEntry = item => {
+        if (!item || !item.name) return;
+        const key = String(item.name).trim();
+        if (!key) return;
+        const prev = byName.get(key);
+        if (!prev) {
+          byName.set(key, { ...item, name: key });
+        } else {
+          prev.maxLvl = Math.max(prev.maxLvl, item.maxLvl);
+          prev.best = Math.max(prev.best, item.best);
+          prev.stars = Math.max(prev.stars, item.stars);
+          prev.dexCount = Math.max(prev.dexCount, item.dexCount);
+          prev.dexPct = Math.max(prev.dexPct, item.dexPct);
+          prev.dexTotalMatches = Math.max(prev.dexTotalMatches || 0, item.dexTotalMatches || 0);
+          prev.isLocalCurrent = Boolean(prev.isLocalCurrent || item.isLocalCurrent);
         }
+      };
 
-        function ensureProfileCloudId(name) {
-          if (!name) return '';
-          const cloudId = getCloudIdByName(name);
-          const profiles = getAllProfiles();
-          const data = profiles[name] || {};
-          if (data.cloudId === cloudId) return cloudId;
-          profiles[name] = { ...data, cloudId };
-          try {
-            localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
-          } catch (e) { }
-          return cloudId;
-        }
-
-        function buildLocalEntry(name, data) {
-          const totalCount = ALL_TYPES.length || 60;
-          const maxLvl =
-            name === currentPlayer
-              ? Math.max(maxLevelReached, currentLevel, data.maxLevelReached || 1, data.currentLevel || 1)
-              : Math.max(data.maxLevelReached || 1, data.currentLevel || 1);
-          const best =
-            name === currentPlayer
-              ? Math.max(bestScore, score, data.bestScore || 0, data.score || 0)
-              : Math.max(data.bestScore || 0, data.score || 0);
-          const stars =
-            name === currentPlayer
-              ? Math.max(totalStars, data.totalStars || 0)
-              : data.totalStars || 0;
-          const dexObj =
-            name === currentPlayer
-              ? unlockedStickers
-              : data.unlockedStickers || {};
-          const dexCount = dexObj && typeof dexObj === 'object' ? Object.keys(dexObj).length : 0;
-          const dexTotalMatches =
-            dexObj && typeof dexObj === 'object'
-              ? Object.values(dexObj).reduce((acc, v) => acc + Number(v || 0), 0)
-              : 0;
-          const dexPct = totalCount > 0 ? Math.round((dexCount / totalCount) * 100) : 0;
-          const cloudId = getCloudIdByName(name);
-
-          return {
-            cloudId,
-            name,
-            maxLvl,
-            best,
-            stars,
+      // 1. 先放入雲端全球玩家資料
+      if (globalLeaderboardCache && typeof globalLeaderboardCache === 'object') {
+        Object.entries(globalLeaderboardCache).forEach(([cid, item]) => {
+          if (!item || typeof item !== 'object' || !item.name) return;
+          const dexCount = Number(item.dexCount || 0);
+          const dexPct =
+            item.dexPct !== undefined
+              ? Number(item.dexPct || 0)
+              : totalCount > 0
+                ? Math.round((dexCount / totalCount) * 100)
+                : 0;
+          mergeEntry({
+            cloudId: cid,
+            name: String(item.name),
+            maxLvl: Number(item.maxLevelReached || 1),
+            best: Number(item.bestScore || 0),
+            stars: Number(item.totalStars || 0),
             dexCount,
-            dexTotalMatches,
+            dexTotalMatches: 0,
             dexPct,
-            isLocalCurrent: name === currentPlayer
-          };
-        }
-
-        function scheduleCloudLeaderboardSync() {
-          if (!FIREBASE_DB_URL || !currentPlayer) return;
-          if (cloudSyncTimer) clearTimeout(cloudSyncTimer);
-          cloudSyncTimer = setTimeout(() => {
-            syncPlayerToCloud(false);
-          }, 2500);
-        }
-
-        async function syncProfileEntryToCloud(name, force = false) {
-          if (!FIREBASE_DB_URL || !name) return;
-          try {
-            const profiles = getAllProfiles();
-            const data = profiles[name] || {};
-            const entry = buildLocalEntry(name, data);
-            if (!entry.cloudId) return;
-            if (Number(entry.best || 0) <= 0) return;
-
-            const isCurr = name === currentPlayer;
-            const curLvl = isCurr ? currentLevel : Number(data.currentLevel || entry.maxLvl || 1);
-            const curScore = isCurr ? score : Number(data.score || 0);
-            const curLevelStart = isCurr ? levelStartScore : Number(data.levelStartScore || curScore || 0);
-            const curStreak = isCurr ? winStreak : Number(data.winStreak || 0);
-            const stickersObj = isCurr ? unlockedStickers : (data.unlockedStickers || {});
-            const badgesObj = isCurr ? unlockedBadges : (data.unlockedBadges || {});
-            const dailyObj = isCurr ? dailyClears : (data.dailyClears || {});
-
-            const payload = {
-              name: String(entry.name),
-              bestScore: Number(entry.best || 0),
-              maxLevelReached: Number(entry.maxLvl || 1),
-              totalStars: Number(entry.stars || 0),
-              dexCount: Number(entry.dexCount || 0),
-              dexPct: Number(entry.dexPct || 0),
-              currentLevel: Number(curLvl || 1),
-              score: Number(curScore || 0),
-              levelStartScore: Number(curLevelStart || 0),
-              winStreak: Number(curStreak || 0),
-              dailyClears: dailyObj && typeof dailyObj === 'object' ? dailyObj : {},
-              unlockedStickers: stickersObj && typeof stickersObj === 'object' ? stickersObj : {},
-              unlockedBadges: badgesObj && typeof badgesObj === 'object' ? badgesObj : {},
-              updatedAt: Date.now()
-            };
-
-            const hash = `${entry.cloudId}|${payload.name}|${payload.bestScore}|${payload.maxLevelReached}|${payload.totalStars}|${payload.dexCount}|${payload.currentLevel}|${payload.score}|${payload.winStreak}|${Object.keys(payload.unlockedBadges).length}`;
-            if (!force && hash === lastCloudPayloadHashes[entry.cloudId]) return;
-
-            const res = await fetch(`${FIREBASE_DB_URL}/leaderboard/${encodeURIComponent(entry.cloudId)}.json`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload)
-            });
-            if (res.ok) {
-              lastCloudPayloadHashes[entry.cloudId] = hash;
-            }
-          } catch (e) { }
-        }
-
-        async function syncPlayerToCloud(force = false) {
-          if (!currentPlayer) return;
-          await syncProfileEntryToCloud(currentPlayer, force);
-        }
-
-        async function syncAllLocalProfilesToCloud(force = false) {
-          if (!FIREBASE_DB_URL) return;
-          const profiles = getAllProfiles();
-          const names = Object.keys(profiles);
-          if (currentPlayer && !names.includes(currentPlayer)) {
-            names.unshift(currentPlayer);
-          }
-          await Promise.all(names.map(name => syncProfileEntryToCloud(name, force || name === currentPlayer)));
-        }
-
-        async function fetchCloudProfileRaw(name) {
-          if (!FIREBASE_DB_URL || !name) return null;
-          const trimmed = String(name).trim();
-          const cloudId = getCloudIdByName(trimmed);
-          const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-          const timer = controller ? setTimeout(() => controller.abort(), 3500) : null;
-          try {
-            const res = await fetch(`${FIREBASE_DB_URL}/leaderboard/${encodeURIComponent(cloudId)}.json`, {
-              signal: controller ? controller.signal : undefined
-            });
-            if (timer) clearTimeout(timer);
-            if (!res.ok) return null;
-            const cloud = await res.json();
-            if (!cloud || typeof cloud !== 'object' || !cloud.name) return null;
-            return cloud;
-          } catch (e) {
-            if (timer) clearTimeout(timer);
-            return null;
-          }
-        }
-
-        async function pullPlayerFromCloud(name, preloadedCloud = undefined) {
-          if (!FIREBASE_DB_URL || !name) return false;
-          const trimmed = String(name).trim();
-          const cloudId = getCloudIdByName(trimmed);
-          try {
-            const cloud = preloadedCloud !== undefined ? preloadedCloud : await fetchCloudProfileRaw(trimmed);
-            if (!cloud || typeof cloud !== 'object' || !cloud.name) return false;
-
-            const profiles = getAllProfiles();
-            const local = profiles[trimmed];
-
-            const mergedStickers = { ...(local && local.unlockedStickers ? local.unlockedStickers : {}) };
-            if (cloud.unlockedStickers && typeof cloud.unlockedStickers === 'object') {
-              Object.entries(cloud.unlockedStickers).forEach(([k, v]) => {
-                mergedStickers[k] = Math.max(Number(mergedStickers[k] || 0), Number(v || 0));
-              });
-            }
-
-            const mergedBadges = {
-              ...(cloud.unlockedBadges && typeof cloud.unlockedBadges === 'object' ? cloud.unlockedBadges : {}),
-              ...(local && local.unlockedBadges ? local.unlockedBadges : {})
-            };
-            const mergedDaily = {
-              ...(cloud.dailyClears && typeof cloud.dailyClears === 'object' ? cloud.dailyClears : {}),
-              ...(local && local.dailyClears ? local.dailyClears : {})
-            };
-
-            const useCloudCurrent = !local || Number(cloud.updatedAt || 0) > Number(local.updatedAt || 0);
-            const restoredLevel = useCloudCurrent
-              ? Number(cloud.currentLevel || cloud.maxLevelReached || 1)
-              : Number(local.currentLevel || 1);
-            const restoredScore = useCloudCurrent
-              ? Number(cloud.score !== undefined ? cloud.score : (cloud.bestScore || 0))
-              : Number(local.score || 0);
-            const restoredLevelStart = useCloudCurrent
-              ? Number(cloud.levelStartScore !== undefined ? cloud.levelStartScore : restoredScore)
-              : Number(local.levelStartScore || 0);
-
-            profiles[trimmed] = {
-              ...(local || {}),
-              cloudId,
-              bestScore: Math.max(Number(local && local.bestScore || 0), Number(cloud.bestScore || 0)),
-              maxLevelReached: Math.max(Number(local && local.maxLevelReached || 1), Number(cloud.maxLevelReached || 1)),
-              totalStars: Math.max(Number(local && local.totalStars || 0), Number(cloud.totalStars || 0)),
-              winStreak: useCloudCurrent ? Number(cloud.winStreak || 0) : Number(local && local.winStreak || 0),
-              currentLevel: restoredLevel,
-              score: restoredScore,
-              levelStartScore: restoredLevelStart,
-              dailyClears: mergedDaily,
-              unlockedStickers: mergedStickers,
-              unlockedBadges: mergedBadges,
-              updatedAt: Math.max(Number(local && local.updatedAt || 0), Number(cloud.updatedAt || 0))
-            };
-
-            // 若是從雲端新載入且原本沒有這台裝置的盤面，清除 cards 讓 loadProgress/initGame 依關卡重排
-            if (useCloudCurrent && (!local || !Array.isArray(local.cards) || local.cards.length === 0 || Number(local.currentLevel || 1) !== restoredLevel)) {
-              delete profiles[trimmed].cards;
-              delete profiles[trimmed].tray;
-            }
-
-            localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
-            return true;
-          } catch (e) {
-            return false;
-          }
-        }
-
-        async function fetchGlobalLeaderboard() {
-          if (!FIREBASE_DB_URL) return;
-          leaderboardStatusText = '🌐 正在同步全球排行榜...';
-          renderLeaderboard();
-
-          try {
-            await syncAllLocalProfilesToCloud(false);
-            const res = await fetch(`${FIREBASE_DB_URL}/leaderboard.json`);
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            const data = await res.json();
-            globalLeaderboardCache = data && typeof data === 'object' ? data : {};
-            const totalCount = Object.values(globalLeaderboardCache).filter(
-              item => item && typeof item === 'object' && Number(item.bestScore || 0) > 0
-            ).length;
-            leaderboardStatusText = `🌐 全球即時榜（共 ${totalCount} 位玩家）`;
-          } catch (e) {
-            leaderboardStatusText = '📴 離線或連線失敗（目前顯示本機紀錄）';
-          }
-          renderLeaderboard();
-        }
-
-        function switchLeaderboardTab(tab) {
-          currentLeaderboardTab = tab;
-          const scoreTabBtn = document.getElementById('rank-tab-score');
-          const pokedexTabBtn = document.getElementById('rank-tab-pokedex');
-          if (scoreTabBtn) scoreTabBtn.classList.toggle('active', tab === 'score');
-          if (pokedexTabBtn) pokedexTabBtn.classList.toggle('active', tab === 'pokedex');
-          renderLeaderboard();
-        }
-
-        function openLeaderboardModal(defaultTab = 'score') {
-          switchLeaderboardTab(defaultTab);
-          document.getElementById('leaderboard-modal').classList.add('show');
-          fetchGlobalLeaderboard();
-        }
-
-        function renderLeaderboard() {
-          const listEl = document.getElementById('leaderboard-list');
-          const statusEl = document.getElementById('leaderboard-status');
-          if (statusEl) {
-            statusEl.textContent = leaderboardStatusText || '';
-          }
-          if (!listEl) return;
-          listEl.innerHTML = '';
-
-          const profiles = getAllProfiles();
-          const names = Object.keys(profiles);
-          if (currentPlayer && !names.includes(currentPlayer)) {
-            names.unshift(currentPlayer);
-          }
-
-          const totalCount = ALL_TYPES.length || 60;
-          const byName = new Map();
-
-          const mergeEntry = item => {
-            if (!item || !item.name) return;
-            const key = String(item.name).trim();
-            if (!key) return;
-            const prev = byName.get(key);
-            if (!prev) {
-              byName.set(key, { ...item, name: key });
-            } else {
-              prev.maxLvl = Math.max(prev.maxLvl, item.maxLvl);
-              prev.best = Math.max(prev.best, item.best);
-              prev.stars = Math.max(prev.stars, item.stars);
-              prev.dexCount = Math.max(prev.dexCount, item.dexCount);
-              prev.dexPct = Math.max(prev.dexPct, item.dexPct);
-              prev.dexTotalMatches = Math.max(prev.dexTotalMatches || 0, item.dexTotalMatches || 0);
-              prev.isLocalCurrent = Boolean(prev.isLocalCurrent || item.isLocalCurrent);
-            }
-          };
-
-          // 1. 先放入雲端全球玩家資料
-          if (globalLeaderboardCache && typeof globalLeaderboardCache === 'object') {
-            Object.entries(globalLeaderboardCache).forEach(([cid, item]) => {
-              if (!item || typeof item !== 'object' || !item.name) return;
-              const dexCount = Number(item.dexCount || 0);
-              const dexPct =
-                item.dexPct !== undefined
-                  ? Number(item.dexPct || 0)
-                  : totalCount > 0
-                    ? Math.round((dexCount / totalCount) * 100)
-                    : 0;
-              mergeEntry({
-                cloudId: cid,
-                name: String(item.name),
-                maxLvl: Number(item.maxLevelReached || 1),
-                best: Number(item.bestScore || 0),
-                stars: Number(item.totalStars || 0),
-                dexCount,
-                dexTotalMatches: 0,
-                dexPct,
-                isLocalCurrent: false
-              });
-            });
-          }
-
-          // 2. 合併本機玩家資料（依玩家名稱合併，避免重複顯示同名玩家）
-          names.forEach(name => {
-            const local = buildLocalEntry(name, profiles[name] || {});
-            mergeEntry(local);
+            isLocalCurrent: false
           });
+        });
+      }
 
-          const entries = Array.from(byName.values()).filter(e => Number(e.best || 0) > 0);
+      // 2. 合併本機玩家資料（依玩家名稱合併，避免重複顯示同名玩家）
+      names.forEach(name => {
+        const local = buildLocalEntry(name, profiles[name] || {});
+        mergeEntry(local);
+      });
+
+      const entries = Array.from(byName.values()).filter(e => Number(e.best || 0) > 0);
+
+      if (currentLeaderboardTab === 'pokedex') {
+        entries.sort((a, b) => {
+          if (b.dexCount !== a.dexCount) return b.dexCount - a.dexCount;
+          if (b.dexPct !== a.dexPct) return b.dexPct - a.dexPct;
+          return b.best - a.best;
+        });
+      } else {
+        entries.sort((a, b) => {
+          if (b.maxLvl !== a.maxLvl) return b.maxLvl - a.maxLvl;
+          if (b.best !== a.best) return b.best - a.best;
+          return b.stars - a.stars;
+        });
+      }
+
+      if (entries.length === 0) {
+        listEl.innerHTML =
+          '<div style="text-align:center;color:#7c6248;font-size:0.9rem;padding:18px 0;">尚無玩家紀錄</div>';
+      } else {
+        entries.forEach((entry, idx) => {
+          const row = document.createElement('div');
+          row.className = 'rank-item' + (idx === 0 ? ' top-1' : '');
+          const rankStr = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`;
+          const safeName = escapeHtml(entry.name);
+          const currentTag = entry.isLocalCurrent ? ' (目前)' : '';
 
           if (currentLeaderboardTab === 'pokedex') {
-            entries.sort((a, b) => {
-              if (b.dexCount !== a.dexCount) return b.dexCount - a.dexCount;
-              if (b.dexPct !== a.dexPct) return b.dexPct - a.dexPct;
-              return b.best - a.best;
-            });
-          } else {
-            entries.sort((a, b) => {
-              if (b.maxLvl !== a.maxLvl) return b.maxLvl - a.maxLvl;
-              if (b.best !== a.best) return b.best - a.best;
-              return b.stars - a.stars;
-            });
-          }
-
-          if (entries.length === 0) {
-            listEl.innerHTML =
-              '<div style="text-align:center;color:#7c6248;font-size:0.9rem;padding:18px 0;">尚無玩家紀錄</div>';
-          } else {
-            entries.forEach((entry, idx) => {
-              const row = document.createElement('div');
-              row.className = 'rank-item' + (idx === 0 ? ' top-1' : '');
-              const rankStr = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`;
-              const safeName = escapeHtml(entry.name);
-              const currentTag = entry.isLocalCurrent ? ' (目前)' : '';
-
-              if (currentLeaderboardTab === 'pokedex') {
-                row.innerHTML = `
+            row.innerHTML = `
                   <div class="rank-left">
                     <span style="font-size:1.15rem;">${rankStr}</span>
                     <div>
@@ -3821,8 +3810,8 @@
                     <span class="rank-score" style="color:#2b8a3e;">📔 ${entry.dexPct}%</span>
                   </div>
                 `;
-              } else {
-                row.innerHTML = `
+          } else {
+            row.innerHTML = `
                   <div class="rank-left">
                     <span style="font-size:1.15rem;">${rankStr}</span>
                     <div>
@@ -3834,163 +3823,163 @@
                     <span class="rank-score">💯 ${entry.best} 分</span>
                   </div>
                 `;
+          }
+          listEl.appendChild(row);
+        });
+      }
+    }
+
+    function closeLeaderboardModal() {
+      document.getElementById('leaderboard-modal').classList.remove('show');
+    }
+
+    function showModal(title, desc, buttons, extraHtml = '') {
+      document.getElementById('modal-title').textContent = title;
+      const extraEl = document.getElementById('modal-extra');
+      if (extraEl) {
+        extraEl.innerHTML = extraHtml;
+      }
+      document.getElementById('modal-desc').textContent = desc;
+      const actionsEl = document.getElementById('modal-actions');
+      actionsEl.innerHTML = '';
+      buttons.forEach(btn => {
+        const b = document.createElement('button');
+        b.className = btn.primary ? 'btn-primary' : 'btn-secondary';
+        b.textContent = btn.label;
+        b.onclick = btn.onClick;
+        actionsEl.appendChild(b);
+      });
+      document.getElementById('modal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('show');
+    }
+
+    function restartCurrentLevel() {
+      if (currentLevel > 1) {
+        showModal(
+          `🔄 重新開始`,
+          `目前在第 ${currentLevel} 關，請選擇要重試本關或回到第 1 關重新開始（總分歸零）：`,
+          [
+            {
+              label: `重試第 ${currentLevel} 關`,
+              primary: true,
+              onClick: () => {
+                score = levelStartScore;
+                initGame();
               }
-              listEl.appendChild(row);
-            });
-          }
-        }
-
-        function closeLeaderboardModal() {
-          document.getElementById('leaderboard-modal').classList.remove('show');
-        }
-
-        function showModal(title, desc, buttons, extraHtml = '') {
-          document.getElementById('modal-title').textContent = title;
-          const extraEl = document.getElementById('modal-extra');
-          if (extraEl) {
-            extraEl.innerHTML = extraHtml;
-          }
-          document.getElementById('modal-desc').textContent = desc;
-          const actionsEl = document.getElementById('modal-actions');
-          actionsEl.innerHTML = '';
-          buttons.forEach(btn => {
-            const b = document.createElement('button');
-            b.className = btn.primary ? 'btn-primary' : 'btn-secondary';
-            b.textContent = btn.label;
-            b.onclick = btn.onClick;
-            actionsEl.appendChild(b);
-          });
-          document.getElementById('modal').classList.add('show');
-        }
-
-        function closeModal() {
-          document.getElementById('modal').classList.remove('show');
-        }
-
-        function restartCurrentLevel() {
-          if (currentLevel > 1) {
-            showModal(
-              `🔄 重新開始`,
-              `目前在第 ${currentLevel} 關，請選擇要重試本關或回到第 1 關重新開始（總分歸零）：`,
-              [
-                {
-                  label: `重試第 ${currentLevel} 關`,
-                  primary: true,
-                  onClick: () => {
-                    score = levelStartScore;
-                    initGame();
-                  }
-                },
-                {
-                  label: '回第 1 關（歸零）',
-                  primary: false,
-                  onClick: () => {
-                    currentLevel = 1;
-                    levelStartScore = 0;
-                    score = 0;
-                    initGame();
-                  }
-                }
-              ]
-            );
-          } else {
-            currentLevel = 1;
-            levelStartScore = 0;
-            score = 0;
-            initGame();
-          }
-        }
-
-        // ==================== 🏅 成就勳章系統 ====================
-        const ACHIEVEMENTS = [
-          { id: 'first_win', icon: '🏆', name: '初戰告捷', desc: '首次通過第 1 關' },
-          { id: 'combo_5', icon: '🔥', name: '連擊大師', desc: '達成 Combo x5 以上連擊' },
-          { id: 'no_tool_3star', icon: '👑', name: '純淨三星', desc: '不使用任何道具獲得 3 星通關' },
-          { id: 'streak_3', icon: '⚡', name: '三連勝', desc: '連續通過 3 關不失敗' },
-          { id: 'level_5', icon: '🏔️', name: '勇闖第五關', desc: '闖關抵達第 5 關以上' },
-          { id: 'dex_half', icon: '📔', name: '圖鑑達人', desc: '收集圖鑑達 30 張以上' },
-          { id: 'dex_full', icon: '🌟', name: '全圖鑑宗師', desc: '解鎖全部 60 張角色圖鑑' },
-          { id: 'daily_win', icon: '📅', name: '今日之星', desc: '完成一次每日固定挑戰' }
-        ];
-
-        function spawnBadgeToast(badge) {
-          try {
-            const toast = document.createElement('div');
-            toast.className = 'unlock-toast';
-            toast.style.borderColor = '#f08c00';
-            toast.innerHTML = `<span style="font-size:1.25rem;">${badge.icon}</span><span>🏅 獲得勳章：【${badge.name}】！</span>`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2500);
-          } catch (e) {}
-        }
-
-        function unlockBadge(id) {
-          if (!unlockedBadges || typeof unlockedBadges !== 'object') unlockedBadges = {};
-          if (unlockedBadges[id]) return;
-          const badge = ACHIEVEMENTS.find(a => a.id === id);
-          if (!badge) return;
-          unlockedBadges[id] = Date.now();
-          spawnBadgeToast(badge);
-        }
-
-        function checkAchievements(ctx = {}) {
-          const dexCount = unlockedStickers ? Object.keys(unlockedStickers).length : 0;
-          if (comboCount >= 5) unlockBadge('combo_5');
-          if (dexCount >= 30) unlockBadge('dex_half');
-          if (dexCount >= 60) unlockBadge('dex_full');
-
-          if (ctx.event === 'win') {
-            if (ctx.isDaily) {
-              unlockBadge('daily_win');
-            } else {
-              unlockBadge('first_win');
-              if (ctx.stars === 3 && ctx.usedToolsCount === 0) unlockBadge('no_tool_3star');
-              if (winStreak >= 3) unlockBadge('streak_3');
-              if (ctx.nextLevel >= 5) unlockBadge('level_5');
+            },
+            {
+              label: '回第 1 關（歸零）',
+              primary: false,
+              onClick: () => {
+                currentLevel = 1;
+                levelStartScore = 0;
+                score = 0;
+                initGame();
+              }
             }
-          }
+          ]
+        );
+      } else {
+        currentLevel = 1;
+        levelStartScore = 0;
+        score = 0;
+        initGame();
+      }
+    }
+
+    // ==================== 🏅 成就勳章系統 ====================
+    const ACHIEVEMENTS = [
+      { id: 'first_win', icon: '🏆', name: '初戰告捷', desc: '首次通過第 1 關' },
+      { id: 'combo_5', icon: '🔥', name: '連擊大師', desc: '達成 Combo x5 以上連擊' },
+      { id: 'no_tool_3star', icon: '👑', name: '純淨三星', desc: '不使用任何道具獲得 3 星通關' },
+      { id: 'streak_3', icon: '⚡', name: '三連勝', desc: '連續通過 3 關不失敗' },
+      { id: 'level_5', icon: '🏔️', name: '勇闖第五關', desc: '闖關抵達第 5 關以上' },
+      { id: 'dex_half', icon: '📔', name: '圖鑑達人', desc: '收集圖鑑達 30 張以上' },
+      { id: 'dex_full', icon: '🌟', name: '全圖鑑宗師', desc: '解鎖全部 60 張角色圖鑑' },
+      { id: 'daily_win', icon: '📅', name: '今日之星', desc: '完成一次每日固定挑戰' }
+    ];
+
+    function spawnBadgeToast(badge) {
+      try {
+        const toast = document.createElement('div');
+        toast.className = 'unlock-toast';
+        toast.style.borderColor = '#f08c00';
+        toast.innerHTML = `<span style="font-size:1.25rem;">${badge.icon}</span><span>🏅 獲得勳章：【${badge.name}】！</span>`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+      } catch (e) { }
+    }
+
+    function unlockBadge(id) {
+      if (!unlockedBadges || typeof unlockedBadges !== 'object') unlockedBadges = {};
+      if (unlockedBadges[id]) return;
+      const badge = ACHIEVEMENTS.find(a => a.id === id);
+      if (!badge) return;
+      unlockedBadges[id] = Date.now();
+      spawnBadgeToast(badge);
+    }
+
+    function checkAchievements(ctx = {}) {
+      const dexCount = unlockedStickers ? Object.keys(unlockedStickers).length : 0;
+      if (comboCount >= 5) unlockBadge('combo_5');
+      if (dexCount >= 30) unlockBadge('dex_half');
+      if (dexCount >= 60) unlockBadge('dex_full');
+
+      if (ctx.event === 'win') {
+        if (ctx.isDaily) {
+          unlockBadge('daily_win');
+        } else {
+          unlockBadge('first_win');
+          if (ctx.stars === 3 && ctx.usedToolsCount === 0) unlockBadge('no_tool_3star');
+          if (winStreak >= 3) unlockBadge('streak_3');
+          if (ctx.nextLevel >= 5) unlockBadge('level_5');
         }
+      }
+    }
 
-        function openBadgesModal() {
-          const grid = document.getElementById('badges-grid');
-          const summary = document.getElementById('badges-summary');
-          if (!grid) return;
-          grid.innerHTML = '';
+    function openBadgesModal() {
+      const grid = document.getElementById('badges-grid');
+      const summary = document.getElementById('badges-summary');
+      if (!grid) return;
+      grid.innerHTML = '';
 
-          const unlockedCount = ACHIEVEMENTS.filter(a => Boolean(unlockedBadges[a.id])).length;
-          if (summary) summary.textContent = `已解鎖：${unlockedCount} / ${ACHIEVEMENTS.length}`;
+      const unlockedCount = ACHIEVEMENTS.filter(a => Boolean(unlockedBadges[a.id])).length;
+      if (summary) summary.textContent = `已解鎖：${unlockedCount} / ${ACHIEVEMENTS.length}`;
 
-          ACHIEVEMENTS.forEach(a => {
-            const isUnlocked = Boolean(unlockedBadges[a.id]);
-            const card = document.createElement('div');
-            card.className = `badge-card ${isUnlocked ? 'unlocked' : ''}`;
-            card.innerHTML = `
+      ACHIEVEMENTS.forEach(a => {
+        const isUnlocked = Boolean(unlockedBadges[a.id]);
+        const card = document.createElement('div');
+        card.className = `badge-card ${isUnlocked ? 'unlocked' : ''}`;
+        card.innerHTML = `
               <div class="badge-icon">${a.icon}</div>
               <div class="badge-info">
                 <div class="badge-name">${a.name}</div>
                 <div class="badge-desc">${a.desc}</div>
               </div>
             `;
-            grid.appendChild(card);
-          });
-          document.getElementById('badges-modal').classList.add('show');
-        }
+        grid.appendChild(card);
+      });
+      document.getElementById('badges-modal').classList.add('show');
+    }
 
-        function closeBadgesModal() {
-          document.getElementById('badges-modal').classList.remove('show');
-        }
+    function closeBadgesModal() {
+      document.getElementById('badges-modal').classList.remove('show');
+    }
 
-        // ==================== ⚡ 每日固定挑戰 ====================
-        function openDailyModal() {
-          const today = getDailyDateStr();
-          const record = dailyClears[today];
-          const dateLabel = document.getElementById('daily-date-label');
-          const statusBox = document.getElementById('daily-status-box');
-          const actions = document.getElementById('daily-modal-actions');
+    // ==================== ⚡ 每日固定挑戰 ====================
+    function openDailyModal() {
+      const today = getDailyDateStr();
+      const record = dailyClears[today];
+      const dateLabel = document.getElementById('daily-date-label');
+      const statusBox = document.getElementById('daily-status-box');
+      const actions = document.getElementById('daily-modal-actions');
 
-          if (dateLabel) dateLabel.textContent = `📅 今日日期：${today}（全體同牌局）`;
-          if (statusBox) {
-            statusBox.innerHTML = `
+      if (dateLabel) dateLabel.textContent = `📅 今日日期：${today}（全體同牌局）`;
+      if (statusBox) {
+        statusBox.innerHTML = `
               <div class="win-stat-box">
                 <span class="win-stat-label">今日狀態</span>
                 <span class="win-stat-val">${record ? '✅ 已完成' : '⏳ 未挑戰'}</span>
@@ -4000,139 +3989,139 @@
                 <span class="win-stat-val">${record ? formatTime(record.bestSec) : '--:--'}</span>
               </div>
             `;
-          }
-          if (actions) {
-            actions.innerHTML = '';
-            const startBtn = document.createElement('button');
-            startBtn.className = 'btn-primary';
-            startBtn.textContent = isDailyMode ? '重玩今日挑戰' : '開始今日挑戰';
-            startBtn.onclick = startDailyChallenge;
-            actions.appendChild(startBtn);
+      }
+      if (actions) {
+        actions.innerHTML = '';
+        const startBtn = document.createElement('button');
+        startBtn.className = 'btn-primary';
+        startBtn.textContent = isDailyMode ? '重玩今日挑戰' : '開始今日挑戰';
+        startBtn.onclick = startDailyChallenge;
+        actions.appendChild(startBtn);
 
-            if (isDailyMode) {
-              const backBtn = document.createElement('button');
-              backBtn.className = 'btn-secondary';
-              backBtn.textContent = '回無盡模式';
-              backBtn.onclick = exitDailyChallenge;
-              actions.appendChild(backBtn);
-            } else {
-              const closeBtn = document.createElement('button');
-              closeBtn.className = 'btn-secondary';
-              closeBtn.textContent = '關閉';
-              closeBtn.onclick = closeDailyModal;
-              actions.appendChild(closeBtn);
-            }
-          }
-          document.getElementById('daily-modal').classList.add('show');
+        if (isDailyMode) {
+          const backBtn = document.createElement('button');
+          backBtn.className = 'btn-secondary';
+          backBtn.textContent = '回無盡模式';
+          backBtn.onclick = exitDailyChallenge;
+          actions.appendChild(backBtn);
+        } else {
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'btn-secondary';
+          closeBtn.textContent = '關閉';
+          closeBtn.onclick = closeDailyModal;
+          actions.appendChild(closeBtn);
         }
+      }
+      document.getElementById('daily-modal').classList.add('show');
+    }
 
-        function closeDailyModal() {
-          document.getElementById('daily-modal').classList.remove('show');
+    function closeDailyModal() {
+      document.getElementById('daily-modal').classList.remove('show');
+    }
+
+    function startDailyChallenge() {
+      closeDailyModal();
+      isDailyMode = true;
+      initGame();
+    }
+
+    function exitDailyChallenge() {
+      closeDailyModal();
+      isDailyMode = false;
+      if (!loadProgress()) {
+        initGame();
+      }
+    }
+
+    // ==================== ⚙️ 主題、音樂、音效與震動設定 ====================
+    function applySettingsUI() {
+      if (currentTheme === 'meadow') {
+        document.body.removeAttribute('data-theme');
+      } else {
+        document.body.setAttribute('data-theme', currentTheme);
+      }
+
+      ['meadow', 'sakura', 'starry'].forEach(t => {
+        const btn = document.getElementById(`theme-btn-${t}`);
+        if (btn) btn.classList.toggle('active', currentTheme === t);
+      });
+      ['xylophone', 'musicbox'].forEach(s => {
+        const btn = document.getElementById(`bgm-style-${s}`);
+        if (btn) btn.classList.toggle('active', bgmStyle === s);
+      });
+
+      const sfxBtn = document.getElementById('sfx-toggle-btn');
+      if (sfxBtn) {
+        sfxBtn.textContent = sfxEnabled ? '開啟' : '關閉';
+        sfxBtn.classList.toggle('on', sfxEnabled);
+      }
+      const vibBtn = document.getElementById('vibrate-toggle-btn');
+      if (vibBtn) {
+        vibBtn.textContent = vibrateEnabled ? '開啟' : '關閉';
+        vibBtn.classList.toggle('on', vibrateEnabled);
+      }
+    }
+
+    function openSettingsModal() {
+      applySettingsUI();
+      document.getElementById('settings-modal').classList.add('show');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settings-modal').classList.remove('show');
+    }
+
+    function setTheme(theme) {
+      currentTheme = theme;
+      localStorage.setItem(STORAGE_THEME_KEY, theme);
+      applySettingsUI();
+    }
+
+    function setBgmStyle(style) {
+      bgmStyle = style;
+      bgmStep = 0;
+      localStorage.setItem(STORAGE_BGM_STYLE_KEY, style);
+      applySettingsUI();
+      if (bgmEnabled) playBgmNote();
+    }
+
+    function toggleSFX() {
+      sfxEnabled = !sfxEnabled;
+      localStorage.setItem(STORAGE_SFX_KEY, sfxEnabled ? 'on' : 'off');
+      applySettingsUI();
+      if (sfxEnabled) playCardClickSound();
+    }
+
+    function toggleVibrate() {
+      vibrateEnabled = !vibrateEnabled;
+      localStorage.setItem(STORAGE_VIBRATE_KEY, vibrateEnabled ? 'on' : 'off');
+      applySettingsUI();
+      if (vibrateEnabled) triggerVibrate(20);
+    }
+
+    function checkGameOver() {
+      if (cards.every(c => !c.active) && tray.length === 0) {
+        if (levelTimer) {
+          clearInterval(levelTimer);
+          levelTimer = null;
         }
+        playWinSound();
+        spawnConfetti();
 
-        function startDailyChallenge() {
-          closeDailyModal();
-          isDailyMode = true;
-          initGame();
-        }
+        const usedToolsCount =
+          1 - toolsRemaining.undo +
+          (1 - toolsRemaining.shuffle) +
+          (1 - toolsRemaining.pop);
 
-        function exitDailyChallenge() {
-          closeDailyModal();
-          isDailyMode = false;
-          if (!loadProgress()) {
-            initGame();
-          }
-        }
+        if (isDailyMode) {
+          const today = getDailyDateStr();
+          const prevDaily = dailyClears[today];
+          const bestSec = prevDaily ? Math.min(prevDaily.bestSec, levelSeconds) : levelSeconds;
+          dailyClears[today] = { bestSec, score };
+          checkAchievements({ event: 'win', isDaily: true, stars: 3, usedToolsCount });
+          saveProgress();
 
-        // ==================== ⚙️ 主題、音樂、音效與震動設定 ====================
-        function applySettingsUI() {
-          if (currentTheme === 'meadow') {
-            document.body.removeAttribute('data-theme');
-          } else {
-            document.body.setAttribute('data-theme', currentTheme);
-          }
-
-          ['meadow', 'sakura', 'starry'].forEach(t => {
-            const btn = document.getElementById(`theme-btn-${t}`);
-            if (btn) btn.classList.toggle('active', currentTheme === t);
-          });
-          ['xylophone', 'musicbox'].forEach(s => {
-            const btn = document.getElementById(`bgm-style-${s}`);
-            if (btn) btn.classList.toggle('active', bgmStyle === s);
-          });
-
-          const sfxBtn = document.getElementById('sfx-toggle-btn');
-          if (sfxBtn) {
-            sfxBtn.textContent = sfxEnabled ? '開啟' : '關閉';
-            sfxBtn.classList.toggle('on', sfxEnabled);
-          }
-          const vibBtn = document.getElementById('vibrate-toggle-btn');
-          if (vibBtn) {
-            vibBtn.textContent = vibrateEnabled ? '開啟' : '關閉';
-            vibBtn.classList.toggle('on', vibrateEnabled);
-          }
-        }
-
-        function openSettingsModal() {
-          applySettingsUI();
-          document.getElementById('settings-modal').classList.add('show');
-        }
-
-        function closeSettingsModal() {
-          document.getElementById('settings-modal').classList.remove('show');
-        }
-
-        function setTheme(theme) {
-          currentTheme = theme;
-          localStorage.setItem(STORAGE_THEME_KEY, theme);
-          applySettingsUI();
-        }
-
-        function setBgmStyle(style) {
-          bgmStyle = style;
-          bgmStep = 0;
-          localStorage.setItem(STORAGE_BGM_STYLE_KEY, style);
-          applySettingsUI();
-          if (bgmEnabled) playBgmNote();
-        }
-
-        function toggleSFX() {
-          sfxEnabled = !sfxEnabled;
-          localStorage.setItem(STORAGE_SFX_KEY, sfxEnabled ? 'on' : 'off');
-          applySettingsUI();
-          if (sfxEnabled) playCardClickSound();
-        }
-
-        function toggleVibrate() {
-          vibrateEnabled = !vibrateEnabled;
-          localStorage.setItem(STORAGE_VIBRATE_KEY, vibrateEnabled ? 'on' : 'off');
-          applySettingsUI();
-          if (vibrateEnabled) triggerVibrate(20);
-        }
-
-        function checkGameOver() {
-          if (cards.every(c => !c.active) && tray.length === 0) {
-            if (levelTimer) {
-              clearInterval(levelTimer);
-              levelTimer = null;
-            }
-            playWinSound();
-            spawnConfetti();
-
-            const usedToolsCount =
-              1 - toolsRemaining.undo +
-              (1 - toolsRemaining.shuffle) +
-              (1 - toolsRemaining.pop);
-
-            if (isDailyMode) {
-              const today = getDailyDateStr();
-              const prevDaily = dailyClears[today];
-              const bestSec = prevDaily ? Math.min(prevDaily.bestSec, levelSeconds) : levelSeconds;
-              dailyClears[today] = { bestSec, score };
-              checkAchievements({ event: 'win', isDaily: true, stars: 3, usedToolsCount });
-              saveProgress();
-
-              const extraHtml = `
+          const extraHtml = `
                 <div class="win-stars">⚡⭐⭐⭐⚡</div>
                 <div class="win-badge">📅 今日挑戰達陣！</div>
                 <div class="win-stats-grid">
@@ -4150,64 +4139,64 @@
                   </div>
                 </div>
               `;
-              showModal(
-                `⚡ 恭喜完成今日挑戰！`,
-                `今天（${today}）的固定牌局挑戰成功，要返回無盡闖關繼續推進嗎？`,
-                [
-                  {
-                    label: '返回無盡闖關',
-                    primary: true,
-                    onClick: exitDailyChallenge
-                  },
-                  {
-                    label: '再玩一次今日挑戰',
-                    primary: false,
-                    onClick: startDailyChallenge
-                  }
-                ],
-                extraHtml
-              );
-              return;
-            }
+          showModal(
+            `⚡ 恭喜完成今日挑戰！`,
+            `今天（${today}）的固定牌局挑戰成功，要返回無盡闖關繼續推進嗎？`,
+            [
+              {
+                label: '返回無盡闖關',
+                primary: true,
+                onClick: exitDailyChallenge
+              },
+              {
+                label: '再玩一次今日挑戰',
+                primary: false,
+                onClick: startDailyChallenge
+              }
+            ],
+            extraHtml
+          );
+          return;
+        }
 
-            const nextLevel = currentLevel + 1;
-            const nextConfig = getLevelConfig(nextLevel);
+        const nextLevel = currentLevel + 1;
+        const nextConfig = getLevelConfig(nextLevel);
 
-            // 計算過關星級與趣味稱號
-            const target3StarSec = 35 + currentLevel * 18;
-            const target2StarSec = 75 + currentLevel * 30;
+        // 計算過關星級與趣味稱號
+        const target3StarSec = 35 + currentLevel * 18;
+        const target2StarSec = 75 + currentLevel * 30;
 
-            let stars = 1;
-            if (levelSeconds <= target3StarSec && usedToolsCount <= 2) {
-              stars = 3;
-            } else if (levelSeconds <= target2StarSec) {
-              stars = 2;
-            }
+        let stars = 1;
+        if (levelSeconds <= target3StarSec && usedToolsCount <= 2) {
+          stars = 3;
+        } else if (levelSeconds <= target2StarSec) {
+          stars = 2;
+        }
 
-            const starStr = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
-            let titleBadge = '🌱 穩紮穩打過關達人';
-            if (stars === 3 && maxComboInLevel >= 4) {
-              titleBadge = '⚡ 神速連擊消除宗師';
-            } else if (stars === 3) {
-              titleBadge = '👑 零失誤眼明手快大師';
-            } else if (maxComboInLevel >= 3) {
-              titleBadge = '🔥 狂熱連擊快手';
-            }
+        const starStr = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
+        let titleBadge = '🌱 穩紮穩打過關達人';
+        if (stars === 3 && maxComboInLevel >= 4) {
+          titleBadge = '⚡ 神速連擊消除宗師';
+        } else if (stars === 3) {
+          titleBadge = '👑 零失誤眼明手快大師';
+        } else if (maxComboInLevel >= 3) {
+          titleBadge = '🔥 狂熱連擊快手';
+        }
 
-            // 過關額外獎勵積分與連勝紀錄
-            winStreak++;
-            const clearBonus = currentLevel * 150 + stars * 100;
-            score += clearBonus;
-            if (score > bestScore) bestScore = score;
-            totalStars += stars;
-            if (nextLevel > maxLevelReached) {
-              maxLevelReached = nextLevel;
-            }
-            checkAchievements({ event: 'win', isDaily: false, stars, usedToolsCount, nextLevel });
-            updateStatusUI();
-            saveProgress();
+        // 過關額外獎勵積分與連勝紀錄
+        winStreak++;
+        const clearBonus = currentLevel * 150 + stars * 100;
+        score += clearBonus;
+        if (score > bestScore) bestScore = score;
+        totalStars += stars;
+        if (nextLevel > maxLevelReached) {
+          maxLevelReached = nextLevel;
+        }
+        checkAchievements({ event: 'win', isDaily: false, stars, usedToolsCount, nextLevel });
+        updateStatusUI();
+        saveProgress();
 
-            const extraHtml = `
+        const extraHtml = `
               <div class="win-stars">${starStr}</div>
               <div class="win-badge">${titleBadge}</div>
               <div class="win-stats-grid">
@@ -4226,85 +4215,85 @@
               </div>
             `;
 
-            showModal(
-              `🎉 恭喜通過第 ${currentLevel} 關！`,
-              `獲得過關獎勵 +${clearBonus} 分！下一關（第 ${nextLevel} 關）共有 ${nextConfig.numTypes} 種圖案、${nextConfig.totalCards} 張卡牌！`,
-              [
-                {
-                  label: `挑戰第 ${nextLevel} 關`,
-                  primary: true,
-                  onClick: () => {
-                    currentLevel = nextLevel;
-                    levelStartScore = score;
-                    initGame();
-                  }
-                }
-              ],
-              extraHtml
-            );
-          } else if (tray.length >= TRAY_MAX) {
-            if (levelTimer) {
-              clearInterval(levelTimer);
-              levelTimer = null;
+        showModal(
+          `🎉 恭喜通過第 ${currentLevel} 關！`,
+          `獲得過關獎勵 +${clearBonus} 分！下一關（第 ${nextLevel} 關）共有 ${nextConfig.numTypes} 種圖案、${nextConfig.totalCards} 張卡牌！`,
+          [
+            {
+              label: `挑戰第 ${nextLevel} 關`,
+              primary: true,
+              onClick: () => {
+                currentLevel = nextLevel;
+                levelStartScore = score;
+                initGame();
+              }
             }
-            if (!isDailyMode) {
-              winStreak = 0;
-              saveProgress();
-            }
-            showModal(
-              `💥 收集槽滿了！`,
-              `你在${isDailyMode ? '今日挑戰' : `第 ${currentLevel} 關`}挑戰失敗，要再試一次嗎？`,
-              [
-                {
-                  label: '重試本關',
-                  primary: true,
-                  onClick: () => {
-                    score = isDailyMode ? 0 : levelStartScore;
-                    initGame();
-                  }
-                },
-                {
-                  label: isDailyMode ? '回無盡模式' : '回第 1 關',
-                  primary: false,
-                  onClick: () => {
-                    if (isDailyMode) {
-                      exitDailyChallenge();
-                    } else {
-                      currentLevel = 1;
-                      levelStartScore = 0;
-                      score = 0;
-                      initGame();
-                    }
-                  }
-                }
-              ]
-            );
-          }
+          ],
+          extraHtml
+        );
+      } else if (tray.length >= TRAY_MAX) {
+        if (levelTimer) {
+          clearInterval(levelTimer);
+          levelTimer = null;
         }
-
-        // 當視窗縮放或手機旋轉時，即時重新調整版面與卡牌位置（不重洗牌）
-        window.addEventListener('resize', () => {
-          if (cards.length > 0) {
-            updateDimensions();
-            renderBoard();
-          }
-        });
-
-        (async function startApp() {
-          applySettingsUI();
-          updateBgmBtnUI();
-          ALL_TYPES = await loadAllImages();
-
-          if (!currentPlayer) {
-            initGame();
-            openPlayerModal();
-          } else if (!loadProgress()) {
-            initGame();
-            if (!getAllProfiles()[currentPlayer]) {
-              openRulesModal(true);
+        if (!isDailyMode) {
+          winStreak = 0;
+          saveProgress();
+        }
+        showModal(
+          `💥 收集槽滿了！`,
+          `你在${isDailyMode ? '今日挑戰' : `第 ${currentLevel} 關`}挑戰失敗，要再試一次嗎？`,
+          [
+            {
+              label: '重試本關',
+              primary: true,
+              onClick: () => {
+                score = isDailyMode ? 0 : levelStartScore;
+                initGame();
+              }
+            },
+            {
+              label: isDailyMode ? '回無盡模式' : '回第 1 關',
+              primary: false,
+              onClick: () => {
+                if (isDailyMode) {
+                  exitDailyChallenge();
+                } else {
+                  currentLevel = 1;
+                  levelStartScore = 0;
+                  score = 0;
+                  initGame();
+                }
+              }
             }
-          }
-        })();
+          ]
+        );
+      }
+    }
+
+    // 當視窗縮放或手機旋轉時，即時重新調整版面與卡牌位置（不重洗牌）
+    window.addEventListener('resize', () => {
+      if (cards.length > 0) {
+        updateDimensions();
+        renderBoard();
+      }
+    });
+
+    (async function startApp() {
+      applySettingsUI();
+      updateBgmBtnUI();
+      ALL_TYPES = await loadAllImages();
+
+      if (!currentPlayer) {
+        initGame();
+        openPlayerModal();
+      } else if (!loadProgress()) {
+        initGame();
+        if (!getAllProfiles()[currentPlayer]) {
+          openRulesModal(true);
+        }
+      }
+    })();
   </script>
 </body>
 
