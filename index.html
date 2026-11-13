@@ -215,6 +215,35 @@
     box-shadow: 0 1px 2px rgba(0,0,0,0.08);
   }
 
+  .rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    margin: 12px 0 20px 0;
+  }
+  .rule-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #f0f4f8;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    color: #243b53;
+    line-height: 1.45;
+  }
+  .rule-icon {
+    font-size: 1.15rem;
+    line-height: 1.2;
+    flex-shrink: 0;
+  }
+  .rule-text strong {
+    color: #102a43;
+    display: block;
+    margin-bottom: 2px;
+  }
+
   .status-bar {
     display: flex;
     justify-content: space-between;
@@ -383,6 +412,7 @@
     <div class="title-row">
       <h2>🐾 寵物消消樂</h2>
       <div class="header-actions">
+        <button class="btn-player" onclick="openRulesModal()">📖 規則</button>
         <button id="theme-btn" class="btn-player" onclick="openThemeModal()">🎨 貓咪</button>
         <button id="player-btn" class="btn-player" onclick="openPlayerModal()">👤 設定玩家</button>
         <button class="btn-restart" onclick="restartCurrentLevel()">重新本關</button>
@@ -432,6 +462,46 @@
       <div id="theme-list" class="theme-list"></div>
       <div class="modal-actions">
         <button class="btn-secondary" onclick="closeThemeModal()">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 遊戲規則彈窗 -->
+  <div id="rules-modal" class="modal-overlay">
+    <div class="modal-box" style="width: min(90vw, 350px);">
+      <h3>📖 遊戲規則</h3>
+      <div class="rules-list">
+        <div class="rule-item">
+          <span class="rule-icon">👆</span>
+          <div class="rule-text">
+            <strong>點擊最上層亮牌</strong>
+            只能點選未被壓住的亮色卡牌；變暗的卡牌代表被上層遮擋，需先移開上層才能點擊。
+          </div>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">✨</span>
+          <div class="rule-text">
+            <strong>湊齊 3 張相同圖案消除</strong>
+            點選的卡牌會進入下方收集槽，集滿 3 張相同圖案即可自動消除。
+          </div>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">⚠️</span>
+          <div class="rule-text">
+            <strong>注意收集槽上限（最多 7 張）</strong>
+            下方收集槽最多只能放 7 張卡牌，若滿 7 張仍未湊出 3 張相同圖案即挑戰失敗。
+          </div>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">🏆</span>
+          <div class="rule-text">
+            <strong>清空全場即可過關</strong>
+            將場上與下方左右兩側盲牌疊的所有卡牌全部消除，即可晉級下一關！
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="rules-confirm-btn" class="btn-primary" style="width: 100%;" onclick="closeRulesModal()">繼續遊戲</button>
       </div>
     </div>
   </div>
@@ -704,6 +774,18 @@
     document.getElementById('theme-modal').classList.remove('show');
   }
 
+  function openRulesModal(isNewPlayer = false) {
+    const btn = document.getElementById('rules-confirm-btn');
+    if (btn) {
+      btn.textContent = isNewPlayer ? '開始遊戲！' : '繼續遊戲';
+    }
+    document.getElementById('rules-modal').classList.add('show');
+  }
+
+  function closeRulesModal() {
+    document.getElementById('rules-modal').classList.remove('show');
+  }
+
   async function selectTheme(themeId) {
     const theme = THEME_LIST.find(t => t.id === themeId);
     if (!theme) return;
@@ -964,6 +1046,7 @@
   function switchPlayer(name) {
     const trimmed = (name || '').trim();
     if (!trimmed) return;
+    const hasRecord = Boolean(getAllProfiles()[trimmed]);
     currentPlayer = trimmed;
     localStorage.setItem(STORAGE_CURRENT_PLAYER_KEY, currentPlayer);
     document.getElementById('player-modal').classList.remove('show');
@@ -971,6 +1054,10 @@
     if (!loadProgress()) {
       currentLevel = 1;
       initGame();
+    }
+    // 只有無遊玩紀錄的新玩家才自動跳出規則視窗
+    if (!hasRecord) {
+      openRulesModal(true);
     }
   }
 
@@ -1551,6 +1638,7 @@
       openPlayerModal();
     } else if (!loadProgress()) {
       initGame();
+      openRulesModal(true);
     }
   })();
 </script>
