@@ -481,7 +481,6 @@
       <h2>🐾 寵物消消樂</h2>
       <div class="header-actions">
         <button class="btn-player" onclick="openRulesModal()">📖 規則</button>
-        <button id="theme-btn" class="btn-player" onclick="openThemeModal()">🎨 貓咪</button>
         <button id="player-btn" class="btn-player" onclick="openPlayerModal()">👤 設定玩家</button>
         <button class="btn-restart" onclick="restartCurrentLevel()">重新本關</button>
       </div>
@@ -520,18 +519,6 @@
       <div class="modal-actions" id="player-modal-actions">
         <button id="clear-all-btn" class="btn-danger" onclick="clearAllProfiles()">清除全部紀錄</button>
         <button id="close-player-modal-btn" class="btn-secondary" onclick="closePlayerModal()">關閉</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 切換主題彈窗 -->
-  <div id="theme-modal" class="modal-overlay">
-    <div class="modal-box">
-      <h3>🎨 選擇卡牌主題</h3>
-      <p style="margin-bottom: 12px;">點選即可切換不同主題的卡牌圖案：</p>
-      <div id="theme-list" class="theme-list"></div>
-      <div class="modal-actions">
-        <button class="btn-secondary" onclick="closeThemeModal()">關閉</button>
       </div>
     </div>
   </div>
@@ -578,16 +565,12 @@
   </div>
 
   <script>
-    // 主題設定清單（之後若要新增其他主題，只需在 assets 下建立資料夾，或在此加一行設定即可）
-    const THEME_LIST = [
-      { id: 'cat', name: '🐱 貓咪', folder: 'assets/cat' },
-      { id: 'dog', name: '🐶 狗狗', folder: 'assets/dog' },
-      { id: 'sanrio', name: '🎀 三麗鷗', folder: 'assets/三麗鷗' }
+    // 所有圖庫資料夾清單（共 60 張圖混合隨機抽取；之後若新增資料夾也可直接加入）
+    const IMAGE_FOLDERS = [
+      'assets/cat',
+      'assets/dog',
+      'assets/三麗鷗'
     ];
-
-    const STORAGE_THEME_KEY = 'pet_match_active_theme_v1';
-    let currentThemeId = localStorage.getItem(STORAGE_THEME_KEY) || 'cat';
-    const themeImagesCache = {};
 
     let ALL_TYPES = [];
     const IMAGE_EXT_REGEX = /\.(jpe?g|png|gif|webp|svg|bmp|avif)$/i;
@@ -608,143 +591,23 @@
       return results.filter(Boolean);
     }
 
-    // 自動讀取指定主題資料夾中的圖片，並過濾掉已被刪除的圖片
-    async function loadImagesFromFolder(folder = 'assets/cat') {
-      const cleanFolder = folder.replace(/\/+$/, '');
-      if (themeImagesCache[cleanFolder]) {
-        return themeImagesCache[cleanFolder];
-      }
-
-      // 1. 極速路徑：優先直接探測該主題資料夾下的 01~30 連號圖片（不需等待外部網路 API，毫秒級完成）
+    // 極速平行載入全部資料夾中的所有圖片（共 60 張）
+    async function loadAllImages() {
       const fastCandidates = [];
-      for (let n = 1; n <= 30; n++) {
-        const pad2 = String(n).padStart(2, '0');
-        fastCandidates.push(`${cleanFolder}/${pad2}.png`, `${cleanFolder}/${pad2}.jpg`);
-      }
-      const fastVerified = await filterExistingImages(fastCandidates);
-      if (fastVerified.length > 0) {
-        themeImagesCache[cleanFolder] = fastVerified;
-        return fastVerified;
-      }
-
-      // 2. 備援路徑：當無 01~30 連號圖時，再檢查其他路徑、本地伺服器目錄或 GitHub API
-      const folderPrefixes = [cleanFolder];
-      if (cleanFolder.startsWith('assets/') && cleanFolder !== 'assets') {
-        folderPrefixes.push(cleanFolder.slice('assets/'.length));
-      } else if (cleanFolder !== 'assets') {
-        folderPrefixes.push(`assets/${cleanFolder}`);
-      }
-      if (cleanFolder === 'assets/cat' || cleanFolder === 'cat') {
-        folderPrefixes.push('assets');
-      }
-
-      let candidates = [];
-
-      for (const prefix of folderPrefixes) {
-        if (location.protocol !== 'file:') {
-          try {
-            const res = await fetch(`${prefix}/`);
-            if (res.ok) {
-              const text = await res.text();
-              const doc = new DOMParser().parseFromString(text, 'text/html');
-              const links = Array.from(doc.querySelectorAll('a'))
-                .map(a => a.getAttribute('href'))
-                .filter(href => href && IMAGE_EXT_REGEX.test(href))
-                .map(href => {
-                  const fileName = decodeURIComponent(href.split('/').filter(Boolean).pop());
-                  return `${prefix}/${fileName}`;
-                });
-              if (links.length > 0) {
-                candidates.push(...links);
-              }
-            }
-          } catch (e) {}
-        }
-
-        try {
-          const ghRes = await fetch(`https://api.github.com/repos/Chiao228/Game/contents/${prefix}`);
-          if (ghRes.ok) {
-            const files = await ghRes.json();
-            if (Array.isArray(files)) {
-              const images = files
-                .filter(file => file.type === 'file' && IMAGE_EXT_REGEX.test(file.name))
-                .map(file => `${prefix}/${file.name}`);
-              if (images.length > 0) {
-                candidates.push(...images);
-              }
-            }
-          }
-        } catch (e) {}
-
-        for (let n = 1; n <= 30; n++) {
+      for (const folder of IMAGE_FOLDERS) {
+        for (let n = 1; n <= 25; n++) {
           const pad2 = String(n).padStart(2, '0');
-          candidates.push(
-            `${prefix}/${pad2}.png`,
-            `${prefix}/${pad2}.jpg`,
-            `${prefix}/${n}.png`,
-            `${prefix}/${n}.jpg`
-          );
+          fastCandidates.push(`${folder}/${pad2}.png`, `${folder}/${pad2}.jpg`);
         }
       }
-
-      const verified = await filterExistingImages(candidates);
-      if (verified.length > 0) {
-        themeImagesCache[cleanFolder] = verified;
+      // 也一併支援直接放在 assets 根目錄下的連號圖片
+      for (let n = 1; n <= 25; n++) {
+        const pad2 = String(n).padStart(2, '0');
+        fastCandidates.push(`assets/${pad2}.png`, `assets/${pad2}.jpg`);
       }
+
+      const verified = await filterExistingImages(fastCandidates);
       return verified;
-    }
-
-    let themesDiscovered = false;
-    // 背景平行探測 assets 下是否還有其他新建立的主題資料夾
-    async function discoverAvailableThemes() {
-      if (themesDiscovered) return;
-      themesDiscovered = true;
-
-      const extraFolderNames = new Set([
-        'rabbit', 'bird', 'hamster', 'bear', 'fox', 'panda', 'duck', 'capybara', 'fish', 'theme3', 'theme4', 'theme5'
-      ]);
-
-      if (location.protocol !== 'file:') {
-        try {
-          const res = await fetch('assets/');
-          if (res.ok) {
-            const text = await res.text();
-            const doc = new DOMParser().parseFromString(text, 'text/html');
-            Array.from(doc.querySelectorAll('a'))
-              .map(a => a.getAttribute('href'))
-              .filter(href => href && href.endsWith('/') && !href.startsWith('..') && !href.startsWith('/'))
-              .forEach(href => {
-                const dirName = decodeURIComponent(href.replace(/\/+$/, '').split('/').pop());
-                if (dirName && dirName !== 'assets') extraFolderNames.add(dirName);
-              });
-          }
-        } catch (e) {}
-      }
-
-      const dirsToProbe = [...extraFolderNames].filter(
-        dirName => !THEME_LIST.some(
-          t => t.id.toLowerCase() === dirName.toLowerCase() || t.folder.toLowerCase() === `assets/${dirName.toLowerCase()}`
-        )
-      );
-
-      // 平行快速檢查各候選資料夾是否有第 1 張圖
-      await Promise.all(
-        dirsToProbe.map(async dirName => {
-          const probe = await filterExistingImages([
-            `assets/${dirName}/01.png`,
-            `assets/${dirName}/01.jpg`,
-            `assets/${dirName}/1.png`,
-            `assets/${dirName}/1.jpg`
-          ]);
-          if (probe.length > 0) {
-            THEME_LIST.push({
-              id: dirName,
-              name: `🐾 ${dirName}`,
-              folder: `assets/${dirName}`
-            });
-          }
-        })
-      );
     }
 
     const TRAY_MAX = 7;
@@ -781,129 +644,17 @@
       if (btn) btn.textContent = currentPlayer ? `👤 ${currentPlayer}` : '👤 設定玩家';
     }
 
-    function getCurrentThemeObj() {
-      return THEME_LIST.find(t => t.id === currentThemeId) || THEME_LIST[0];
-    }
-
-    function updateThemeBtnUI() {
-      const btn = document.getElementById('theme-btn');
-      const theme = getCurrentThemeObj();
-      if (btn && theme) {
-        btn.textContent = `🎨 ${theme.name.replace(/^[^\s]+\s*/, '')}`;
+    function openRulesModal(isNewPlayer = false) {
+      const btn = document.getElementById('rules-confirm-btn');
+      if (btn) {
+        btn.textContent = isNewPlayer ? '開始遊戲！' : '繼續遊戲';
       }
+      document.getElementById('rules-modal').classList.add('show');
     }
 
-    async function openThemeModal() {
-      const listEl = document.getElementById('theme-list');
-      listEl.innerHTML = '';
-      document.getElementById('theme-modal').classList.add('show');
-
-      await discoverAvailableThemes();
-      const themeResults = await Promise.all(
-        THEME_LIST.map(async theme => ({
-          theme,
-          imgs: await loadImagesFromFolder(theme.folder)
-        }))
-      );
-
-      themeResults.forEach(({ theme, imgs }) => {
-        const item = document.createElement('div');
-        item.className = 'theme-item' + (theme.id === currentThemeId ? ' active' : '');
-
-        const infoBox = document.createElement('div');
-        infoBox.className = 'theme-info';
-
-        const titleEl = document.createElement('div');
-        titleEl.className = 'theme-title';
-        titleEl.textContent = theme.name;
-
-        const subEl = document.createElement('div');
-        subEl.className = 'theme-sub';
-        subEl.textContent = `共 ${imgs.length} 款圖案`;
-
-        infoBox.appendChild(titleEl);
-        infoBox.appendChild(subEl);
-
-        const previewsBox = document.createElement('div');
-        previewsBox.className = 'theme-previews';
-        imgs.slice(0, 4).forEach(src => {
-          const thumb = document.createElement('div');
-          thumb.className = 'theme-thumb';
-          thumb.style.backgroundImage = `url('${src}')`;
-          previewsBox.appendChild(thumb);
-        });
-
-        item.appendChild(infoBox);
-        item.appendChild(previewsBox);
-        item.onclick = () => selectTheme(theme.id);
-        listEl.appendChild(item);
-      });
+    function closeRulesModal() {
+      document.getElementById('rules-modal').classList.remove('show');
     }
-
-        function closeThemeModal() {
-          document.getElementById('theme-modal').classList.remove('show');
-        }
-
-        function openRulesModal(isNewPlayer = false) {
-          const btn = document.getElementById('rules-confirm-btn');
-          if (btn) {
-            btn.textContent = isNewPlayer ? '開始遊戲！' : '繼續遊戲';
-          }
-          document.getElementById('rules-modal').classList.add('show');
-        }
-
-        function closeRulesModal() {
-          document.getElementById('rules-modal').classList.remove('show');
-        }
-
-        async function selectTheme(themeId) {
-          const theme = THEME_LIST.find(t => t.id === themeId);
-          if (!theme) return;
-
-          currentThemeId = theme.id;
-          localStorage.setItem(STORAGE_THEME_KEY, currentThemeId);
-          updateThemeBtnUI();
-          closeThemeModal();
-
-          const newTypes = await loadImagesFromFolder(theme.folder);
-          if (newTypes.length === 0) return;
-          ALL_TYPES = newTypes;
-
-          // 將目前牌面上與收集槽中的圖案一對一替換為新主題的圖案，不影響玩家目前進行中的牌局
-          const activeTypesInPlay = [
-            ...new Set([
-              ...cards.map(c => c.type),
-              ...tray.map(t => t.type)
-            ])
-          ];
-
-          if (cards.length > 0 && activeTypesInPlay.length <= ALL_TYPES.length) {
-            const shuffled = [...ALL_TYPES];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-              const j = Math.floor(Math.random() * (i + 1));
-              [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            const typeMap = {};
-            activeTypesInPlay.forEach((oldType, idx) => {
-              typeMap[oldType] = shuffled[idx];
-            });
-
-            cards.forEach(c => {
-              if (typeMap[c.type]) c.type = typeMap[c.type];
-            });
-            tray.forEach(t => {
-              if (typeMap[t.type]) t.type = typeMap[t.type];
-            });
-
-            const config = getLevelConfig(currentLevel);
-            updateStatusUI(config);
-            renderBoard();
-            renderTray();
-            saveProgress();
-          } else {
-            initGame();
-          }
-        }
 
         // 儲存目前玩家的遊戲進度至 localStorage
         function saveProgress() {
@@ -1757,24 +1508,7 @@
         });
 
         (async function startApp() {
-          let activeTheme = getCurrentThemeObj();
-          updateThemeBtnUI();
-
-          // 優先載入當前主題圖片並立即啟動牌局，不等待其他背景主題探測
-          ALL_TYPES = await loadImagesFromFolder(activeTheme.folder);
-
-          // 若目前主題資料夾無圖片，自動切換至第一個有圖片的主題
-          if (ALL_TYPES.length === 0) {
-            for (const t of THEME_LIST) {
-              const fallbackImgs = await loadImagesFromFolder(t.folder);
-              if (fallbackImgs.length > 0) {
-                currentThemeId = t.id;
-                ALL_TYPES = fallbackImgs;
-                updateThemeBtnUI();
-                break;
-              }
-            }
-          }
+          ALL_TYPES = await loadAllImages();
 
           if (!currentPlayer) {
             initGame();
@@ -1783,9 +1517,6 @@
             initGame();
             openRulesModal(true);
           }
-
-          // 遊戲畫面呈現後，再於背景非同步探測與預載其他主題
-          discoverAvailableThemes();
         })();
   </script>
 </body>
