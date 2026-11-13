@@ -50,14 +50,15 @@
 
     h2 {
       margin: 0;
-      font-size: clamp(1.1rem, 3.6vw, 1.45rem);
+      font-size: clamp(1.05rem, 3.4vw, 1.35rem);
       color: #102a43;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
     }
 
     .header-actions {
       display: flex;
-      gap: 6px;
+      gap: 5px;
       align-items: center;
     }
 
@@ -66,9 +67,10 @@
       color: #243b53;
       border: 1.5px solid #9fb3c8;
       border-radius: 8px;
-      padding: 4px 10px;
-      font-size: 0.8rem;
+      padding: 4px 8px;
+      font-size: 0.78rem;
       font-weight: 600;
+      white-space: nowrap;
       cursor: pointer;
       transition: background 0.15s ease, transform 0.1s ease;
     }
@@ -86,9 +88,10 @@
       color: #fff;
       border: none;
       border-radius: 8px;
-      padding: 5px 10px;
-      font-size: 0.82rem;
+      padding: 5px 9px;
+      font-size: 0.78rem;
       font-weight: 600;
+      white-space: nowrap;
       cursor: pointer;
       transition: background 0.15s ease, transform 0.1s ease;
     }
@@ -1556,8 +1559,74 @@
           });
         }
 
+        // 音效系統（使用內建 Web Audio API 即時合成，免外部音檔、零延遲）
+        let audioCtx = null;
+
+        function getAudioContext() {
+          if (!audioCtx) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (AudioContextClass) {
+              audioCtx = new AudioContextClass();
+            }
+          }
+          if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+          }
+          return audioCtx;
+        }
+
+        // 點擊卡牌的清脆波啵聲
+        function playCardClickSound() {
+          try {
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(480, now);
+            osc.frequency.exponentialRampToValueAtTime(820, now + 0.065);
+
+            gain.gain.setValueAtTime(0.22, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.075);
+          } catch (e) {}
+        }
+
+        // 湊滿 3 張卡牌消除時的清脆叮咚音效
+        function playMatchSound() {
+          try {
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+
+            [587.33, 880].forEach((freq, idx) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              const start = now + idx * 0.07;
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(freq, start);
+
+              gain.gain.setValueAtTime(0.2, start);
+              gain.gain.exponentialRampToValueAtTime(0.001, start + 0.18);
+
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(start);
+              osc.stop(start + 0.19);
+            });
+          } catch (e) {}
+        }
+
         function handleCardClick(card) {
           if (tray.length >= TRAY_MAX) return;
+
+          playCardClickSound();
 
           card.active = false;
           tray.push(card);
@@ -1577,10 +1646,12 @@
 
         function checkMatch() {
           let typeCounts = {};
+          let matched = false;
           tray.forEach(c => (typeCounts[c.type] = (typeCounts[c.type] || 0) + 1));
 
           for (let type in typeCounts) {
             if (typeCounts[type] >= 3) {
+              matched = true;
               let removed = 0;
               tray = tray.filter(c => {
                 if (c.type === type && removed < 3) {
@@ -1590,6 +1661,9 @@
                 return true;
               });
             }
+          }
+          if (matched) {
+            setTimeout(playMatchSound, 60);
           }
         }
 
