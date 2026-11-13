@@ -1483,6 +1483,13 @@
           </div>
         </div>
         <div class="rule-item">
+          <span class="rule-icon">💥</span>
+          <div class="rule-text">
+            <strong>失敗重試扣分</strong>
+            闖關失敗時若選擇「重試本關」，會從累積總分扣除 <strong>200 分</strong>（最低扣至 0 分）。
+          </div>
+        </div>
+        <div class="rule-item">
           <span class="rule-icon">🏆</span>
           <div class="rule-text">
             <strong>稱號與積分排行榜</strong>
@@ -3514,8 +3521,8 @@
           : Math.max(data.maxLevelReached || 1, data.currentLevel || 1);
       const best =
         name === currentPlayer
-          ? Math.max(bestScore, score, data.bestScore || 0, data.score || 0)
-          : Math.max(data.bestScore || 0, data.score || 0);
+          ? Number(score || 0)
+          : Number(data.score !== undefined ? data.score : (data.bestScore || 0));
       const stars =
         name === currentPlayer
           ? Math.max(totalStars, data.totalStars || 0)
@@ -3541,7 +3548,8 @@
         dexCount,
         dexTotalMatches,
         dexPct,
-        isLocalCurrent: name === currentPlayer
+        isLocalCurrent: name === currentPlayer,
+        fromLocal: true
       };
     }
 
@@ -3560,7 +3568,7 @@
         const data = profiles[name] || {};
         const entry = buildLocalEntry(name, data);
         if (!entry.cloudId) return;
-        if (Number(entry.best || 0) <= 0) return;
+        if (Number(entry.best || 0) <= 0 && !lastCloudPayloadHashes[entry.cloudId]) return;
 
         const payload = {
           name: String(entry.name),
@@ -3684,8 +3692,8 @@
         if (!prev) {
           byName.set(key, { ...item, name: key });
         } else {
-          prev.maxLvl = Math.max(prev.maxLvl, item.maxLvl);
-          prev.best = Math.max(prev.best, item.best);
+          prev.maxLvl = item.fromLocal ? Math.max(prev.maxLvl, item.maxLvl) : Math.max(prev.maxLvl, item.maxLvl);
+          prev.best = item.fromLocal ? item.best : Math.max(prev.best, item.best);
           prev.stars = Math.max(prev.stars, item.stars);
           prev.dexCount = Math.max(prev.dexCount, item.dexCount);
           prev.dexPct = Math.max(prev.dexPct, item.dexPct);
@@ -4195,16 +4203,29 @@
           winStreak = 0;
           saveProgress();
         }
+        const FAIL_RETRY_PENALTY = 200;
+        const canDeduct = !isDailyMode && levelStartScore > 0;
+        const actualDeduct = canDeduct ? Math.min(levelStartScore, FAIL_RETRY_PENALTY) : 0;
         showModal(
           `💥 收集槽滿了！`,
-          `你在${isDailyMode ? '今日挑戰' : `第 ${currentLevel} 關`}挑戰失敗，要再試一次嗎？`,
+          isDailyMode
+            ? `你在今日挑戰挑戰失敗，要再試一次嗎？`
+            : canDeduct
+              ? `你在第 ${currentLevel} 關挑戰失敗，重試本關將從總分扣除 ${actualDeduct} 分，要再試一次嗎？`
+              : `你在第 ${currentLevel} 關挑戰失敗，要再試一次嗎？`,
           [
             {
-              label: '重試本關',
+              label: canDeduct ? `重試本關 (-${actualDeduct}分)` : '重試本關',
               primary: true,
               onClick: () => {
-                score = isDailyMode ? 0 : levelStartScore;
+                if (isDailyMode) {
+                  score = 0;
+                } else {
+                  levelStartScore = Math.max(0, levelStartScore - FAIL_RETRY_PENALTY);
+                  score = levelStartScore;
+                }
                 initGame();
+                if (!isDailyMode) syncPlayerToCloud(true);
               }
             },
             {
