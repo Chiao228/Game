@@ -1511,7 +1511,7 @@
     let globalLeaderboardCache = null;
     let leaderboardStatusText = '';
     let cloudSyncTimer = null;
-    let lastCloudPayloadHash = '';
+    let lastCloudPayloadHashes = {};
 
     let currentPlayer = localStorage.getItem(STORAGE_CURRENT_PLAYER_KEY) || '';
     let currentLevel = 1;
@@ -3462,11 +3462,11 @@
           }, 2500);
         }
 
-        async function syncPlayerToCloud(force = false) {
-          if (!FIREBASE_DB_URL || !currentPlayer) return;
+        async function syncProfileEntryToCloud(name, force = false) {
+          if (!FIREBASE_DB_URL || !name) return;
           try {
             const profiles = getAllProfiles();
-            const entry = buildLocalEntry(currentPlayer, profiles[currentPlayer] || {});
+            const entry = buildLocalEntry(name, profiles[name] || {});
             if (!entry.cloudId) return;
 
             const payload = {
@@ -3480,7 +3480,7 @@
             };
 
             const hash = `${entry.cloudId}|${payload.name}|${payload.bestScore}|${payload.maxLevelReached}|${payload.totalStars}|${payload.dexCount}`;
-            if (!force && hash === lastCloudPayloadHash) return;
+            if (!force && hash === lastCloudPayloadHashes[entry.cloudId]) return;
 
             const res = await fetch(`${FIREBASE_DB_URL}/leaderboard/${encodeURIComponent(entry.cloudId)}.json`, {
               method: 'PUT',
@@ -3488,9 +3488,24 @@
               body: JSON.stringify(payload)
             });
             if (res.ok) {
-              lastCloudPayloadHash = hash;
+              lastCloudPayloadHashes[entry.cloudId] = hash;
             }
           } catch (e) { }
+        }
+
+        async function syncPlayerToCloud(force = false) {
+          if (!currentPlayer) return;
+          await syncProfileEntryToCloud(currentPlayer, force);
+        }
+
+        async function syncAllLocalProfilesToCloud(force = false) {
+          if (!FIREBASE_DB_URL) return;
+          const profiles = getAllProfiles();
+          const names = Object.keys(profiles);
+          if (currentPlayer && !names.includes(currentPlayer)) {
+            names.unshift(currentPlayer);
+          }
+          await Promise.all(names.map(name => syncProfileEntryToCloud(name, force || name === currentPlayer)));
         }
 
         async function fetchGlobalLeaderboard() {
@@ -3499,7 +3514,7 @@
           renderLeaderboard();
 
           try {
-            await syncPlayerToCloud(true);
+            await syncAllLocalProfilesToCloud(false);
             const res = await fetch(`${FIREBASE_DB_URL}/leaderboard.json`);
             if (!res.ok) throw new Error('HTTP ' + res.status);
             const data = await res.json();
