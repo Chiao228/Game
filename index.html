@@ -61,8 +61,18 @@
       display: flex;
       gap: 4px;
       align-items: center;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       justify-content: flex-end;
+    }
+    .header-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      width: 100%;
+    }
+    .header-nav-grid .btn-player {
+      padding: 5px 2px;
+      text-align: center;
     }
 
     .btn-player {
@@ -969,6 +979,202 @@
       font-weight: 800;
       color: #d9480f;
     }
+
+    /* ✨ 特殊機能卡（雙倍金卡 / 連擊延時冰卡） */
+    .card.special-double {
+      border-color: #f59f00;
+      box-shadow: 0 0 8px rgba(245, 159, 0, 0.55), 0 3px 6px rgba(60, 40, 20, 0.24);
+    }
+
+    .card.special-freeze {
+      border-color: #228be6;
+      box-shadow: 0 0 8px rgba(34, 139, 230, 0.55), 0 3px 6px rgba(60, 40, 20, 0.24);
+    }
+
+    .special-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      font-size: 0.62rem;
+      font-weight: 900;
+      padding: 1px 4px;
+      border-radius: 999px;
+      color: #fff;
+      border: 1.5px solid #fff;
+      pointer-events: none;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    }
+
+    .special-badge.double {
+      background: linear-gradient(135deg, #fcc419 0%, #f08c00 100%);
+    }
+
+    .special-badge.freeze {
+      background: linear-gradient(135deg, #4dabf7 0%, #1971c2 100%);
+    }
+
+    /* 🎨 主題配色：櫻花庭園 & 星空夜色 */
+    body[data-theme="sakura"] {
+      background: radial-gradient(circle at 50% 20%, #fff9fb 0%, #fde8ef 55%, #f8d4e0 100%);
+    }
+
+    body[data-theme="sakura"] #game-board {
+      background:
+        radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.35) 0%, transparent 45%),
+        radial-gradient(circle at 80% 75%, rgba(255, 255, 255, 0.25) 0%, transparent 45%),
+        linear-gradient(180deg, #ffe3ec 0%, #fcc2d7 100%);
+      border-color: #a64d79;
+    }
+
+    body[data-theme="sakura"] .level-badge {
+      background: linear-gradient(135deg, #f06595 0%, #d6336c 100%);
+    }
+
+    body[data-theme="starry"] {
+      background: radial-gradient(circle at 50% 20%, #1e2447 0%, #141833 55%, #0c0f24 100%);
+    }
+
+    body[data-theme="starry"] h2 {
+      color: #ffe066;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+    }
+
+    body[data-theme="starry"] #game-board {
+      background:
+        radial-gradient(circle at 20% 25%, rgba(255, 224, 102, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 80% 75%, rgba(116, 192, 252, 0.14) 0%, transparent 45%),
+        linear-gradient(180deg, #252d5c 0%, #192045 100%);
+      border-color: #5c6bc0;
+      box-shadow: inset 0 4px 14px rgba(0, 0, 0, 0.45), 0 8px 22px rgba(0, 0, 0, 0.45);
+    }
+
+    body[data-theme="starry"] .level-badge {
+      background: linear-gradient(135deg, #5c7cfa 0%, #3b5bdb 100%);
+    }
+
+    /* 🏅 成就勳章網格 */
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      max-height: 52vh;
+      overflow-y: auto;
+      margin: 10px 0 14px 0;
+      text-align: left;
+    }
+
+    .badge-card {
+      background: #f9f5ee;
+      border: 1.5px solid #e0ceb8;
+      border-radius: 11px;
+      padding: 8px 9px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.52;
+      filter: grayscale(0.8);
+    }
+
+    .badge-card.unlocked {
+      background: linear-gradient(135deg, #fffdf9 0%, #fff9db 100%);
+      border-color: #fcc419;
+      opacity: 1;
+      filter: none;
+      box-shadow: 0 2px 6px rgba(245, 159, 0, 0.16);
+    }
+
+    .badge-icon {
+      font-size: 1.45rem;
+      flex-shrink: 0;
+    }
+
+    .badge-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .badge-name {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #3d2916;
+    }
+
+    .badge-desc {
+      font-size: 0.7rem;
+      color: #7c6248;
+      line-height: 1.3;
+    }
+
+    /* ⚙️ 設定面板樣式 */
+    .settings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 10px 0 16px 0;
+      text-align: left;
+    }
+
+    .setting-row {
+      background: #f9f5ee;
+      border: 1px solid #eadcc9;
+      border-radius: 11px;
+      padding: 9px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .setting-row-inline {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .setting-label {
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: #3d2916;
+    }
+
+    .theme-pills {
+      display: flex;
+      gap: 6px;
+    }
+
+    .theme-pill {
+      flex: 1;
+      background: #fffdf9;
+      color: #5c4028;
+      border: 1.5px solid #d8c3a8;
+      border-radius: 8px;
+      padding: 5px 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .theme-pill.active {
+      background: #5da64e;
+      color: #fff;
+      border-color: #448537;
+    }
+
+    .toggle-pill {
+      min-width: 64px;
+      border: none;
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: #fff;
+      background: #adb5bd;
+    }
+
+    .toggle-pill.on {
+      background: linear-gradient(135deg, #5da64e 0%, #448537 100%);
+    }
   </style>
 </head>
 
@@ -978,13 +1184,17 @@
     <div class="title-row">
       <h2>🃏 卡牌消消樂</h2>
       <div class="header-actions">
-        <button id="bgm-btn" class="btn-player bgm-on" onclick="toggleBGM()" title="開關背景音樂">🎵</button>
-        <button class="btn-player" onclick="openPokedexModal()" title="查看 60 張角色收集圖鑑">📔 圖鑑</button>
-        <button class="btn-player" onclick="openLeaderboardModal()" title="查看玩家排行榜">🏆 排行</button>
-        <button class="btn-player" onclick="openRulesModal()" title="查看遊戲規則">📖 規則</button>
+        <button class="btn-player" onclick="openSettingsModal()" title="主題、音效與震動設定">⚙️ 設定</button>
         <button id="player-btn" class="btn-player" onclick="openPlayerModal()">👤 玩家</button>
         <button class="btn-restart" onclick="restartCurrentLevel()">重來</button>
       </div>
+    </div>
+    <div class="header-nav-grid">
+      <button id="daily-btn" class="btn-player" onclick="openDailyModal()" title="每日固定牌局挑戰">⚡ 每日</button>
+      <button class="btn-player" onclick="openPokedexModal()" title="查看 60 張角色收集圖鑑">📔 圖鑑</button>
+      <button class="btn-player" onclick="openBadgesModal()" title="查看成就勳章">🏅 勳章</button>
+      <button class="btn-player" onclick="openLeaderboardModal()" title="查看玩家排行榜">🏆 排行</button>
+      <button class="btn-player" onclick="openRulesModal()" title="查看遊戲規則">📖 規則</button>
     </div>
     <div class="status-bar">
       <span id="level-label" class="level-badge">第 1 關</span>
@@ -1067,6 +1277,67 @@
       <div id="leaderboard-list" class="leaderboard-list"></div>
       <div class="modal-actions">
         <button class="btn-primary" style="width: 100%;" onclick="closeLeaderboardModal()">返回遊戲</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🏅 成就勳章彈窗 -->
+  <div id="badges-modal" class="modal-overlay">
+    <div class="modal-box" style="width: min(92vw, 370px);">
+      <h3>🏅 成就勳章</h3>
+      <p id="badges-summary" style="margin-bottom: 6px; font-size: 0.84rem;">已解鎖：0 / 8</p>
+      <div id="badges-grid" class="badges-grid"></div>
+      <div class="modal-actions">
+        <button class="btn-primary" style="width: 100%;" onclick="closeBadgesModal()">返回遊戲</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⚡ 每日挑戰彈窗 -->
+  <div id="daily-modal" class="modal-overlay">
+    <div class="modal-box" style="width: min(90vw, 345px);">
+      <h3>⚡ 每日固定挑戰</h3>
+      <p id="daily-date-label" style="margin-bottom: 10px; font-weight: 700; color: #5c4028;"></p>
+      <div id="daily-status-box" class="win-stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 16px;"></div>
+      <div class="modal-actions" id="daily-modal-actions"></div>
+    </div>
+  </div>
+
+  <!-- ⚙️ 遊戲設定彈窗 -->
+  <div id="settings-modal" class="modal-overlay">
+    <div class="modal-box" style="width: min(90vw, 355px);">
+      <h3>⚙️ 遊戲設定</h3>
+      <div class="settings-list">
+        <div class="setting-row">
+          <span class="setting-label">🎨 棋盤主題風格</span>
+          <div class="theme-pills">
+            <button id="theme-btn-meadow" class="theme-pill active" onclick="setTheme('meadow')">🌿 草地</button>
+            <button id="theme-btn-sakura" class="theme-pill" onclick="setTheme('sakura')">🌸 櫻花</button>
+            <button id="theme-btn-starry" class="theme-pill" onclick="setTheme('starry')">🌌 星空</button>
+          </div>
+        </div>
+        <div class="setting-row setting-row-inline">
+          <span class="setting-label">🎵 背景音樂</span>
+          <button id="bgm-toggle-btn" class="toggle-pill on" onclick="toggleBGM()">開啟</button>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">🎵 背景音樂旋律</span>
+          <div class="theme-pills">
+            <button id="bgm-style-xylophone" class="theme-pill active" onclick="setBgmStyle('xylophone')">🎹 輕快木琴</button>
+            <button id="bgm-style-musicbox" class="theme-pill" onclick="setBgmStyle('musicbox')">🎶 夢幻八音盒</button>
+          </div>
+        </div>
+        <div class="setting-row setting-row-inline">
+          <span class="setting-label">🔊 點擊與消除音效</span>
+          <button id="sfx-toggle-btn" class="toggle-pill on" onclick="toggleSFX()">開啟</button>
+        </div>
+        <div class="setting-row setting-row-inline">
+          <span class="setting-label">📳 手機震動回饋</span>
+          <button id="vibrate-toggle-btn" class="toggle-pill on" onclick="toggleVibrate()">開啟</button>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-primary" style="width: 100%;" onclick="closeSettingsModal()">完成</button>
       </div>
     </div>
   </div>
@@ -1253,6 +1524,11 @@
     let maxLevelReached = 1;
     let totalStars = 0;
     let unlockedStickers = {};
+    let unlockedBadges = {};
+    let winStreak = 0;
+    let dailyClears = {};
+    let isDailyMode = false;
+    let comboFreezeUntil = 0;
     let comboCount = 0;
     let maxComboInLevel = 1;
     let lastMatchTime = 0;
@@ -1264,12 +1540,17 @@
     // 切換玩家或清空紀錄時，完整重置記憶體中的玩家分數與狀態，避免跨玩家殘留
     function resetPlayerRuntimeState() {
       currentLevel = 1;
+      isDailyMode = false;
       score = 0;
       levelStartScore = 0;
       bestScore = 0;
       maxLevelReached = 1;
       totalStars = 0;
       unlockedStickers = {};
+      unlockedBadges = {};
+      winStreak = 0;
+      dailyClears = {};
+      comboFreezeUntil = 0;
       comboCount = 0;
       maxComboInLevel = 1;
       lastMatchTime = 0;
@@ -1351,32 +1632,44 @@
         maxLevelReached = Math.max(maxLevelReached, prev.maxLevelReached || 1, currentLevel);
         totalStars = Math.max(totalStars, prev.totalStars || 0);
 
-        profiles[currentPlayer] = {
-          currentLevel,
-          score,
-          levelStartScore,
+        const nextProfile = {
+          ...(prev || {}),
           bestScore,
           maxLevelReached,
           totalStars,
-          levelSeconds,
+          winStreak,
+          dailyClears: { ...(prev.dailyClears || {}), ...dailyClears },
           unlockedStickers: { ...(prev.unlockedStickers || {}), ...unlockedStickers },
-          toolsRemaining: { ...toolsRemaining },
-          lastPickedCardId,
-          cards: cards.map(c => ({
+          unlockedBadges: { ...(prev.unlockedBadges || {}), ...unlockedBadges }
+        };
+
+        // 每日挑戰模式不覆寫玩家原本的無盡闖關存檔
+        if (!isDailyMode) {
+          nextProfile.currentLevel = currentLevel;
+          nextProfile.score = score;
+          nextProfile.levelStartScore = levelStartScore;
+          nextProfile.levelSeconds = levelSeconds;
+          nextProfile.toolsRemaining = { ...toolsRemaining };
+          nextProfile.lastPickedCardId = lastPickedCardId;
+          nextProfile.cards = cards.map(c => ({
             id: c.id,
             type: c.type,
             gx: c.gx,
             gy: c.gy,
             z: c.z,
+            special: c.special || null,
             isBottomBlind: Boolean(c.isBottomBlind),
             isPoppedOut: Boolean(c.isPoppedOut),
             active: Boolean(c.active)
-          })),
-          tray: tray.map(c => ({
+          }));
+          nextProfile.tray = tray.map(c => ({
             id: c.id,
-            type: c.type
-          }))
-        };
+            type: c.type,
+            special: c.special || null
+          }));
+        }
+
+        profiles[currentPlayer] = nextProfile;
         localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
         localStorage.setItem(STORAGE_CURRENT_PLAYER_KEY, currentPlayer);
         updatePlayerBtnUI();
@@ -1398,8 +1691,13 @@
         bestScore = Number(state.bestScore || score || 0);
         maxLevelReached = Number(state.maxLevelReached || state.currentLevel || 1);
         totalStars = Number(state.totalStars || 0);
+        winStreak = Number(state.winStreak || 0);
+        dailyClears = state.dailyClears && typeof state.dailyClears === 'object' ? { ...state.dailyClears } : {};
         unlockedStickers = state.unlockedStickers && typeof state.unlockedStickers === 'object'
           ? { ...state.unlockedStickers }
+          : {};
+        unlockedBadges = state.unlockedBadges && typeof state.unlockedBadges === 'object'
+          ? { ...state.unlockedBadges }
           : {};
         levelSeconds = Number(state.levelSeconds || 0);
 
@@ -1457,6 +1755,7 @@
           baseX: 0,
           baseY: 0,
           z: c.z,
+          special: c.special || null,
           isBottomBlind: Boolean(c.isBottomBlind),
           isPoppedOut: Boolean(c.isPoppedOut),
           active: Boolean(c.active)
@@ -1904,7 +2203,7 @@
 
         function updateStatusUI(config) {
           if (config) {
-            document.getElementById('level-label').textContent = `第 ${currentLevel} 關`;
+            document.getElementById('level-label').textContent = isDailyMode ? '⚡ 今日挑戰' : `第 ${currentLevel} 關`;
           }
           const timerEl = document.getElementById('timer-label');
           if (timerEl) timerEl.textContent = `⏱️ ${formatTime(levelSeconds)}`;
@@ -1943,6 +2242,24 @@
           if (btnPop) btnPop.disabled = !canPop;
         }
 
+        // 可重現的隨機種子產生器（用於每日挑戰固定牌局）
+        function mulberry32(seed) {
+          return function () {
+            let t = (seed += 0x6d2b79f5);
+            t = Math.imul(t ^ (t >>> 15), t | 1);
+            t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+          };
+        }
+
+        function getDailyDateStr() {
+          const d = new Date();
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          return `${y}-${m}-${day}`;
+        }
+
         function initGame() {
           closeModal();
           cards = [];
@@ -1950,11 +2267,14 @@
           toolsRemaining = { undo: 1, shuffle: 1, pop: 1 };
           lastPickedCardId = null;
           isShuffling = false;
+          comboFreezeUntil = 0;
           comboCount = 0;
           maxComboInLevel = 1;
           lastMatchTime = 0;
           levelSeconds = 0;
-          if (currentLevel === 1) {
+          if (isDailyMode) {
+            score = 0;
+          } else if (currentLevel === 1) {
             levelStartScore = 0;
             score = 0;
           } else {
@@ -1962,11 +2282,25 @@
           }
           startLevelTimer();
 
-          const config = getLevelConfig(currentLevel);
-          // 隨機從所有 60 張圖片中挑選本關要出場的圖案
+          let rng = Math.random;
+          let config;
+          if (isDailyMode) {
+            const dateNum = Number(getDailyDateStr().replace(/-/g, '')) || 20260101;
+            rng = mulberry32(dateNum);
+            config = {
+              numTypes: Math.min(8, ALL_TYPES.length),
+              totalCards: 54,
+              bottomStackCards: 12,
+              shape: SHAPE_PATTERNS[dateNum % SHAPE_PATTERNS.length]
+            };
+          } else {
+            config = getLevelConfig(currentLevel);
+          }
+
+          // 隨機（或依每日種子）從所有 60 張圖片中挑選本關要出場的圖案
           const shuffledTypes = [...ALL_TYPES];
           for (let i = shuffledTypes.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
+            const j = Math.floor(rng() * (i + 1));
             [shuffledTypes[i], shuffledTypes[j]] = [shuffledTypes[j], shuffledTypes[i]];
           }
           const levelTypes = shuffledTypes.slice(0, config.numTypes);
@@ -1980,7 +2314,21 @@
 
           const positions = generateLevelPositions(config);
           // 使用「100% 保證可解」且「難度隨關卡遞增」的拓撲模擬演算法分配卡牌圖案
-          const deck = generateSolvableDeck(positions, tripletTypes, currentLevel);
+          const deck = generateSolvableDeck(positions, tripletTypes, isDailyMode ? 3 : currentLevel, rng);
+
+          // ✨ 特殊機能卡指派：第 2 關以上（或每日挑戰）隨機挑 1 種圖案為「2x 雙倍金卡」，第 3 關以上再加 1 種「❄️ 連擊延時卡」
+          const specialMap = {};
+          if (isDailyMode || currentLevel >= 2) {
+            const doubleType = levelTypes[Math.floor(rng() * levelTypes.length)];
+            specialMap[doubleType] = 'double';
+          }
+          if ((isDailyMode || currentLevel >= 3) && levelTypes.length >= 2) {
+            const candidates = levelTypes.filter(t => !specialMap[t]);
+            if (candidates.length > 0) {
+              const freezeType = candidates[Math.floor(rng() * candidates.length)];
+              specialMap[freezeType] = 'freeze';
+            }
+          }
 
           deck.forEach((type, index) => {
             const pos = positions[index];
@@ -1992,6 +2340,7 @@
               baseX: 0,
               baseY: 0,
               z: pos.z,
+              special: specialMap[type] || null,
               isBottomBlind: pos.isBottomBlind,
               isPoppedOut: false,
               active: true
@@ -2013,10 +2362,10 @@
          * - 第 3 關以上：逐步拉高 3 組（9 張）深層交錯比例（收集槽周轉峰值達 6 格，緊貼 7 格上限），
          *   越後面越需要仔細觀察下層卡牌，但數學上 100% 保證一定存在不靠道具也能完全消除的通關路徑！
          */
-        function generateSolvableDeck(positions, tripletTypes, level = 1) {
+        function generateSolvableDeck(positions, tripletTypes, level = 1, rng = Math.random) {
           const shuffledTriplets = [...tripletTypes];
           for (let i = shuffledTriplets.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
+            const j = Math.floor(rng() * (i + 1));
             [shuffledTriplets[i], shuffledTriplets[j]] = [shuffledTriplets[j], shuffledTriplets[i]];
           }
 
@@ -2066,7 +2415,7 @@
             });
 
             const totalWeight = weights.reduce((acc, w) => acc + w, 0);
-            let r = Math.random() * totalWeight;
+            let r = rng() * totalWeight;
             let chosenIdx = exposed[exposed.length - 1];
             for (let i = 0; i < exposed.length; i++) {
               r -= weights[i];
@@ -2086,7 +2435,7 @@
           let tIdx = 0;
           while (tIdx < shuffledTriplets.length) {
             const leftTriplets = shuffledTriplets.length - tIdx;
-            const roll = Math.random();
+            const roll = rng();
 
             if (leftTriplets >= 3 && roll < prob3Group) {
               // 3 組（9 張）安全深層交錯：前 6 張必湊齊 A 消除（收集槽峰值 <= 6），後 3 張依序消除 B 與 C
@@ -2099,12 +2448,12 @@
               }
               const firstFive = [tA, tA, tB, tB, tC];
               for (let i = firstFive.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
+                const j = Math.floor(rng() * (i + 1));
                 [firstFive[i], firstFive[j]] = [firstFive[j], firstFive[i]];
               }
               const lastThree = [tB, tC, tC];
               for (let i = lastThree.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
+                const j = Math.floor(rng() * (i + 1));
                 [lastThree[i], lastThree[j]] = [lastThree[j], lastThree[i]];
               }
               const ninePool = [...firstFive, tA, ...lastThree];
@@ -2122,7 +2471,7 @@
               }
               const pairPool = [t1, t1, t1, t2, t2, t2];
               for (let i = pairPool.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
+                const j = Math.floor(rng() * (i + 1));
                 [pairPool[i], pairPool[j]] = [pairPool[j], pairPool[i]];
               }
               pickedPositions.forEach((posIdx, k) => {
@@ -2224,6 +2573,14 @@
               el.style.backgroundPosition = 'center';
               el.style.backgroundRepeat = 'no-repeat';
 
+              if (c.special === 'double') {
+                el.classList.add('special-double');
+                el.innerHTML = '<span class="special-badge double">2x</span>';
+              } else if (c.special === 'freeze') {
+                el.classList.add('special-freeze');
+                el.innerHTML = '<span class="special-badge freeze">❄️</span>';
+              }
+
               if (covered) {
                 el.classList.add('covered');
               } else {
@@ -2267,14 +2624,30 @@
           }
         }
 
-        // 音效與背景音樂系統（使用內建 Web Audio API 即時合成，免外部音檔、零延遲）
+        // 音效、背景音樂與主題／震動設定系統（使用內建 Web Audio API 即時合成，免外部音檔、零延遲）
         let audioCtx = null;
         const STORAGE_BGM_KEY = 'pet_match_bgm_v1';
+        const STORAGE_BGM_STYLE_KEY = 'pet_match_bgm_style_v1';
+        const STORAGE_SFX_KEY = 'pet_match_sfx_v1';
+        const STORAGE_VIBRATE_KEY = 'pet_match_vibrate_v1';
+        const STORAGE_THEME_KEY = 'pet_match_theme_v1';
+
         let bgmEnabled = localStorage.getItem(STORAGE_BGM_KEY) !== 'off';
+        let bgmStyle = localStorage.getItem(STORAGE_BGM_STYLE_KEY) || 'xylophone';
+        let sfxEnabled = localStorage.getItem(STORAGE_SFX_KEY) !== 'off';
+        let vibrateEnabled = localStorage.getItem(STORAGE_VIBRATE_KEY) !== 'off';
+        let currentTheme = localStorage.getItem(STORAGE_THEME_KEY) || 'meadow';
         let bgmTimer = null;
         let bgmStep = 0;
 
-        // 療癒輕快木琴／音樂盒風格背景旋律（C大調五聲與和弦分解）
+        function triggerVibrate(pattern) {
+          if (!vibrateEnabled) return;
+          try {
+            if (navigator.vibrate) navigator.vibrate(pattern);
+          } catch (e) {}
+        }
+
+        // 旋律 1：療癒輕快木琴（C大調五聲與和弦分解）
         const BGM_MELODY = [
           523.25, 659.25, 783.99, 659.25, 880.00, 783.99, 659.25, 587.33,
           523.25, 587.33, 659.25, 783.99, 659.25, 587.33, 523.25, 0,
@@ -2286,6 +2659,20 @@
           261.63, 0, 329.63, 0, 293.66, 0, 392.00, 0,
           329.63, 0, 440.00, 0, 349.23, 0, 392.00, 0,
           293.66, 0, 392.00, 0, 261.63, 0, 261.63, 0
+        ];
+
+        // 旋律 2：夢幻八音盒華爾滋（高音清脆八音盒）
+        const BGM_MUSICBOX_MELODY = [
+          783.99, 1046.50, 987.77, 783.99, 880.00, 659.25, 698.46, 783.99,
+          880.00, 987.77, 1046.50, 783.99, 659.25, 587.33, 523.25, 0,
+          1046.50, 987.77, 880.00, 783.99, 880.00, 783.99, 659.25, 523.25,
+          587.33, 659.25, 783.99, 659.25, 587.33, 523.25, 523.25, 0
+        ];
+        const BGM_MUSICBOX_BASS = [
+          261.63, 392.00, 523.25, 0, 349.23, 440.00, 523.25, 0,
+          293.66, 440.00, 587.33, 0, 196.00, 392.00, 261.63, 0,
+          261.63, 392.00, 523.25, 0, 329.63, 392.00, 523.25, 0,
+          293.66, 392.00, 261.63, 0, 261.63, 0, 261.63, 0
         ];
 
         function getAudioContext() {
@@ -2307,18 +2694,20 @@
             const ctx = getAudioContext();
             if (!ctx || ctx.state !== 'running') return;
             const now = ctx.currentTime;
-            const idx = bgmStep % BGM_MELODY.length;
-            const note = BGM_MELODY[idx];
-            const bass = BGM_BASS[idx];
+            const melodyArr = bgmStyle === 'musicbox' ? BGM_MUSICBOX_MELODY : BGM_MELODY;
+            const bassArr = bgmStyle === 'musicbox' ? BGM_MUSICBOX_BASS : BGM_BASS;
+            const idx = bgmStep % melodyArr.length;
+            const note = melodyArr[idx];
+            const bass = bassArr[idx];
             bgmStep++;
 
             if (note > 0) {
               const osc = ctx.createOscillator();
               const gain = ctx.createGain();
-              osc.type = 'sine';
+              osc.type = bgmStyle === 'musicbox' ? 'triangle' : 'sine';
               osc.frequency.setValueAtTime(note, now);
               gain.gain.setValueAtTime(0.001, now);
-              gain.gain.linearRampToValueAtTime(0.045, now + 0.02);
+              gain.gain.linearRampToValueAtTime(bgmStyle === 'musicbox' ? 0.036 : 0.045, now + 0.02);
               gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.28);
               osc.connect(gain);
               gain.connect(ctx.destination);
@@ -2332,7 +2721,7 @@
               bOsc.type = 'triangle';
               bOsc.frequency.setValueAtTime(bass, now);
               bGain.gain.setValueAtTime(0.001, now);
-              bGain.gain.linearRampToValueAtTime(0.028, now + 0.02);
+              bGain.gain.linearRampToValueAtTime(0.024, now + 0.02);
               bGain.gain.exponentialRampToValueAtTime(0.0008, now + 0.34);
               bOsc.connect(bGain);
               bGain.connect(ctx.destination);
@@ -2356,15 +2745,10 @@
         }
 
         function updateBgmBtnUI() {
-          const btn = document.getElementById('bgm-btn');
+          const btn = document.getElementById('bgm-toggle-btn');
           if (!btn) return;
-          if (bgmEnabled) {
-            btn.textContent = '🎵';
-            btn.classList.add('bgm-on');
-          } else {
-            btn.textContent = '🔇';
-            btn.classList.remove('bgm-on');
-          }
+          btn.textContent = bgmEnabled ? '開啟' : '關閉';
+          btn.classList.toggle('on', bgmEnabled);
         }
 
         function toggleBGM() {
@@ -2389,6 +2773,8 @@
 
         // 點擊卡牌的清脆波啵聲
         function playCardClickSound() {
+          triggerVibrate(10);
+          if (!sfxEnabled) return;
           try {
             const ctx = getAudioContext();
             if (!ctx) return;
@@ -2412,6 +2798,8 @@
 
         // 湊滿 3 張卡牌消除時的清脆叮咚音效（隨連擊數微幅升調）
         function playMatchSound(combo = 1) {
+          triggerVibrate(22);
+          if (!sfxEnabled) return;
           try {
             const ctx = getAudioContext();
             if (!ctx) return;
@@ -2479,6 +2867,8 @@
 
         // 使用道具時的輕快音效
         function playToolSound() {
+          triggerVibrate(15);
+          if (!sfxEnabled) return;
           try {
             const ctx = getAudioContext();
             if (!ctx) return;
@@ -2501,6 +2891,8 @@
 
         // 過關慶祝勝利音效
         function playWinSound() {
+          triggerVibrate([40, 30, 60]);
+          if (!sfxEnabled) return;
           try {
             const ctx = getAudioContext();
             if (!ctx) return;
@@ -2614,7 +3006,7 @@
 
           card.active = false;
           lastPickedCardId = card.id;
-          tray.push({ id: card.id, type: card.type });
+          tray.push({ id: card.id, type: card.type, special: card.special || null });
 
           // 將收集槽的卡牌依照圖片路徑字串排序，讓相同的靠在一起
           tray.sort((a, b) => (a.type > b.type ? 1 : -1));
@@ -2646,11 +3038,13 @@
               matched = true;
               // 1. 優先執行收集槽消除，確保無論如何 3 張同圖案一定會從 tray 移除
               let removed = 0;
+              let matchedSpecial = null;
               const nextTray = [];
               tray.forEach((c, idx) => {
                 if (c.type === type && removed < 3) {
                   removed++;
                   matchedIndices.push(idx);
+                  if (c.special) matchedSpecial = c.special;
                   if (c.id === lastPickedCardId) {
                     lastPickedCardId = null;
                   }
@@ -2660,9 +3054,10 @@
               });
               tray = nextTray;
 
-              // 2. 計算連擊、加分與圖鑑解鎖
+              // 2. 計算連擊、特殊機能卡加成與圖鑑解鎖
               const now = Date.now();
-              if (now - lastMatchTime <= 6000) {
+              const comboWindowMs = now <= comboFreezeUntil ? 12000 : 6000;
+              if (now - lastMatchTime <= comboWindowMs) {
                 comboCount++;
               } else {
                 comboCount = 1;
@@ -2671,13 +3066,25 @@
               if (comboCount > maxComboInLevel) {
                 maxComboInLevel = comboCount;
               }
-              const gained = 100 * comboCount;
+
+              let gained = 100 * comboCount;
+              let bannerSuffix = '';
+              if (matchedSpecial === 'double') {
+                gained *= 2;
+                bannerSuffix = ' 🪙2x';
+              } else if (matchedSpecial === 'freeze') {
+                comboFreezeUntil = now + 12000;
+                gained += 150;
+                bannerSuffix = ' ❄️連擊延長';
+              }
+
               score += gained;
               if (score > bestScore) {
                 bestScore = score;
               }
               recordStickerUnlock(type);
-              spawnComboBanner(comboCount, gained);
+              spawnComboBanner(comboCount, `${gained}${bannerSuffix}`);
+              checkAchievements({ event: 'match' });
             }
           }
           if (matched) {
@@ -3142,6 +3549,216 @@
           }
         }
 
+        // ==================== 🏅 成就勳章系統 ====================
+        const ACHIEVEMENTS = [
+          { id: 'first_win', icon: '🏆', name: '初戰告捷', desc: '首次通過第 1 關' },
+          { id: 'combo_5', icon: '🔥', name: '連擊大師', desc: '達成 Combo x5 以上連擊' },
+          { id: 'no_tool_3star', icon: '👑', name: '純淨三星', desc: '不使用任何道具獲得 3 星通關' },
+          { id: 'streak_3', icon: '⚡', name: '三連勝', desc: '連續通過 3 關不失敗' },
+          { id: 'level_5', icon: '🏔️', name: '勇闖第五關', desc: '闖關抵達第 5 關以上' },
+          { id: 'dex_half', icon: '📔', name: '圖鑑達人', desc: '收集圖鑑達 30 張以上' },
+          { id: 'dex_full', icon: '🌟', name: '全圖鑑宗師', desc: '解鎖全部 60 張角色圖鑑' },
+          { id: 'daily_win', icon: '📅', name: '今日之星', desc: '完成一次每日固定挑戰' }
+        ];
+
+        function spawnBadgeToast(badge) {
+          try {
+            const toast = document.createElement('div');
+            toast.className = 'unlock-toast';
+            toast.style.borderColor = '#f08c00';
+            toast.innerHTML = `<span style="font-size:1.25rem;">${badge.icon}</span><span>🏅 獲得勳章：【${badge.name}】！</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+          } catch (e) {}
+        }
+
+        function unlockBadge(id) {
+          if (!unlockedBadges || typeof unlockedBadges !== 'object') unlockedBadges = {};
+          if (unlockedBadges[id]) return;
+          const badge = ACHIEVEMENTS.find(a => a.id === id);
+          if (!badge) return;
+          unlockedBadges[id] = Date.now();
+          spawnBadgeToast(badge);
+        }
+
+        function checkAchievements(ctx = {}) {
+          const dexCount = unlockedStickers ? Object.keys(unlockedStickers).length : 0;
+          if (comboCount >= 5) unlockBadge('combo_5');
+          if (dexCount >= 30) unlockBadge('dex_half');
+          if (dexCount >= 60) unlockBadge('dex_full');
+
+          if (ctx.event === 'win') {
+            if (ctx.isDaily) {
+              unlockBadge('daily_win');
+            } else {
+              unlockBadge('first_win');
+              if (ctx.stars === 3 && ctx.usedToolsCount === 0) unlockBadge('no_tool_3star');
+              if (winStreak >= 3) unlockBadge('streak_3');
+              if (ctx.nextLevel >= 5) unlockBadge('level_5');
+            }
+          }
+        }
+
+        function openBadgesModal() {
+          const grid = document.getElementById('badges-grid');
+          const summary = document.getElementById('badges-summary');
+          if (!grid) return;
+          grid.innerHTML = '';
+
+          const unlockedCount = ACHIEVEMENTS.filter(a => Boolean(unlockedBadges[a.id])).length;
+          if (summary) summary.textContent = `已解鎖：${unlockedCount} / ${ACHIEVEMENTS.length}`;
+
+          ACHIEVEMENTS.forEach(a => {
+            const isUnlocked = Boolean(unlockedBadges[a.id]);
+            const card = document.createElement('div');
+            card.className = `badge-card ${isUnlocked ? 'unlocked' : ''}`;
+            card.innerHTML = `
+              <div class="badge-icon">${a.icon}</div>
+              <div class="badge-info">
+                <div class="badge-name">${a.name}</div>
+                <div class="badge-desc">${a.desc}</div>
+              </div>
+            `;
+            grid.appendChild(card);
+          });
+          document.getElementById('badges-modal').classList.add('show');
+        }
+
+        function closeBadgesModal() {
+          document.getElementById('badges-modal').classList.remove('show');
+        }
+
+        // ==================== ⚡ 每日固定挑戰 ====================
+        function openDailyModal() {
+          const today = getDailyDateStr();
+          const record = dailyClears[today];
+          const dateLabel = document.getElementById('daily-date-label');
+          const statusBox = document.getElementById('daily-status-box');
+          const actions = document.getElementById('daily-modal-actions');
+
+          if (dateLabel) dateLabel.textContent = `📅 今日日期：${today}（全體同牌局）`;
+          if (statusBox) {
+            statusBox.innerHTML = `
+              <div class="win-stat-box">
+                <span class="win-stat-label">今日狀態</span>
+                <span class="win-stat-val">${record ? '✅ 已完成' : '⏳ 未挑戰'}</span>
+              </div>
+              <div class="win-stat-box">
+                <span class="win-stat-label">今日最佳耗時</span>
+                <span class="win-stat-val">${record ? formatTime(record.bestSec) : '--:--'}</span>
+              </div>
+            `;
+          }
+          if (actions) {
+            actions.innerHTML = '';
+            const startBtn = document.createElement('button');
+            startBtn.className = 'btn-primary';
+            startBtn.textContent = isDailyMode ? '重玩今日挑戰' : '開始今日挑戰';
+            startBtn.onclick = startDailyChallenge;
+            actions.appendChild(startBtn);
+
+            if (isDailyMode) {
+              const backBtn = document.createElement('button');
+              backBtn.className = 'btn-secondary';
+              backBtn.textContent = '回無盡模式';
+              backBtn.onclick = exitDailyChallenge;
+              actions.appendChild(backBtn);
+            } else {
+              const closeBtn = document.createElement('button');
+              closeBtn.className = 'btn-secondary';
+              closeBtn.textContent = '關閉';
+              closeBtn.onclick = closeDailyModal;
+              actions.appendChild(closeBtn);
+            }
+          }
+          document.getElementById('daily-modal').classList.add('show');
+        }
+
+        function closeDailyModal() {
+          document.getElementById('daily-modal').classList.remove('show');
+        }
+
+        function startDailyChallenge() {
+          closeDailyModal();
+          isDailyMode = true;
+          initGame();
+        }
+
+        function exitDailyChallenge() {
+          closeDailyModal();
+          isDailyMode = false;
+          if (!loadProgress()) {
+            currentLevel = 1;
+            initGame();
+          }
+        }
+
+        // ==================== ⚙️ 主題、音樂、音效與震動設定 ====================
+        function applySettingsUI() {
+          if (currentTheme === 'meadow') {
+            document.body.removeAttribute('data-theme');
+          } else {
+            document.body.setAttribute('data-theme', currentTheme);
+          }
+
+          ['meadow', 'sakura', 'starry'].forEach(t => {
+            const btn = document.getElementById(`theme-btn-${t}`);
+            if (btn) btn.classList.toggle('active', currentTheme === t);
+          });
+          ['xylophone', 'musicbox'].forEach(s => {
+            const btn = document.getElementById(`bgm-style-${s}`);
+            if (btn) btn.classList.toggle('active', bgmStyle === s);
+          });
+
+          const sfxBtn = document.getElementById('sfx-toggle-btn');
+          if (sfxBtn) {
+            sfxBtn.textContent = sfxEnabled ? '開啟' : '關閉';
+            sfxBtn.classList.toggle('on', sfxEnabled);
+          }
+          const vibBtn = document.getElementById('vibrate-toggle-btn');
+          if (vibBtn) {
+            vibBtn.textContent = vibrateEnabled ? '開啟' : '關閉';
+            vibBtn.classList.toggle('on', vibrateEnabled);
+          }
+        }
+
+        function openSettingsModal() {
+          applySettingsUI();
+          document.getElementById('settings-modal').classList.add('show');
+        }
+
+        function closeSettingsModal() {
+          document.getElementById('settings-modal').classList.remove('show');
+        }
+
+        function setTheme(theme) {
+          currentTheme = theme;
+          localStorage.setItem(STORAGE_THEME_KEY, theme);
+          applySettingsUI();
+        }
+
+        function setBgmStyle(style) {
+          bgmStyle = style;
+          bgmStep = 0;
+          localStorage.setItem(STORAGE_BGM_STYLE_KEY, style);
+          applySettingsUI();
+          if (bgmEnabled) playBgmNote();
+        }
+
+        function toggleSFX() {
+          sfxEnabled = !sfxEnabled;
+          localStorage.setItem(STORAGE_SFX_KEY, sfxEnabled ? 'on' : 'off');
+          applySettingsUI();
+          if (sfxEnabled) playCardClickSound();
+        }
+
+        function toggleVibrate() {
+          vibrateEnabled = !vibrateEnabled;
+          localStorage.setItem(STORAGE_VIBRATE_KEY, vibrateEnabled ? 'on' : 'off');
+          applySettingsUI();
+          if (vibrateEnabled) triggerVibrate(20);
+        }
+
         function checkGameOver() {
           if (cards.every(c => !c.active) && tray.length === 0) {
             if (levelTimer) {
@@ -3151,16 +3768,63 @@
             playWinSound();
             spawnConfetti();
 
+            const usedToolsCount =
+              1 - toolsRemaining.undo +
+              (1 - toolsRemaining.shuffle) +
+              (1 - toolsRemaining.pop);
+
+            if (isDailyMode) {
+              const today = getDailyDateStr();
+              const prevDaily = dailyClears[today];
+              const bestSec = prevDaily ? Math.min(prevDaily.bestSec, levelSeconds) : levelSeconds;
+              dailyClears[today] = { bestSec, score };
+              checkAchievements({ event: 'win', isDaily: true, stars: 3, usedToolsCount });
+              saveProgress();
+
+              const extraHtml = `
+                <div class="win-stars">⚡⭐⭐⭐⚡</div>
+                <div class="win-badge">📅 今日挑戰達陣！</div>
+                <div class="win-stats-grid">
+                  <div class="win-stat-box">
+                    <span class="win-stat-label">本次耗時</span>
+                    <span class="win-stat-val">${formatTime(levelSeconds)}</span>
+                  </div>
+                  <div class="win-stat-box">
+                    <span class="win-stat-label">今日最佳</span>
+                    <span class="win-stat-val">${formatTime(bestSec)}</span>
+                  </div>
+                  <div class="win-stat-box">
+                    <span class="win-stat-label">挑戰積分</span>
+                    <span class="win-stat-val">${score}</span>
+                  </div>
+                </div>
+              `;
+              showModal(
+                `⚡ 恭喜完成今日挑戰！`,
+                `今天（${today}）的固定牌局挑戰成功，要返回無盡闖關繼續推進嗎？`,
+                [
+                  {
+                    label: '返回無盡闖關',
+                    primary: true,
+                    onClick: exitDailyChallenge
+                  },
+                  {
+                    label: '再玩一次今日挑戰',
+                    primary: false,
+                    onClick: startDailyChallenge
+                  }
+                ],
+                extraHtml
+              );
+              return;
+            }
+
             const nextLevel = currentLevel + 1;
             const nextConfig = getLevelConfig(nextLevel);
 
             // 計算過關星級與趣味稱號
             const target3StarSec = 35 + currentLevel * 18;
             const target2StarSec = 75 + currentLevel * 30;
-            const usedToolsCount =
-              1 - toolsRemaining.undo +
-              (1 - toolsRemaining.shuffle) +
-              (1 - toolsRemaining.pop);
 
             let stars = 1;
             if (levelSeconds <= target3StarSec && usedToolsCount <= 2) {
@@ -3179,7 +3843,8 @@
               titleBadge = '🔥 狂熱連擊快手';
             }
 
-            // 過關額外獎勵積分
+            // 過關額外獎勵積分與連勝紀錄
+            winStreak++;
             const clearBonus = currentLevel * 150 + stars * 100;
             score += clearBonus;
             if (score > bestScore) bestScore = score;
@@ -3187,6 +3852,7 @@
             if (nextLevel > maxLevelReached) {
               maxLevelReached = nextLevel;
             }
+            checkAchievements({ event: 'win', isDaily: false, stars, usedToolsCount, nextLevel });
             updateStatusUI();
             saveProgress();
 
@@ -3230,26 +3896,34 @@
               clearInterval(levelTimer);
               levelTimer = null;
             }
+            if (!isDailyMode) {
+              winStreak = 0;
+              saveProgress();
+            }
             showModal(
               `💥 收集槽滿了！`,
-              `你在第 ${currentLevel} 關挑戰失敗，要再試一次嗎？`,
+              `你在${isDailyMode ? '今日挑戰' : `第 ${currentLevel} 關`}挑戰失敗，要再試一次嗎？`,
               [
                 {
                   label: '重試本關',
                   primary: true,
                   onClick: () => {
-                    score = levelStartScore;
+                    score = isDailyMode ? 0 : levelStartScore;
                     initGame();
                   }
                 },
                 {
-                  label: '回第 1 關',
+                  label: isDailyMode ? '回無盡模式' : '回第 1 關',
                   primary: false,
                   onClick: () => {
-                    currentLevel = 1;
-                    levelStartScore = 0;
-                    score = 0;
-                    initGame();
+                    if (isDailyMode) {
+                      exitDailyChallenge();
+                    } else {
+                      currentLevel = 1;
+                      levelStartScore = 0;
+                      score = 0;
+                      initGame();
+                    }
                   }
                 }
               ]
@@ -3266,6 +3940,7 @@
         });
 
         (async function startApp() {
+          applySettingsUI();
           updateBgmBtnUI();
           ALL_TYPES = await loadAllImages();
 
