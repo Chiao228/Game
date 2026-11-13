@@ -1274,6 +1274,7 @@
         <button id="rank-tab-score" class="pokedex-tab active" onclick="switchLeaderboardTab('score')">🏆 闖關積分榜</button>
         <button id="rank-tab-pokedex" class="pokedex-tab" onclick="switchLeaderboardTab('pokedex')">📔 圖鑑收集榜</button>
       </div>
+      <div id="leaderboard-status" style="font-size: 0.74rem; color: #7c6248; font-weight: 700; text-align: center; margin: 2px 0 6px;"></div>
       <div id="leaderboard-list" class="leaderboard-list"></div>
       <div class="modal-actions">
         <button class="btn-primary" style="width: 100%;" onclick="closeLeaderboardModal()">返回遊戲</button>
@@ -1505,6 +1506,12 @@
     const LOGICAL_UNITS = 6.0; // 盤面 6x6 邏輯座標空間 (gx, gy 範圍 0 ~ 5)
     const STORAGE_PROFILES_KEY = 'pet_match_profiles_v1';
     const STORAGE_CURRENT_PLAYER_KEY = 'pet_match_active_player_v2';
+    const FIREBASE_DB_URL = 'https://game-e045e-default-rtdb.asia-southeast1.firebasedatabase.app';
+
+    let globalLeaderboardCache = null;
+    let leaderboardStatusText = '';
+    let cloudSyncTimer = null;
+    let lastCloudPayloadHash = '';
 
     let currentPlayer = localStorage.getItem(STORAGE_CURRENT_PLAYER_KEY) || '';
     let currentLevel = 1;
@@ -1632,8 +1639,13 @@
         maxLevelReached = Math.max(maxLevelReached, prev.maxLevelReached || 1, currentLevel);
         totalStars = Math.max(totalStars, prev.totalStars || 0);
 
+        const cloudId =
+          prev.cloudId ||
+          ('p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7));
+
         const nextProfile = {
           ...(prev || {}),
+          cloudId,
           bestScore,
           maxLevelReached,
           totalStars,
@@ -1673,6 +1685,7 @@
         localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
         localStorage.setItem(STORAGE_CURRENT_PLAYER_KEY, currentPlayer);
         updatePlayerBtnUI();
+        scheduleCloudLeaderboardSync();
       } catch (e) { }
     }
 
@@ -3378,7 +3391,127 @@
           });
         }
 
-        // ==================== 玩家榮譽排行榜 ====================
+        // ==================== 玩家榮譽排行榜（跨裝置全球同步） ====================
+        function escapeHtml(str) {
+          return String(str || '').replace(/[&<>"']/g, ch => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          }[ch]));
+        }
+
+        function ensureProfileCloudId(name) {
+          if (!name) return '';
+          const profiles = getAllProfiles();
+          const data = profiles[name] || {};
+          if (data.cloudId) return data.cloudId;
+          const cloudId = 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+          profiles[name] = { ...data, cloudId };
+          try {
+            localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
+          } catch (e) { }
+          return cloudId;
+        }
+
+        function buildLocalEntry(name, data) {
+          const totalCount = ALL_TYPES.length || 60;
+          const maxLvl =
+            name === currentPlayer
+              ? Math.max(maxLevelReached, currentLevel, data.maxLevelReached || 1, data.currentLevel || 1)
+              : Math.max(data.maxLevelReached || 1, data.currentLevel || 1);
+          const best =
+            name === currentPlayer
+              ? Math.max(bestScore, score, data.bestScore || 0, data.score || 0)
+              : Math.max(data.bestScore || 0, data.score || 0);
+          const stars =
+            name === currentPlayer
+              ? Math.max(totalStars, data.totalStars || 0)
+              : data.totalStars || 0;
+          const dexObj =
+            name === currentPlayer
+              ? unlockedStickers
+              : data.unlockedStickers || {};
+          const dexCount = dexObj && typeof dexObj === 'object' ? Object.keys(dexObj).length : 0;
+          const dexTotalMatches =
+            dexObj && typeof dexObj === 'object'
+              ? Object.values(dexObj).reduce((acc, v) => acc + Number(v || 0), 0)
+              : 0;
+          const dexPct = totalCount > 0 ? Math.round((dexCount / totalCount) * 100) : 0;
+          const cloudId = data.cloudId || ensureProfileCloudId(name);
+
+          return {
+            cloudId,
+            name,
+            maxLvl,
+            best,
+            stars,
+            dexCount,
+            dexTotalMatches,
+            dexPct,
+            isLocalCurrent: name === currentPlayer
+          };
+        }
+
+        function scheduleCloudLeaderboardSync() {
+          if (!FIREBASE_DB_URL || !currentPlayer) return;
+          if (cloudSyncTimer) clearTimeout(cloudSyncTimer);
+          cloudSyncTimer = setTimeout(() => {
+            syncPlayerToCloud(false);
+          }, 2500);
+        }
+
+        async function syncPlayerToCloud(force = false) {
+          if (!FIREBASE_DB_URL || !currentPlayer) return;
+          try {
+            const profiles = getAllProfiles();
+            const entry = buildLocalEntry(currentPlayer, profiles[currentPlayer] || {});
+            if (!entry.cloudId) return;
+
+            const payload = {
+              name: String(entry.name),
+              bestScore: Number(entry.best || 0),
+              maxLevelReached: Number(entry.maxLvl || 1),
+              totalStars: Number(entry.stars || 0),
+              dexCount: Number(entry.dexCount || 0),
+              dexPct: Number(entry.dexPct || 0),
+              updatedAt: Date.now()
+            };
+
+            const hash = `${entry.cloudId}|${payload.name}|${payload.bestScore}|${payload.maxLevelReached}|${payload.totalStars}|${payload.dexCount}`;
+            if (!force && hash === lastCloudPayloadHash) return;
+
+            const res = await fetch(`${FIREBASE_DB_URL}/leaderboard/${encodeURIComponent(entry.cloudId)}.json`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+              lastCloudPayloadHash = hash;
+            }
+          } catch (e) { }
+        }
+
+        async function fetchGlobalLeaderboard() {
+          if (!FIREBASE_DB_URL) return;
+          leaderboardStatusText = '🌐 正在同步全球排行榜...';
+          renderLeaderboard();
+
+          try {
+            await syncPlayerToCloud(true);
+            const res = await fetch(`${FIREBASE_DB_URL}/leaderboard.json`);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            globalLeaderboardCache = data && typeof data === 'object' ? data : {};
+            const totalCount = Object.keys(globalLeaderboardCache).length;
+            leaderboardStatusText = `🌐 全球即時榜（共 ${totalCount} 位玩家）`;
+          } catch (e) {
+            leaderboardStatusText = '📴 離線或連線失敗（目前顯示本機紀錄）';
+          }
+          renderLeaderboard();
+        }
+
         function switchLeaderboardTab(tab) {
           currentLeaderboardTab = tab;
           const scoreTabBtn = document.getElementById('rank-tab-score');
@@ -3391,10 +3524,15 @@
         function openLeaderboardModal(defaultTab = 'score') {
           switchLeaderboardTab(defaultTab);
           document.getElementById('leaderboard-modal').classList.add('show');
+          fetchGlobalLeaderboard();
         }
 
         function renderLeaderboard() {
           const listEl = document.getElementById('leaderboard-list');
+          const statusEl = document.getElementById('leaderboard-status');
+          if (statusEl) {
+            statusEl.textContent = leaderboardStatusText || '';
+          }
           if (!listEl) return;
           listEl.innerHTML = '';
 
@@ -3405,38 +3543,57 @@
           }
 
           const totalCount = ALL_TYPES.length || 60;
-          const entries = names.map(name => {
-            const data = profiles[name] || {};
-            const maxLvl =
-              name === currentPlayer
-                ? Math.max(maxLevelReached, currentLevel, data.maxLevelReached || 1, data.currentLevel || 1)
-                : Math.max(data.maxLevelReached || 1, data.currentLevel || 1);
-            const best =
-              name === currentPlayer
-                ? Math.max(bestScore, score, data.bestScore || 0, data.score || 0)
-                : Math.max(data.bestScore || 0, data.score || 0);
-            const stars =
-              name === currentPlayer
-                ? Math.max(totalStars, data.totalStars || 0)
-                : data.totalStars || 0;
-            const dexObj =
-              name === currentPlayer
-                ? unlockedStickers
-                : data.unlockedStickers || {};
-            const dexCount = dexObj && typeof dexObj === 'object' ? Object.keys(dexObj).length : 0;
-            const dexTotalMatches =
-              dexObj && typeof dexObj === 'object'
-                ? Object.values(dexObj).reduce((acc, v) => acc + Number(v || 0), 0)
-                : 0;
-            const dexPct = totalCount > 0 ? Math.round((dexCount / totalCount) * 100) : 0;
+          const byId = new Map();
 
-            return { name, maxLvl, best, stars, dexCount, dexTotalMatches, dexPct };
+          // 1. 先放入雲端全球玩家資料
+          if (globalLeaderboardCache && typeof globalLeaderboardCache === 'object') {
+            Object.entries(globalLeaderboardCache).forEach(([cid, item]) => {
+              if (!item || typeof item !== 'object' || !item.name) return;
+              const dexCount = Number(item.dexCount || 0);
+              const dexPct =
+                item.dexPct !== undefined
+                  ? Number(item.dexPct || 0)
+                  : totalCount > 0
+                    ? Math.round((dexCount / totalCount) * 100)
+                    : 0;
+              byId.set(cid, {
+                cloudId: cid,
+                name: String(item.name),
+                maxLvl: Number(item.maxLevelReached || 1),
+                best: Number(item.bestScore || 0),
+                stars: Number(item.totalStars || 0),
+                dexCount,
+                dexTotalMatches: 0,
+                dexPct,
+                isLocalCurrent: false
+              });
+            });
+          }
+
+          // 2. 合併本機玩家資料（同一 cloudId 取較高數值，避免尚未上傳的新紀錄被舊快取覆蓋）
+          names.forEach(name => {
+            const local = buildLocalEntry(name, profiles[name] || {});
+            const existing = byId.get(local.cloudId);
+            if (existing) {
+              existing.name = local.name;
+              existing.maxLvl = Math.max(existing.maxLvl, local.maxLvl);
+              existing.best = Math.max(existing.best, local.best);
+              existing.stars = Math.max(existing.stars, local.stars);
+              existing.dexCount = Math.max(existing.dexCount, local.dexCount);
+              existing.dexPct = Math.max(existing.dexPct, local.dexPct);
+              existing.dexTotalMatches = Math.max(existing.dexTotalMatches, local.dexTotalMatches);
+              existing.isLocalCurrent = local.isLocalCurrent;
+            } else {
+              byId.set(local.cloudId, local);
+            }
           });
+
+          const entries = Array.from(byId.values());
 
           if (currentLeaderboardTab === 'pokedex') {
             entries.sort((a, b) => {
               if (b.dexCount !== a.dexCount) return b.dexCount - a.dexCount;
-              if (b.dexTotalMatches !== a.dexTotalMatches) return b.dexTotalMatches - a.dexTotalMatches;
+              if (b.dexPct !== a.dexPct) return b.dexPct - a.dexPct;
               return b.best - a.best;
             });
           } else {
@@ -3455,13 +3612,15 @@
               const row = document.createElement('div');
               row.className = 'rank-item' + (idx === 0 ? ' top-1' : '');
               const rankStr = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`;
+              const safeName = escapeHtml(entry.name);
+              const currentTag = entry.isLocalCurrent ? ' (目前)' : '';
 
               if (currentLeaderboardTab === 'pokedex') {
                 row.innerHTML = `
                   <div class="rank-left">
                     <span style="font-size:1.15rem;">${rankStr}</span>
                     <div>
-                      <div>${entry.name}${entry.name === currentPlayer ? ' (目前)' : ''}</div>
+                      <div>${safeName}${currentTag}</div>
                       <div style="font-size:0.74rem;color:#7c6248;font-weight:600;">已解鎖 ${entry.dexCount} / ${totalCount} 張</div>
                     </div>
                   </div>
@@ -3474,7 +3633,7 @@
                   <div class="rank-left">
                     <span style="font-size:1.15rem;">${rankStr}</span>
                     <div>
-                      <div>${entry.name}${entry.name === currentPlayer ? ' (目前)' : ''}</div>
+                      <div>${safeName}${currentTag}</div>
                       <div style="font-size:0.74rem;color:#7c6248;font-weight:600;">最高第 ${entry.maxLvl} 關 ・ ⭐ ${entry.stars}</div>
                     </div>
                   </div>
