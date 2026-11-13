@@ -325,6 +325,18 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .card-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 9px;
+      pointer-events: none;
+      user-select: none;
+      display: block;
+    }
+
     .card:hover:not(.covered) {
       transform: translateY(-2px) scale(1.04);
       box-shadow: 0 6px 14px rgba(60, 40, 20, 0.3);
@@ -1519,6 +1531,27 @@
       return `url("${encodeURI(String(src || ''))}")`;
     }
 
+    function createCardImg(src) {
+      const img = document.createElement('img');
+      img.className = 'card-img';
+      img.alt = '';
+      img.draggable = false;
+      img.decoding = 'async';
+      const encoded = encodeURI(String(src || ''));
+      img.dataset.retries = '0';
+      img.onerror = () => {
+        const r = Number(img.dataset.retries || 0);
+        if (r < 2) {
+          img.dataset.retries = String(r + 1);
+          setTimeout(() => {
+            img.src = encoded + (encoded.includes('?') ? '&' : '?') + 'r=' + (r + 1);
+          }, 450 * (r + 1));
+        }
+      };
+      img.src = encoded;
+      return img;
+    }
+
     function preloadImage(src) {
       return new Promise(resolve => {
         const img = new Image();
@@ -1528,7 +1561,14 @@
       });
     }
 
-    // 平行預載確定存在的 60 張 .png 圖片（不發 404 探測請求，並設 3 秒上限避免慢速網路卡住啟動）
+    async function preloadImagesInBatches(list, batchSize = 6) {
+      for (let i = 0; i < list.length; i += batchSize) {
+        const batch = list.slice(i, i + batchSize);
+        await Promise.all(batch.map(preloadImage));
+      }
+    }
+
+    // 立即回傳 60 張圖庫路徑（不卡住啟動畫面），並在背景分批預載避免手機同時發 60 個請求被限流
     async function loadAllImages() {
       const list = [];
       for (const folder of IMAGE_FOLDERS) {
@@ -1537,10 +1577,9 @@
           list.push(`${folder}/${pad2}.png`);
         }
       }
-      await Promise.race([
-        Promise.all(list.map(preloadImage)),
-        new Promise(resolve => setTimeout(resolve, 3000))
-      ]);
+      setTimeout(() => {
+        preloadImagesInBatches(list, 6);
+      }, 100);
       return list;
     }
 
@@ -2673,17 +2712,20 @@
         if (covered && c.isBottomBlind) {
           el.classList.add('blind-covered');
         } else {
-          el.style.backgroundImage = toCssImgUrl(c.type);
-          el.style.backgroundSize = 'cover';
-          el.style.backgroundPosition = 'center';
-          el.style.backgroundRepeat = 'no-repeat';
+          el.appendChild(createCardImg(c.type));
 
           if (c.special === 'double') {
             el.classList.add('special-double');
-            el.innerHTML = '<span class="special-badge double">2x</span>';
+            const badge = document.createElement('span');
+            badge.className = 'special-badge double';
+            badge.textContent = '2x';
+            el.appendChild(badge);
           } else if (c.special === 'freeze') {
             el.classList.add('special-freeze');
-            el.innerHTML = '<span class="special-badge freeze">❄️</span>';
+            const badge = document.createElement('span');
+            badge.className = 'special-badge freeze';
+            badge.textContent = '❄️';
+            el.appendChild(badge);
           }
 
           if (covered) {
@@ -2721,7 +2763,8 @@
         if (cardObj) {
           const el = document.createElement('div');
           el.className = 'holding-card';
-          el.style.backgroundImage = toCssImgUrl(cardObj.type);
+          el.style.position = 'relative';
+          el.appendChild(createCardImg(cardObj.type));
           el.onclick = () => handleCardClick(cardObj, el);
           slot.appendChild(el);
         }
@@ -3221,10 +3264,8 @@
         if (item) {
           const el = document.createElement('div');
           el.className = 'tray-card';
-          el.style.backgroundImage = toCssImgUrl(item.type);
-          el.style.backgroundSize = 'cover';
-          el.style.backgroundPosition = 'center';
-          el.style.backgroundRepeat = 'no-repeat';
+          el.style.position = 'relative';
+          el.appendChild(createCardImg(item.type));
           slot.appendChild(el);
         }
 
