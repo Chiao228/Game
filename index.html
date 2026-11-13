@@ -605,283 +605,236 @@
     }
 
     // 自動讀取指定主題資料夾中的圖片，並過濾掉已被刪除的圖片
-    async function loadImagesFromFolder(folder = 'assets') {
-      async function loadImagesFromFolder(folder = 'assets/cat') {
-        const cleanFolder = folder.replace(/\/+$/, '');
-        if (themeImagesCache[cleanFolder]) {
-          return themeImagesCache[cleanFolder];
+    async function loadImagesFromFolder(folder = 'assets/cat') {
+      const cleanFolder = folder.replace(/\/+$/, '');
+      if (themeImagesCache[cleanFolder]) {
+        return themeImagesCache[cleanFolder];
+      }
+
+      // 1. 極速路徑：優先直接探測該主題資料夾下的 01~30 連號圖片（不需等待外部網路 API，毫秒級完成）
+      const fastCandidates = [];
+      for (let n = 1; n <= 30; n++) {
+        const pad2 = String(n).padStart(2, '0');
+        fastCandidates.push(`${cleanFolder}/${pad2}.png`, `${cleanFolder}/${pad2}.jpg`);
+      }
+      const fastVerified = await filterExistingImages(fastCandidates);
+      if (fastVerified.length > 0) {
+        themeImagesCache[cleanFolder] = fastVerified;
+        return fastVerified;
+      }
+
+      // 2. 備援路徑：當無 01~30 連號圖時，再檢查其他路徑、本地伺服器目錄或 GitHub API
+      const folderPrefixes = [cleanFolder];
+      if (cleanFolder.startsWith('assets/') && cleanFolder !== 'assets') {
+        folderPrefixes.push(cleanFolder.slice('assets/'.length));
+      } else if (cleanFolder !== 'assets') {
+        folderPrefixes.push(`assets/${cleanFolder}`);
+      }
+      if (cleanFolder === 'assets/cat' || cleanFolder === 'cat') {
+        folderPrefixes.push('assets');
+      }
+
+      let candidates = [];
+
+      for (const prefix of folderPrefixes) {
+        if (location.protocol !== 'file:') {
+          try {
+            const res = await fetch(`${prefix}/`);
+            if (res.ok) {
+              const text = await res.text();
+              const doc = new DOMParser().parseFromString(text, 'text/html');
+              const links = Array.from(doc.querySelectorAll('a'))
+                .map(a => a.getAttribute('href'))
+                .filter(href => href && IMAGE_EXT_REGEX.test(href))
+                .map(href => {
+                  const fileName = decodeURIComponent(href.split('/').filter(Boolean).pop());
+                  return `${prefix}/${fileName}`;
+                });
+              if (links.length > 0) {
+                candidates.push(...links);
+              }
+            }
+          } catch (e) {}
         }
 
-        // 同時支援 assets/xxx、根目錄 xxx，以及若為 cat 時備援檢查 assets 根目錄
-        // 1. 極速路徑：優先直接探測該主題資料夾下的 01~30 連號圖片（不需等待外部網路 API，毫秒級完成）
-        const fastCandidates = [];
+        try {
+          const ghRes = await fetch(`https://api.github.com/repos/Chiao228/Game/contents/${prefix}`);
+          if (ghRes.ok) {
+            const files = await ghRes.json();
+            if (Array.isArray(files)) {
+              const images = files
+                .filter(file => file.type === 'file' && IMAGE_EXT_REGEX.test(file.name))
+                .map(file => `${prefix}/${file.name}`);
+              if (images.length > 0) {
+                candidates.push(...images);
+              }
+            }
+          }
+        } catch (e) {}
+
         for (let n = 1; n <= 30; n++) {
           const pad2 = String(n).padStart(2, '0');
-          fastCandidates.push(`${cleanFolder}/${pad2}.png`, `${cleanFolder}/${pad2}.jpg`);
-        }
-        const fastVerified = await filterExistingImages(fastCandidates);
-        if (fastVerified.length > 0) {
-          themeImagesCache[cleanFolder] = fastVerified;
-          return fastVerified;
-        }
-
-        // 2. 備援路徑：當無 01~30 連號圖時，再檢查其他路徑、本地伺服器目錄或 GitHub API
-        const folderPrefixes = [cleanFolder];
-        if (cleanFolder.startsWith('assets/') && cleanFolder !== 'assets') {
-          folderPrefixes.push(cleanFolder.slice('assets/'.length));
-        } else if (cleanFolder !== 'assets') {
-          folderPrefixes.push(`assets/${cleanFolder}`);
-        }
-        if (cleanFolder === 'assets/cat' || cleanFolder === 'cat') {
-          folderPrefixes.push('assets');
-        }
-
-        let candidates = [];
-
-        for (const prefix of folderPrefixes) {
-          // 1. 嘗試透過本地伺服器目錄清單讀取
-          if (location.protocol !== 'file:') {
-            try {
-              const res = await fetch(`${prefix}/`);
-              if (res.ok) {
-                const text = await res.text();
-                const doc = new DOMParser().parseFromString(text, 'text/html');
-                const links = Array.from(doc.querySelectorAll('a'))
-                  .map(a => a.getAttribute('href'))
-                  .filter(href => href && IMAGE_EXT_REGEX.test(href))
-                  .map(href => {
-                    const fileName = decodeURIComponent(href.split('/').filter(Boolean).pop());
-                    return `${prefix}/${fileName}`;
-                  });
-                if (links.length > 0) {
-                  candidates.push(...links);
-                }
-              }
-            } catch (e) { }
-          }
-
-          // 2. 嘗試透過 GitHub API 自動讀取儲存庫該資料夾內容
-          try {
-            const ghRes = await fetch(`https://api.github.com/repos/Chiao228/Game/contents/${prefix}`);
-            if (ghRes.ok) {
-              const files = await ghRes.json();
-              if (Array.isArray(files)) {
-                const images = files
-                  .filter(file => file.type === 'file' && IMAGE_EXT_REGEX.test(file.name))
-                  .map(file => `${prefix}/${file.name}`);
-                if (images.length > 0) {
-                  candidates.push(...images);
-                }
-              }
-            }
-          } catch (e) { }
-
-          // 3. 針對本機常見連號圖片一併自動探測（如 01~50 或 IMG_6055~IMG_6095）
-          for (let n = 1; n <= 50; n++) {
-            for (let n = 1; n <= 30; n++) {
-              const pad2 = String(n).padStart(2, '0');
-              candidates.push(
-                `${prefix}/${pad2}.png`,
-                `${prefix}/${pad2}.jpg`,
-                `${prefix}/${n}.png`,
-                `${prefix}/${n}.jpg`
-              );
-            }
-            if (prefix === 'assets') {
-              for (let n = 6055; n <= 6095; n++) {
-                candidates.push(`${prefix}/IMG_${n}.jpg`);
-              }
-            }
-          }
-
-          // 4. 實際透過瀏覽器 Image 載入測試，只保留真正存在的圖片
-          const verified = await filterExistingImages(candidates);
-          if (verified.length > 0) {
-            themeImagesCache[cleanFolder] = verified;
-          }
-          return verified;
-        }
-
-        // 自動探測 assets 下是否還有其他新建立的主題資料夾
-        let themesDiscovered = false;
-        // 背景平行探測 assets 下是否還有其他新建立的主題資料夾
-        async function discoverAvailableThemes() {
-          const extraFolderNames = new Set();
-          if (themesDiscovered) return;
-          themesDiscovered = true;
-
-          // 1. 透過本地伺服器目錄清單探測 assets/ 子資料夾
-          const extraFolderNames = new Set([
-            'rabbit', 'bird', 'hamster', 'bear', 'fox', 'panda', 'duck', 'capybara', 'fish', 'theme3', 'theme4', 'theme5'
-          ]);
-
-          if (location.protocol !== 'file:') {
-            try {
-              const res = await fetch('assets/');
-              if (res.ok) {
-                const text = await res.text();
-                const doc = new DOMParser().parseFromString(text, 'text/html');
-                Array.from(doc.querySelectorAll('a'))
-                  .map(a => a.getAttribute('href'))
-                  .filter(href => href && href.endsWith('/') && !href.startsWith('..') && !href.startsWith('/'))
-                  .forEach(href => {
-                    const dirName = decodeURIComponent(href.replace(/\/+$/, '').split('/').pop());
-                    if (dirName && dirName !== 'assets') extraFolderNames.add(dirName);
-                  });
-              }
-            } catch (e) { }
-          }
-
-          // 2. 透過 GitHub API 探測 assets/ 下的子資料夾
-          try {
-            const ghRes = await fetch('https://api.github.com/repos/Chiao228/Game/contents/assets');
-            if (ghRes.ok) {
-              const items = await ghRes.json();
-              if (Array.isArray(items)) {
-                items
-                  .filter(item => item.type === 'dir')
-                  .forEach(item => extraFolderNames.add(item.name));
-              }
-            }
-          } catch (e) { }
-          const dirsToProbe = [...extraFolderNames].filter(
-            dirName => !THEME_LIST.some(
-              t => t.id.toLowerCase() === dirName.toLowerCase() || t.folder.toLowerCase() === `assets/${dirName.toLowerCase()}`
-            )
+          candidates.push(
+            `${prefix}/${pad2}.png`,
+            `${prefix}/${pad2}.jpg`,
+            `${prefix}/${n}.png`,
+            `${prefix}/${n}.jpg`
           );
+        }
+      }
 
-          // 3. 本機 file:// 常見主題資料夾名稱自動探測
-          ['rabbit', 'bird', 'hamster', 'bear', 'fox', 'panda', 'duck', 'capybara', 'fish', 'theme3', 'theme4', 'theme5'].forEach(name => {
-            extraFolderNames.add(name);
-          });
-
-          for (const dirName of extraFolderNames) {
-            const existsInList = THEME_LIST.some(
-              t => t.id.toLowerCase() === dirName.toLowerCase() || t.folder.toLowerCase() === `assets/${dirName.toLowerCase()}`
-            );
-            if (!existsInList) {
-              // 平行快速檢查各候選資料夾是否有第 1 張圖
-              await Promise.all(
-                dirsToProbe.map(async dirName => {
-                  const probe = await filterExistingImages([
-                    `assets/${dirName}/01.png`,
-                    `assets/${dirName}/01.jpg`,
-                    `assets/${dirName}/1.png`,
-                    `assets/${dirName}/1.jpg`,
-                    `${dirName}/01.png`,
-                    `${dirName}/01.jpg`
-                      `assets/${dirName}/1.jpg`
-                  ]);
-                  if (probe.length > 0) {
-                    THEME_LIST.push({
-                      id: dirName,
-                      name: `🐾 ${dirName}`,
-                      folder: `assets/${dirName}`
-                    });
-                  }
-                }
+      const verified = await filterExistingImages(candidates);
+      if (verified.length > 0) {
+        themeImagesCache[cleanFolder] = verified;
+      }
+      return verified;
     }
-          })
-    );
-        }
 
-        const TRAY_MAX = 7;
-        const LOGICAL_UNITS = 6.0; // 盤面 6x6 邏輯座標空間 (gx, gy 範圍 0 ~ 5)
-        const STORAGE_PROFILES_KEY = 'pet_match_profiles_v1';
-        const STORAGE_CURRENT_PLAYER_KEY = 'pet_match_active_player_v2';
+    let themesDiscovered = false;
+    // 背景平行探測 assets 下是否還有其他新建立的主題資料夾
+    async function discoverAvailableThemes() {
+      if (themesDiscovered) return;
+      themesDiscovered = true;
 
-        let currentPlayer = localStorage.getItem(STORAGE_CURRENT_PLAYER_KEY) || '';
-        let currentLevel = 1;
-        let boardSize = 380;
-        let unitPx = 56;
-        let cardSize = 52;
-        let cards = [];
-        let tray = [];
+      const extraFolderNames = new Set([
+        'rabbit', 'bird', 'hamster', 'bear', 'fox', 'panda', 'duck', 'capybara', 'fish', 'theme3', 'theme4', 'theme5'
+      ]);
 
-        // 取得所有玩家的存檔字典
-        function getAllProfiles() {
-          try {
-            const raw = localStorage.getItem(STORAGE_PROFILES_KEY);
-            const profiles = raw ? JSON.parse(raw) : {};
-            // 移除舊版自動產生的預設「玩家1」名稱，讓使用者自行命名
-            if (profiles['玩家1']) {
-              delete profiles['玩家1'];
-              localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
-            }
-            return profiles;
-          } catch (e) {
-            return {};
-          }
-        }
-
-        function updatePlayerBtnUI() {
-          const btn = document.getElementById('player-btn');
-          if (btn) btn.textContent = currentPlayer ? `👤 ${currentPlayer}` : '👤 設定玩家';
-        }
-
-        function getCurrentThemeObj() {
-          return THEME_LIST.find(t => t.id === currentThemeId) || THEME_LIST[0];
-        }
-
-        function updateThemeBtnUI() {
-          const btn = document.getElementById('theme-btn');
-          const theme = getCurrentThemeObj();
-          if (btn && theme) {
-            btn.textContent = `🎨 ${theme.name.replace(/^[^\s]+\s*/, '')}`;
-          }
-        }
-
-        async function openThemeModal() {
-          const listEl = document.getElementById('theme-list');
-          listEl.innerHTML = '';
-          document.getElementById('theme-modal').classList.add('show');
-
-          for (const theme of THEME_LIST) {
-            const imgs = await loadImagesFromFolder(theme.folder);
-            await discoverAvailableThemes();
-            const themeResults = await Promise.all(
-              THEME_LIST.map(async theme => ({
-                theme,
-                imgs: await loadImagesFromFolder(theme.folder)
-              }))
-            );
-
-            themeResults.forEach(({ theme, imgs }) => {
-              const item = document.createElement('div');
-              item.className = 'theme-item' + (theme.id === currentThemeId ? ' active' : '');
-
-              const infoBox = document.createElement('div');
-              infoBox.className = 'theme-info';
-
-              const titleEl = document.createElement('div');
-              titleEl.className = 'theme-title';
-              titleEl.textContent = theme.name;
-
-              const subEl = document.createElement('div');
-              subEl.className = 'theme-sub';
-              subEl.textContent = `共 ${imgs.length} 款圖案`;
-
-              infoBox.appendChild(titleEl);
-              infoBox.appendChild(subEl);
-
-              const previewsBox = document.createElement('div');
-              previewsBox.className = 'theme-previews';
-              imgs.slice(0, 4).forEach(src => {
-                const thumb = document.createElement('div');
-                thumb.className = 'theme-thumb';
-                thumb.style.backgroundImage = `url('${src}')`;
-                previewsBox.appendChild(thumb);
+      if (location.protocol !== 'file:') {
+        try {
+          const res = await fetch('assets/');
+          if (res.ok) {
+            const text = await res.text();
+            const doc = new DOMParser().parseFromString(text, 'text/html');
+            Array.from(doc.querySelectorAll('a'))
+              .map(a => a.getAttribute('href'))
+              .filter(href => href && href.endsWith('/') && !href.startsWith('..') && !href.startsWith('/'))
+              .forEach(href => {
+                const dirName = decodeURIComponent(href.replace(/\/+$/, '').split('/').pop());
+                if (dirName && dirName !== 'assets') extraFolderNames.add(dirName);
               });
+          }
+        } catch (e) {}
+      }
 
-              item.appendChild(infoBox);
-              item.appendChild(previewsBox);
-              item.onclick = () => selectTheme(theme.id);
-              listEl.appendChild(item);
-            }
+      const dirsToProbe = [...extraFolderNames].filter(
+        dirName => !THEME_LIST.some(
+          t => t.id.toLowerCase() === dirName.toLowerCase() || t.folder.toLowerCase() === `assets/${dirName.toLowerCase()}`
+        )
+      );
 
-    document.getElementById('theme-modal').classList.add('show');
-          });
+      // 平行快速檢查各候選資料夾是否有第 1 張圖
+      await Promise.all(
+        dirsToProbe.map(async dirName => {
+          const probe = await filterExistingImages([
+            `assets/${dirName}/01.png`,
+            `assets/${dirName}/01.jpg`,
+            `assets/${dirName}/1.png`,
+            `assets/${dirName}/1.jpg`
+          ]);
+          if (probe.length > 0) {
+            THEME_LIST.push({
+              id: dirName,
+              name: `🐾 ${dirName}`,
+              folder: `assets/${dirName}`
+            });
+          }
+        })
+      );
+    }
+
+    const TRAY_MAX = 7;
+    const LOGICAL_UNITS = 6.0; // 盤面 6x6 邏輯座標空間 (gx, gy 範圍 0 ~ 5)
+    const STORAGE_PROFILES_KEY = 'pet_match_profiles_v1';
+    const STORAGE_CURRENT_PLAYER_KEY = 'pet_match_active_player_v2';
+
+    let currentPlayer = localStorage.getItem(STORAGE_CURRENT_PLAYER_KEY) || '';
+    let currentLevel = 1;
+    let boardSize = 380;
+    let unitPx = 56;
+    let cardSize = 52;
+    let cards = [];
+    let tray = [];
+
+    // 取得所有玩家的存檔字典
+    function getAllProfiles() {
+      try {
+        const raw = localStorage.getItem(STORAGE_PROFILES_KEY);
+        const profiles = raw ? JSON.parse(raw) : {};
+        // 移除舊版自動產生的預設「玩家1」名稱，讓使用者自行命名
+        if (profiles['玩家1']) {
+          delete profiles['玩家1'];
+          localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
         }
+        return profiles;
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function updatePlayerBtnUI() {
+      const btn = document.getElementById('player-btn');
+      if (btn) btn.textContent = currentPlayer ? `👤 ${currentPlayer}` : '👤 設定玩家';
+    }
+
+    function getCurrentThemeObj() {
+      return THEME_LIST.find(t => t.id === currentThemeId) || THEME_LIST[0];
+    }
+
+    function updateThemeBtnUI() {
+      const btn = document.getElementById('theme-btn');
+      const theme = getCurrentThemeObj();
+      if (btn && theme) {
+        btn.textContent = `🎨 ${theme.name.replace(/^[^\s]+\s*/, '')}`;
+      }
+    }
+
+    async function openThemeModal() {
+      const listEl = document.getElementById('theme-list');
+      listEl.innerHTML = '';
+      document.getElementById('theme-modal').classList.add('show');
+
+      await discoverAvailableThemes();
+      const themeResults = await Promise.all(
+        THEME_LIST.map(async theme => ({
+          theme,
+          imgs: await loadImagesFromFolder(theme.folder)
+        }))
+      );
+
+      themeResults.forEach(({ theme, imgs }) => {
+        const item = document.createElement('div');
+        item.className = 'theme-item' + (theme.id === currentThemeId ? ' active' : '');
+
+        const infoBox = document.createElement('div');
+        infoBox.className = 'theme-info';
+
+        const titleEl = document.createElement('div');
+        titleEl.className = 'theme-title';
+        titleEl.textContent = theme.name;
+
+        const subEl = document.createElement('div');
+        subEl.className = 'theme-sub';
+        subEl.textContent = `共 ${imgs.length} 款圖案`;
+
+        infoBox.appendChild(titleEl);
+        infoBox.appendChild(subEl);
+
+        const previewsBox = document.createElement('div');
+        previewsBox.className = 'theme-previews';
+        imgs.slice(0, 4).forEach(src => {
+          const thumb = document.createElement('div');
+          thumb.className = 'theme-thumb';
+          thumb.style.backgroundImage = `url('${src}')`;
+          previewsBox.appendChild(thumb);
+        });
+
+        item.appendChild(infoBox);
+        item.appendChild(previewsBox);
+        item.onclick = () => selectTheme(theme.id);
+        listEl.appendChild(item);
+      });
+    }
 
         function closeThemeModal() {
           document.getElementById('theme-modal').classList.remove('show');
@@ -1729,7 +1682,6 @@
         });
 
         (async function startApp() {
-          await discoverAvailableThemes();
           let activeTheme = getCurrentThemeObj();
           updateThemeBtnUI();
 
@@ -1749,7 +1701,6 @@
             }
           }
 
-          updateThemeBtnUI();
           if (!currentPlayer) {
             initGame();
             openPlayerModal();
