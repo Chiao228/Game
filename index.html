@@ -1352,8 +1352,15 @@
       <div class="player-input-row">
         <input id="new-player-input" type="text" placeholder="請輸入玩家名稱..." maxlength="12"
           onkeydown="if(event.key==='Enter') addOrSwitchPlayer()">
-        <button class="btn-primary" style="padding: 8px 14px; font-size: 0.88rem;"
+        <button id="add-player-btn" class="btn-primary" style="padding: 8px 14px; font-size: 0.88rem;"
           onclick="addOrSwitchPlayer()">開始</button>
+      </div>
+      <div id="player-confirm-box" style="display:none; background:#fff7e6; border:1.5px solid #e6c896; border-radius:12px; padding:12px; margin-top:10px; text-align:center;">
+        <div id="player-confirm-msg" style="font-size:0.86rem; color:#5c4028; font-weight:700; line-height:1.45; margin-bottom:10px;"></div>
+        <div style="display:flex; gap:8px; justify-content:center;">
+          <button id="player-confirm-yes" class="btn-primary" style="flex:1; padding:8px 10px; font-size:0.84rem;">是本人，載入紀錄</button>
+          <button id="player-confirm-no" class="btn-secondary" style="flex:1; padding:8px 10px; font-size:0.84rem;" onclick="cancelDuplicatePlayerName()">不是，重新命名</button>
+        </div>
       </div>
       <div class="modal-actions" id="player-modal-actions">
         <button id="clear-all-btn" class="btn-danger" onclick="clearAllProfiles()">清除全部紀錄</button>
@@ -1465,41 +1472,21 @@
     ];
 
     let ALL_TYPES = [];
-    const IMAGE_EXT_REGEX = /\.(jpe?g|png|gif|webp|svg|bmp|avif)$/i;
 
-    // 實際測試圖片是否存在且可載入（連直接雙擊 file:// 開啟也能準確排除已刪除的圖片）
-    function probeImage(src) {
-      return new Promise(resolve => {
-        const img = new Image();
-        img.onload = () => resolve(src);
-        img.onerror = () => resolve(null);
-        img.src = src;
-      });
+    function toCssImgUrl(src) {
+      return `url("${encodeURI(String(src || ''))}")`;
     }
 
-    async function filterExistingImages(candidates) {
-      const unique = [...new Set(candidates)];
-      const results = await Promise.all(unique.map(probeImage));
-      return results.filter(Boolean);
-    }
-
-    // 極速平行載入全部資料夾中的所有圖片（共 60 張）
+    // 直接產生固定 60 張圖庫路徑，避免手機版同時發送大量 404 探測請求導致圖片載入失敗
     async function loadAllImages() {
-      const fastCandidates = [];
+      const list = [];
       for (const folder of IMAGE_FOLDERS) {
-        for (let n = 1; n <= 25; n++) {
+        for (let n = 1; n <= 20; n++) {
           const pad2 = String(n).padStart(2, '0');
-          fastCandidates.push(`${folder}/${pad2}.png`, `${folder}/${pad2}.jpg`);
+          list.push(`${folder}/${pad2}.png`);
         }
       }
-      // 也一併支援直接放在 assets 根目錄下的連號圖片
-      for (let n = 1; n <= 25; n++) {
-        const pad2 = String(n).padStart(2, '0');
-        fastCandidates.push(`assets/${pad2}.png`, `assets/${pad2}.jpg`);
-      }
-
-      const verified = await filterExistingImages(fastCandidates);
-      return verified;
+      return list;
     }
 
     const TRAY_MAX = 7;
@@ -1639,13 +1626,12 @@
         maxLevelReached = Math.max(maxLevelReached, prev.maxLevelReached || 1, currentLevel);
         totalStars = Math.max(totalStars, prev.totalStars || 0);
 
-        const cloudId =
-          prev.cloudId ||
-          ('p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7));
+        const cloudId = getCloudIdByName(currentPlayer);
 
         const nextProfile = {
           ...(prev || {}),
           cloudId,
+          updatedAt: Date.now(),
           bestScore,
           maxLevelReached,
           totalStars,
@@ -1878,6 +1864,8 @@
             actionsEl.style.display = (currentPlayer || names.length > 0) ? 'flex' : 'none';
           }
 
+          const confirmBox = document.getElementById('player-confirm-box');
+          if (confirmBox) confirmBox.style.display = 'none';
           const inputEl = document.getElementById('new-player-input');
           inputEl.value = '';
           document.getElementById('player-modal').classList.add('show');
@@ -1914,10 +1902,27 @@
           document.getElementById('player-modal').classList.remove('show');
         }
 
-        function switchPlayer(name) {
+        async function switchPlayer(name, preloadedCloud = undefined) {
           const trimmed = (name || '').trim();
           if (!trimmed) return;
-          const hasRecord = Boolean(getAllProfiles()[trimmed]);
+          const addBtn = document.getElementById('add-player-btn');
+          const origBtnText = addBtn ? addBtn.textContent : '開始';
+          if (addBtn && preloadedCloud === undefined) {
+            addBtn.disabled = true;
+            addBtn.textContent = '同步中...';
+          }
+
+          let hasLocalRecord = Boolean(getAllProfiles()[trimmed]);
+          let foundInCloud = false;
+          try {
+            foundInCloud = await pullPlayerFromCloud(trimmed, preloadedCloud);
+          } catch (e) { }
+
+          if (addBtn) {
+            addBtn.disabled = false;
+            addBtn.textContent = origBtnText;
+          }
+
           currentPlayer = trimmed;
           localStorage.setItem(STORAGE_CURRENT_PLAYER_KEY, currentPlayer);
           document.getElementById('player-modal').classList.remove('show');
@@ -1927,20 +1932,76 @@
             resetPlayerRuntimeState();
             initGame();
           }
-          // 只有無遊玩紀錄的新玩家才自動跳出規則視窗
-          if (!hasRecord) {
+          // 只有本機與雲端皆無遊玩紀錄的新玩家才自動跳出規則視窗
+          if (!hasLocalRecord && !foundInCloud) {
             openRulesModal(true);
           }
         }
 
-        function addOrSwitchPlayer() {
+        function cancelDuplicatePlayerName() {
+          const confirmBox = document.getElementById('player-confirm-box');
+          if (confirmBox) confirmBox.style.display = 'none';
+          const input = document.getElementById('new-player-input');
+          if (input) {
+            input.value = '';
+            input.focus();
+          }
+        }
+
+        async function addOrSwitchPlayer() {
           const input = document.getElementById('new-player-input');
           const name = input.value.trim();
           if (!name) {
             input.focus();
             return;
           }
-          switchPlayer(name);
+
+          const addBtn = document.getElementById('add-player-btn');
+          const confirmBox = document.getElementById('player-confirm-box');
+          if (confirmBox) confirmBox.style.display = 'none';
+
+          if (addBtn) {
+            addBtn.disabled = true;
+            addBtn.textContent = '檢查中...';
+          }
+
+          const localData = getAllProfiles()[name] || null;
+          let cloudData = null;
+          try {
+            cloudData = await fetchCloudProfileRaw(name);
+          } catch (e) { }
+
+          if (addBtn) {
+            addBtn.disabled = false;
+            addBtn.textContent = '開始';
+          }
+
+          if (localData || cloudData) {
+            const maxLvl = Math.max(
+              Number(localData && localData.maxLevelReached || 1),
+              Number(localData && localData.currentLevel || 1),
+              Number(cloudData && cloudData.maxLevelReached || 1),
+              Number(cloudData && cloudData.currentLevel || 1)
+            );
+            const best = Math.max(
+              Number(localData && localData.bestScore || 0),
+              Number(localData && localData.score || 0),
+              Number(cloudData && cloudData.bestScore || 0)
+            );
+            const msgEl = document.getElementById('player-confirm-msg');
+            const yesBtn = document.getElementById('player-confirm-yes');
+            if (confirmBox && msgEl && yesBtn) {
+              msgEl.textContent = `「${name}」已有遊玩紀錄（最高第 ${maxLvl} 關・${best} 分），請問是你本人嗎？`;
+              yesBtn.onclick = () => {
+                confirmBox.style.display = 'none';
+                switchPlayer(name, cloudData);
+              };
+              confirmBox.style.display = 'block';
+              return;
+            }
+          }
+
+          await switchPlayer(name, null);
         }
 
         /**
@@ -2581,7 +2642,7 @@
             if (covered && c.isBottomBlind) {
               el.classList.add('blind-covered');
             } else {
-              el.style.backgroundImage = `url('${c.type}')`;
+              el.style.backgroundImage = toCssImgUrl(c.type);
               el.style.backgroundSize = 'cover';
               el.style.backgroundPosition = 'center';
               el.style.backgroundRepeat = 'no-repeat';
@@ -2629,7 +2690,7 @@
             if (cardObj) {
               const el = document.createElement('div');
               el.className = 'holding-card';
-              el.style.backgroundImage = `url('${cardObj.type}')`;
+              el.style.backgroundImage = toCssImgUrl(cardObj.type);
               el.onclick = () => handleCardClick(cardObj, el);
               slot.appendChild(el);
             }
@@ -2858,7 +2919,7 @@
             const unlockedCount = Object.keys(unlockedStickers || {}).length;
             const toast = document.createElement('div');
             toast.className = 'unlock-toast';
-            toast.innerHTML = `<div class="unlock-toast-thumb" style="background-image:url('${type}')"></div><span>🎉 圖鑑解鎖新角色！（${unlockedCount}/${ALL_TYPES.length || 60}）</span>`;
+            toast.innerHTML = `<div class="unlock-toast-thumb" style='background-image:${toCssImgUrl(type)}'></div><span>🎉 圖鑑解鎖新角色！（${unlockedCount}/${ALL_TYPES.length || 60}）</span>`;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 2200);
           } catch (e) {}
@@ -2940,7 +3001,7 @@
           flyer.style.top = `${sourceRect.top}px`;
           flyer.style.width = `${sourceRect.width}px`;
           flyer.style.height = `${sourceRect.height}px`;
-          flyer.style.backgroundImage = `url('${imageUrl}')`;
+          flyer.style.backgroundImage = toCssImgUrl(imageUrl);
           document.body.appendChild(flyer);
 
           requestAnimationFrame(() => {
@@ -3129,7 +3190,7 @@
             if (item) {
               const el = document.createElement('div');
               el.className = 'tray-card';
-              el.style.backgroundImage = `url('${item.type}')`;
+              el.style.backgroundImage = toCssImgUrl(item.type);
               el.style.backgroundSize = 'cover';
               el.style.backgroundPosition = 'center';
               el.style.backgroundRepeat = 'no-repeat';
@@ -3378,7 +3439,7 @@
 
             if (isUnlocked) {
               item.innerHTML = `
-                <div class="pokedex-thumb" style="background-image:url('${url}')"></div>
+                <div class="pokedex-thumb" style='background-image:${toCssImgUrl(url)}'></div>
                 <span class="pokedex-count">${catLabel}${numStr} (消${count}次)</span>
               `;
             } else {
@@ -3402,12 +3463,18 @@
           }[ch]));
         }
 
+        function getCloudIdByName(name) {
+          const trimmed = String(name || '').trim();
+          if (!trimmed) return '';
+          return 'u_' + encodeURIComponent(trimmed).replace(/\./g, '%2E');
+        }
+
         function ensureProfileCloudId(name) {
           if (!name) return '';
+          const cloudId = getCloudIdByName(name);
           const profiles = getAllProfiles();
           const data = profiles[name] || {};
-          if (data.cloudId) return data.cloudId;
-          const cloudId = 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+          if (data.cloudId === cloudId) return cloudId;
           profiles[name] = { ...data, cloudId };
           try {
             localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
@@ -3439,7 +3506,7 @@
               ? Object.values(dexObj).reduce((acc, v) => acc + Number(v || 0), 0)
               : 0;
           const dexPct = totalCount > 0 ? Math.round((dexCount / totalCount) * 100) : 0;
-          const cloudId = data.cloudId || ensureProfileCloudId(name);
+          const cloudId = getCloudIdByName(name);
 
           return {
             cloudId,
@@ -3466,8 +3533,19 @@
           if (!FIREBASE_DB_URL || !name) return;
           try {
             const profiles = getAllProfiles();
-            const entry = buildLocalEntry(name, profiles[name] || {});
+            const data = profiles[name] || {};
+            const entry = buildLocalEntry(name, data);
             if (!entry.cloudId) return;
+            if (Number(entry.best || 0) <= 0) return;
+
+            const isCurr = name === currentPlayer;
+            const curLvl = isCurr ? currentLevel : Number(data.currentLevel || entry.maxLvl || 1);
+            const curScore = isCurr ? score : Number(data.score || 0);
+            const curLevelStart = isCurr ? levelStartScore : Number(data.levelStartScore || curScore || 0);
+            const curStreak = isCurr ? winStreak : Number(data.winStreak || 0);
+            const stickersObj = isCurr ? unlockedStickers : (data.unlockedStickers || {});
+            const badgesObj = isCurr ? unlockedBadges : (data.unlockedBadges || {});
+            const dailyObj = isCurr ? dailyClears : (data.dailyClears || {});
 
             const payload = {
               name: String(entry.name),
@@ -3476,10 +3554,17 @@
               totalStars: Number(entry.stars || 0),
               dexCount: Number(entry.dexCount || 0),
               dexPct: Number(entry.dexPct || 0),
+              currentLevel: Number(curLvl || 1),
+              score: Number(curScore || 0),
+              levelStartScore: Number(curLevelStart || 0),
+              winStreak: Number(curStreak || 0),
+              dailyClears: dailyObj && typeof dailyObj === 'object' ? dailyObj : {},
+              unlockedStickers: stickersObj && typeof stickersObj === 'object' ? stickersObj : {},
+              unlockedBadges: badgesObj && typeof badgesObj === 'object' ? badgesObj : {},
               updatedAt: Date.now()
             };
 
-            const hash = `${entry.cloudId}|${payload.name}|${payload.bestScore}|${payload.maxLevelReached}|${payload.totalStars}|${payload.dexCount}`;
+            const hash = `${entry.cloudId}|${payload.name}|${payload.bestScore}|${payload.maxLevelReached}|${payload.totalStars}|${payload.dexCount}|${payload.currentLevel}|${payload.score}|${payload.winStreak}|${Object.keys(payload.unlockedBadges).length}`;
             if (!force && hash === lastCloudPayloadHashes[entry.cloudId]) return;
 
             const res = await fetch(`${FIREBASE_DB_URL}/leaderboard/${encodeURIComponent(entry.cloudId)}.json`, {
@@ -3508,6 +3593,94 @@
           await Promise.all(names.map(name => syncProfileEntryToCloud(name, force || name === currentPlayer)));
         }
 
+        async function fetchCloudProfileRaw(name) {
+          if (!FIREBASE_DB_URL || !name) return null;
+          const trimmed = String(name).trim();
+          const cloudId = getCloudIdByName(trimmed);
+          const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+          const timer = controller ? setTimeout(() => controller.abort(), 3500) : null;
+          try {
+            const res = await fetch(`${FIREBASE_DB_URL}/leaderboard/${encodeURIComponent(cloudId)}.json`, {
+              signal: controller ? controller.signal : undefined
+            });
+            if (timer) clearTimeout(timer);
+            if (!res.ok) return null;
+            const cloud = await res.json();
+            if (!cloud || typeof cloud !== 'object' || !cloud.name) return null;
+            return cloud;
+          } catch (e) {
+            if (timer) clearTimeout(timer);
+            return null;
+          }
+        }
+
+        async function pullPlayerFromCloud(name, preloadedCloud = undefined) {
+          if (!FIREBASE_DB_URL || !name) return false;
+          const trimmed = String(name).trim();
+          const cloudId = getCloudIdByName(trimmed);
+          try {
+            const cloud = preloadedCloud !== undefined ? preloadedCloud : await fetchCloudProfileRaw(trimmed);
+            if (!cloud || typeof cloud !== 'object' || !cloud.name) return false;
+
+            const profiles = getAllProfiles();
+            const local = profiles[trimmed];
+
+            const mergedStickers = { ...(local && local.unlockedStickers ? local.unlockedStickers : {}) };
+            if (cloud.unlockedStickers && typeof cloud.unlockedStickers === 'object') {
+              Object.entries(cloud.unlockedStickers).forEach(([k, v]) => {
+                mergedStickers[k] = Math.max(Number(mergedStickers[k] || 0), Number(v || 0));
+              });
+            }
+
+            const mergedBadges = {
+              ...(cloud.unlockedBadges && typeof cloud.unlockedBadges === 'object' ? cloud.unlockedBadges : {}),
+              ...(local && local.unlockedBadges ? local.unlockedBadges : {})
+            };
+            const mergedDaily = {
+              ...(cloud.dailyClears && typeof cloud.dailyClears === 'object' ? cloud.dailyClears : {}),
+              ...(local && local.dailyClears ? local.dailyClears : {})
+            };
+
+            const useCloudCurrent = !local || Number(cloud.updatedAt || 0) > Number(local.updatedAt || 0);
+            const restoredLevel = useCloudCurrent
+              ? Number(cloud.currentLevel || cloud.maxLevelReached || 1)
+              : Number(local.currentLevel || 1);
+            const restoredScore = useCloudCurrent
+              ? Number(cloud.score !== undefined ? cloud.score : (cloud.bestScore || 0))
+              : Number(local.score || 0);
+            const restoredLevelStart = useCloudCurrent
+              ? Number(cloud.levelStartScore !== undefined ? cloud.levelStartScore : restoredScore)
+              : Number(local.levelStartScore || 0);
+
+            profiles[trimmed] = {
+              ...(local || {}),
+              cloudId,
+              bestScore: Math.max(Number(local && local.bestScore || 0), Number(cloud.bestScore || 0)),
+              maxLevelReached: Math.max(Number(local && local.maxLevelReached || 1), Number(cloud.maxLevelReached || 1)),
+              totalStars: Math.max(Number(local && local.totalStars || 0), Number(cloud.totalStars || 0)),
+              winStreak: useCloudCurrent ? Number(cloud.winStreak || 0) : Number(local && local.winStreak || 0),
+              currentLevel: restoredLevel,
+              score: restoredScore,
+              levelStartScore: restoredLevelStart,
+              dailyClears: mergedDaily,
+              unlockedStickers: mergedStickers,
+              unlockedBadges: mergedBadges,
+              updatedAt: Math.max(Number(local && local.updatedAt || 0), Number(cloud.updatedAt || 0))
+            };
+
+            // 若是從雲端新載入且原本沒有這台裝置的盤面，清除 cards 讓 loadProgress/initGame 依關卡重排
+            if (useCloudCurrent && (!local || !Array.isArray(local.cards) || local.cards.length === 0 || Number(local.currentLevel || 1) !== restoredLevel)) {
+              delete profiles[trimmed].cards;
+              delete profiles[trimmed].tray;
+            }
+
+            localStorage.setItem(STORAGE_PROFILES_KEY, JSON.stringify(profiles));
+            return true;
+          } catch (e) {
+            return false;
+          }
+        }
+
         async function fetchGlobalLeaderboard() {
           if (!FIREBASE_DB_URL) return;
           leaderboardStatusText = '🌐 正在同步全球排行榜...';
@@ -3519,7 +3692,9 @@
             if (!res.ok) throw new Error('HTTP ' + res.status);
             const data = await res.json();
             globalLeaderboardCache = data && typeof data === 'object' ? data : {};
-            const totalCount = Object.keys(globalLeaderboardCache).length;
+            const totalCount = Object.values(globalLeaderboardCache).filter(
+              item => item && typeof item === 'object' && Number(item.bestScore || 0) > 0
+            ).length;
             leaderboardStatusText = `🌐 全球即時榜（共 ${totalCount} 位玩家）`;
           } catch (e) {
             leaderboardStatusText = '📴 離線或連線失敗（目前顯示本機紀錄）';
@@ -3558,7 +3733,25 @@
           }
 
           const totalCount = ALL_TYPES.length || 60;
-          const byId = new Map();
+          const byName = new Map();
+
+          const mergeEntry = item => {
+            if (!item || !item.name) return;
+            const key = String(item.name).trim();
+            if (!key) return;
+            const prev = byName.get(key);
+            if (!prev) {
+              byName.set(key, { ...item, name: key });
+            } else {
+              prev.maxLvl = Math.max(prev.maxLvl, item.maxLvl);
+              prev.best = Math.max(prev.best, item.best);
+              prev.stars = Math.max(prev.stars, item.stars);
+              prev.dexCount = Math.max(prev.dexCount, item.dexCount);
+              prev.dexPct = Math.max(prev.dexPct, item.dexPct);
+              prev.dexTotalMatches = Math.max(prev.dexTotalMatches || 0, item.dexTotalMatches || 0);
+              prev.isLocalCurrent = Boolean(prev.isLocalCurrent || item.isLocalCurrent);
+            }
+          };
 
           // 1. 先放入雲端全球玩家資料
           if (globalLeaderboardCache && typeof globalLeaderboardCache === 'object') {
@@ -3571,7 +3764,7 @@
                   : totalCount > 0
                     ? Math.round((dexCount / totalCount) * 100)
                     : 0;
-              byId.set(cid, {
+              mergeEntry({
                 cloudId: cid,
                 name: String(item.name),
                 maxLvl: Number(item.maxLevelReached || 1),
@@ -3585,25 +3778,13 @@
             });
           }
 
-          // 2. 合併本機玩家資料（同一 cloudId 取較高數值，避免尚未上傳的新紀錄被舊快取覆蓋）
+          // 2. 合併本機玩家資料（依玩家名稱合併，避免重複顯示同名玩家）
           names.forEach(name => {
             const local = buildLocalEntry(name, profiles[name] || {});
-            const existing = byId.get(local.cloudId);
-            if (existing) {
-              existing.name = local.name;
-              existing.maxLvl = Math.max(existing.maxLvl, local.maxLvl);
-              existing.best = Math.max(existing.best, local.best);
-              existing.stars = Math.max(existing.stars, local.stars);
-              existing.dexCount = Math.max(existing.dexCount, local.dexCount);
-              existing.dexPct = Math.max(existing.dexPct, local.dexPct);
-              existing.dexTotalMatches = Math.max(existing.dexTotalMatches, local.dexTotalMatches);
-              existing.isLocalCurrent = local.isLocalCurrent;
-            } else {
-              byId.set(local.cloudId, local);
-            }
+            mergeEntry(local);
           });
 
-          const entries = Array.from(byId.values());
+          const entries = Array.from(byName.values()).filter(e => Number(e.best || 0) > 0);
 
           if (currentLeaderboardTab === 'pokedex') {
             entries.sort((a, b) => {
